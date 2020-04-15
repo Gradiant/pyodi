@@ -6,3 +6,5 @@ streamlit run pyodi/ground_truth.py
 # or
 streamlit run pyodi/evaluation.py
 ```
+
+See [Contributing guide](.github/CONTRIBUTING.md) for more info.
