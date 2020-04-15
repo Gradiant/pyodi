@@ -11,5 +11,4 @@ dependencies:
     - fire
     - loguru
     - plotly
-    - streamlit
     - git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI

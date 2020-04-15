@@ -12,3 +12,10 @@ def plot_with_streamlit(plot_function, inputs):
     show_info = st.checkbox(f"Show Info: {title}")
     if show_info:
         st.write(description)
+
+def optional_show_df(df, name):
+    st.header(f"{name}")
+    show_image_dataframe = st.checkbox(f"Show {name} DataFrame")
+    if show_image_dataframe:
+        logger.info(f"Showing DataFrame: {name}")
+        st.write(df)
