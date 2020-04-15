@@ -22,7 +22,7 @@ def coco_ground_truth_to_dfs(coco_ground_truth, max_images=5000):
     image_id_to_name = {}
     if len(coco_ground_truth["images"]) > max_images:
         logger.warning(
-            f"Number of images {len(coco_ground_truth["images"])} exceeds maximum: {max_images}. "
+            f"Number of images {len(coco_ground_truth['images'])} exceeds maximum: {max_images}. "
             "All the exceeding images will be ignored"
         )
     for image in coco_ground_truth["images"][:5000]:
