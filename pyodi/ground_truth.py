@@ -6,7 +6,8 @@ from pathlib import Path
 from loguru import logger
 
 from coco.utils import coco_ground_truth_to_dfs
-from plots import plot_image_shape_distribution, plot_bounding_box_distribution
+from plots.images import plot_image_shape_distribution
+from plots.annotations import plot_bounding_box_distribution
 
 
 def load_ground_truth_file(ground_truth_file):
