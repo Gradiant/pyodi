@@ -3,6 +3,7 @@ from collections import defaultdict
 
 import pandas as pd
 
+from loguru import logger
 from pycocotools.coco import COCO
 
 
@@ -13,20 +14,26 @@ def load_coco_ground_truth_from_StringIO(string_io):
     return coco_ground_truth
 
 
-def coco_ground_truth_to_dfs(coco_ground_truth):
+def coco_ground_truth_to_dfs(coco_ground_truth, max_images=5000):
     df_images = defaultdict(list)
     categories = {
         x["id"]: x["name"] for x in coco_ground_truth["categories"]
     }
     image_id_to_name = {}
-    for image in coco_ground_truth["images"]:
+    if len(coco_ground_truth["images"]) > max_images:
+        logger.warning(
+            f"Number of images {len(coco_ground_truth["images"])} exceeds maximum: {max_images}. "
+            "All the exceeding images will be ignored"
+        )
+    for image in coco_ground_truth["images"][:5000]:
+        if n > max_images:
         for k, v in image.items():
             df_images[k].append(v)
         image_id_to_name[image["id"]] = image["file_name"]
     df_images = pd.DataFrame(df_images)
 
     df_annotations = defaultdict(list)
-    for annotation in coco_ground_truth["annotations"]:
+    for annotation in coco_ground_truth["annotations"][:max_images]:
         df_annotations["file_name"].append(image_id_to_name[annotation["image_id"]])
         df_annotations["category"].append(categories[annotation["category_id"]])
         df_annotations["area"].append(annotation["area"])
