@@ -1,6 +1,7 @@
 import json
 from collections import defaultdict
 
+import numpy as np
 import pandas as pd
 import streamlit as st
 from loguru import logger
@@ -11,6 +12,12 @@ def load_coco_ground_truth_from_StringIO(string_io):
     coco_ground_truth = COCO()
     coco_ground_truth.dataset = json.load(string_io)
     coco_ground_truth.createIndex()
+    return coco_ground_truth
+
+
+def load_ground_truth_file(ground_truth_file):
+    logger.info("Loading Ground Truth File")
+    coco_ground_truth = json.load(open(ground_truth_file))
     return coco_ground_truth
 
 
@@ -49,3 +56,67 @@ def coco_ground_truth_to_dfs(coco_ground_truth, max_images=200000):
 
     df_annotations = pd.DataFrame(df_annotations)
     return df_images, df_annotations
+
+
+def join_annotations_with_image_sizes(df_annotations, df_images):
+    """Left join between annotations dataframe and images keeping only given keys
+
+    Parameters
+    ----------
+    df_annotations : [type]
+        [description]
+    df_images : [type]
+        [description]
+    """
+    column_names = list(df_annotations.columns) + ["img_width", "img_height"]
+    df_images = df_images.add_prefix("img_")
+    return df_annotations.join(df_images.set_index("file_name"), on="file_name")[
+        column_names
+    ]
+
+
+def scale_bbox_dimensions(df_annotations, input_size=(1280, 720)):
+    """Resizes bboxes dimensions to model input size
+
+    Parameters
+    ----------
+    df_annotations : pd.DataFrame
+        DataFrame with COCO annotations
+    input_size : tuple(int, int)
+        Model input size
+    """
+    df_annotations["scaled_col_centroid"] = np.ceil(
+        df_annotations["col_centroid"] * input_size[0] / df_annotations["img_width"]
+    )
+    df_annotations["scaled_row_centroid"] = np.ceil(
+        df_annotations["row_centroid"] * input_size[1] / df_annotations["img_height"]
+    )
+    df_annotations["scaled_width"] = np.ceil(
+        df_annotations["width"] * input_size[0] / df_annotations["img_width"]
+    )
+    df_annotations["scaled_height"] = np.ceil(
+        df_annotations["height"] * input_size[1] / df_annotations["img_height"]
+    )
+    return df_annotations
+
+
+def get_bbox_matrix(df_annotations, prefix=None):
+    """Returns array with bbox coordinates
+
+    Parameters
+    ----------
+    df_annotations : pd.DataFrame
+        DataFrame with COCO annotations
+    prefix : str
+        Prefix to apply to column names, use for scaled data
+
+    Returns
+    -------
+    np.array
+        Array with dimension N x 4 with bbox coordinates
+    """
+
+    columns = [f"col_centroid", "row_centroid", "width", "height"]
+    if prefix:
+        columns = [f"{prefix}_{col}" for col in columns]
+    return df_annotations[columns].to_numpy()
