@@ -1,4 +1,5 @@
 import streamlit as st
+from loguru import logger
 
 
 def plot_with_streamlit(plot_function, inputs):
@@ -12,6 +13,7 @@ def plot_with_streamlit(plot_function, inputs):
     show_info = st.checkbox(f"Show Info: {title}")
     if show_info:
         st.write(description)
+
 
 def optional_show_df(df, name):
     st.header(f"{name}")

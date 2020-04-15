@@ -1,13 +1,12 @@
 import argparse
 import json
-
+import os
 from pathlib import Path
 
-from loguru import logger
-
 from coco.utils import coco_ground_truth_to_dfs
-from plots.images import plot_image_shape_distribution
+from loguru import logger
 from plots.annotations import plot_bounding_box_distribution
+from plots.images import plot_image_shape_distribution
 
 
 def load_ground_truth_file(ground_truth_file):
@@ -31,11 +30,13 @@ def ground_truth_app(ground_truth_file, show=True, output=None):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Object Detection Insights: Ground Truth')
+    parser = argparse.ArgumentParser(
+        description="Object Detection Insights: Ground Truth"
+    )
 
-    parser.add_argument('--file', help="COCO Ground Truth File")
-    parser.add_argument('--show', default=True, action='store_false')    
-    parser.add_argument('--output', default=None)
+    parser.add_argument("--file", help="COCO Ground Truth File")
+    parser.add_argument("--show", default=True, action="store_false")
+    parser.add_argument("--output", default=None)
 
     try:
         args = parser.parse_args()

@@ -1,5 +1,4 @@
 import plotly.graph_objects as go
-
 from loguru import logger
 
 
@@ -9,17 +8,18 @@ def plot_image_shape_distribution(df_images, show=True, output=None):
     This plot shows the height and width distributions of all the images in the dataset.
 
     It can serve as an indicator for setting the optimal **input size** and **aspect ratio** of your model.
-    
+
     """
     logger.info("Plotting Image Shape Distribution")
     fig = go.Figure(
         data=[
             go.Box(
-                y=df_images[x], 
-                boxpoints='all',
-                boxmean='sd',
+                y=df_images[x],
+                boxpoints="all",
+                boxmean="sd",
                 name=x,
-                hovertext=df_images["file_name"])
+                hovertext=df_images["file_name"],
+            )
             for x in ["height", "width"]
         ]
     )
@@ -29,6 +29,6 @@ def plot_image_shape_distribution(df_images, show=True, output=None):
     if show:
         fig.show()
     if output:
-        fig.write_image(f"{output}/Image_Shape_Distribution.png") 
+        fig.write_image(f"{output}/Image_Shape_Distribution.png")
 
     return fig

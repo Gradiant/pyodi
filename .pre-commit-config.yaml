@@ -21,6 +21,5 @@ repos:
       - id: trailing-whitespace
       - id: check-yaml
       - id: end-of-file-fixer
-      - id: double-quote-string-fixer
       - id: fix-encoding-pragma
         args: ["--remove"]
