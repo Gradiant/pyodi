@@ -18,7 +18,7 @@ string_to_match = st.sidebar.text_input("String to match", value="drone_racing")
 
 if ground_truth_file is not None and predictions_file is not None:
     coco_ground_truth = load_coco_ground_truth_from_StringIO(ground_truth_file)
-    coco_predictions = coco_ground_truth.loadRes(json.load(predictions_file))
+    coco_predictions = coco_ground_truth.loadRes(json.load(predictions_file)["annotations"])
 
     coco_eval = COCOeval(coco_ground_truth, coco_predictions, "bbox")
 
