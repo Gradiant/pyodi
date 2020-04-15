@@ -26,7 +26,6 @@ def coco_ground_truth_to_dfs(coco_ground_truth, max_images=5000):
             "All the exceeding images will be ignored"
         )
     for image in coco_ground_truth["images"][:5000]:
-        if n > max_images:
         for k, v in image.items():
             df_images[k].append(v)
         image_id_to_name[image["id"]] = image["file_name"]
