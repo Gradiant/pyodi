@@ -19,9 +19,9 @@ jobs:
     - name: Set up Conda environment
       uses: goanpeca/setup-miniconda@v1
       with:
-        activate-environment: anaconda-client-env
+        auto-update-conda: true
+        activate-environment: pyodi
         environment-file: conda.yaml
-        python-version: 3.6
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
