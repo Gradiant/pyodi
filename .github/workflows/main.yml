@@ -1,3 +1,5 @@
+name: Main Worflow
+
 on:
     issues:
         types: [assigned]
