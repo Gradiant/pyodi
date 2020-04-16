@@ -70,7 +70,7 @@ def join_annotations_with_image_sizes(df_annotations, df_images):
     """
     column_names = list(df_annotations.columns) + ["img_width", "img_height"]
     df_images = df_images.add_prefix("img_")
-    return df_annotations.join(df_images.set_index("file_name"), on="file_name")[
+    return df_annotations.join(df_images.set_index("img_file_name"), on="file_name")[
         column_names
     ]
 
@@ -85,6 +85,7 @@ def scale_bbox_dimensions(df_annotations, input_size=(1280, 720)):
     input_size : tuple(int, int)
         Model input size
     """
+    # todo: add option to keep aspect ratio
     df_annotations["scaled_col_centroid"] = np.ceil(
         df_annotations["col_centroid"] * input_size[0] / df_annotations["img_width"]
     )
@@ -116,7 +117,36 @@ def get_bbox_matrix(df_annotations, prefix=None):
         Array with dimension N x 4 with bbox coordinates
     """
 
-    columns = [f"col_centroid", "row_centroid", "width", "height"]
+    columns = ["col_centroid", "row_centroid", "width", "height"]
     if prefix:
         columns = [f"{prefix}_{col}" for col in columns]
     return df_annotations[columns].to_numpy()
+
+
+def get_area_and_ratio(df_annotations, prefix=None):
+    """Returns df with area and ratio per bbox measurements
+
+    Parameters
+    ----------
+    df_annotations : pd.DataFrame
+        DataFrame with COCO annotations
+    prefix : str
+        Prefix to apply to column names, use for scaled data
+
+    Returns
+    -------
+    pd.DataFrame
+        Dataframe with new columns [prefix_]area/ratio
+    """
+    columns = ["width", "height"]
+    if prefix:
+        columns = [f"{prefix}_{col}" for col in columns]
+
+    df_annotations[f"{prefix}_area"] = (
+        df_annotations[columns[0]] * df_annotations[columns[1]]
+    )
+    df_annotations[f"{prefix}_ratio"] = (
+        df_annotations[columns[1]] / df_annotations[columns[0]]
+    )
+
+    return df_annotations
