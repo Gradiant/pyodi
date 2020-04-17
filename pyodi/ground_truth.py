@@ -5,7 +5,7 @@ from pathlib import Path
 
 from coco.utils import coco_ground_truth_to_dfs, load_ground_truth_file
 from loguru import logger
-from plots.annotations import plot_bounding_box_distribution
+from plots.annotations import plot_scatter_with_histograms
 from plots.images import plot_image_shape_distribution
 
 
@@ -20,7 +20,7 @@ def ground_truth_app(ground_truth_file, show=True, output=None):
 
     plot_image_shape_distribution(df_images, show=show, output=output)
 
-    plot_bounding_box_distribution(
+    plot_scatter_with_histograms(
         df_annotations, x="width", y="height", show=show, output=output,
     )
 

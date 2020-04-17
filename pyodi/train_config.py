@@ -11,7 +11,7 @@ from coco.utils import (
     scale_bbox_dimensions,
 )
 from loguru import logger
-from plots.annotations import plot_bounding_box_distribution
+from plots.annotations import plot_scatter_with_histograms
 
 
 def ground_truth_app(ground_truth_file, show=True, output=None, input_size=(1280, 720)):
@@ -41,7 +41,7 @@ def ground_truth_app(ground_truth_file, show=True, output=None, input_size=(1280
 
     df_annotations = get_area_and_ratio(df_annotations, prefix="scaled")
 
-    plot_bounding_box_distribution(
+    plot_scatter_with_histograms(
         df_annotations,
         x="scaled_area",
         y="scaled_ratio",
