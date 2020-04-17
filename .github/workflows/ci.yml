@@ -22,7 +22,7 @@ jobs:
     - name: Install pyodi
       shell: bash -l {0}
       run:
-        python setup.py
+        python setup.py install
     - name: Conda info
       shell: bash -l {0}
       run: |
