@@ -37,7 +37,7 @@ def ground_truth_app(ground_truth_file, show=True, output=None, input_size=(1280
 
     df_annotations = join_annotations_with_image_sizes(df_annotations, df_images)
 
-    df_annotations = scale_bbox_dimensions(df_annotations, input_size=(1280, 720))
+    df_annotations = scale_bbox_dimensions(df_annotations, input_size=input_size)
 
     df_annotations = get_area_and_ratio(df_annotations, prefix="scaled")
 
