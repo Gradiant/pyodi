@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from pyodi.coco.utils import get_area_and_ratio, get_bbox_matrix, scale_bbox_dimensions
+from pyodi.coco.utils import get_area_and_ratio, get_bbox_array, scale_bbox_dimensions
 
 
 @pytest.fixture
@@ -25,8 +25,8 @@ def get_simple_annotations_with_img_sizes():
 def test_scale_bbox_dimensions(get_simple_annotations_with_img_sizes):
     df_annotations = get_simple_annotations_with_img_sizes()
     df_annotations = scale_bbox_dimensions(df_annotations, (1280, 720))
-    bboxes = get_bbox_matrix(df_annotations, prefix="scaled")
-    expected_bboxes = np.array([[0, 0, 128, 72], [256, 180, 640, 360]], dtype=np.int32)
+    bboxes = get_bbox_array(df_annotations, prefix="scaled")
+    expected_bboxes = np.array([[0, 0, 128, 72], [256, 144, 640, 288]], dtype=np.int32)
     np.testing.assert_equal(bboxes, expected_bboxes)
 
 

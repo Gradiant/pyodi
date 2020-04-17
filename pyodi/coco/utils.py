@@ -134,11 +134,12 @@ def get_area_and_ratio(df, prefix=None):
     pd.DataFrame
         Dataframe with new columns [prefix_]area/ratio
     """
-    columns = ["width", "height"]
+    columns = ["width", "height", "area", "ratio"]
+
     if prefix:
         columns = [f"{prefix}_{col}" for col in columns]
 
-    df[f"{prefix}_area"] = df[columns[0]] * df[columns[1]]
-    df[f"{prefix}_ratio"] = df[columns[1]] / df[columns[0]]
+    df[columns[2]] = df[columns[0]] * df[columns[1]]
+    df[columns[3]] = df[columns[1]] / df[columns[0]]
 
     return df
