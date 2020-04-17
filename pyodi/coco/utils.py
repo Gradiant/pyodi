@@ -142,11 +142,11 @@ def get_area_and_ratio(df_annotations, prefix=None):
     if prefix:
         columns = [f"{prefix}_{col}" for col in columns]
 
-    df_annotations[f"{prefix}_area"] = (
-        df_annotations[columns[0]] * df_annotations[columns[1]]
+    df[f"{prefix}_area"] = (
+        df[columns[0]] * df[columns[1]]
     )
-    df_annotations[f"{prefix}_ratio"] = (
-        df_annotations[columns[1]] / df_annotations[columns[0]]
+    df[f"{prefix}_ratio"] = (
+        df[columns[1]] / df[columns[0]]
     )
 
-    return df_annotations
+    return df
