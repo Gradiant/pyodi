@@ -2,7 +2,11 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from pyodi.coco.utils import get_area_and_ratio, get_bbox_array, scale_bbox_dimensions
+from pyodi.coco.utils import (
+    get_area_and_ratio,
+    get_bbox_array,
+    scale_bbox_dimensions,
+)
 
 
 @pytest.fixture
@@ -37,3 +41,10 @@ def test_get_area_and_ratio(get_simple_annotations_with_img_sizes):
     expected_ratios = np.array([1, 0.8], dtype=np.float)
     np.testing.assert_equal(df_annotations["area"].to_numpy(), expected_areas)
     np.testing.assert_equal(df_annotations["ratio"].to_numpy(), expected_ratios)
+
+
+def test_get_bbox_matrix_corners(get_simple_annotations_with_img_sizes):
+    df_annotations = get_simple_annotations_with_img_sizes()
+    matrix = get_bbox_array(df_annotations, bbox_format="corners")
+    expected_result = np.array([[0, 0, 5, 5], [0, 0, 45, 40]])
+    np.testing.assert_equal(matrix, expected_result)

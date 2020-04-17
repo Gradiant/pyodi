@@ -96,7 +96,7 @@ def scale_bbox_dimensions(df, input_size=(1280, 720)):
     return df
 
 
-def get_bbox_array(df, prefix=None):
+def get_bbox_array(df, prefix=None, bbox_format="coco"):
     """Returns array with bbox coordinates
 
     Parameters
@@ -105,6 +105,9 @@ def get_bbox_array(df, prefix=None):
         DataFrame with COCO annotations
     prefix : str
         Prefix to apply to column names, use for scaled data
+    bbox_format: str, optional
+        Can be 'coco' or 'corners'. When 'coco' returned array is[x_center, y_center, width, height],
+        when format 'corners' returned array [x_min, y_min, x_max, y_max]
 
     Returns
     -------
@@ -115,7 +118,19 @@ def get_bbox_array(df, prefix=None):
     columns = ["col_centroid", "row_centroid", "width", "height"]
     if prefix:
         columns = [f"{prefix}_{col}" for col in columns]
-    return df[columns].to_numpy()
+
+    bboxes = df[columns].to_numpy()
+
+    if bbox_format == "corners":
+        mins = bboxes[..., :2] - bboxes[..., 2:] // 2
+        maxs = mins + bboxes[..., 2:]
+        bboxes = np.concatenate([mins, maxs], axis=-1)
+
+        if (bboxes < 0).any():
+            logger.warning("Clipping bboxes to min corner 0, found negative value")
+            bboxes = np.clip(bboxes, 0, None)
+
+    return bboxes
 
 
 def get_area_and_ratio(df, prefix=None):
