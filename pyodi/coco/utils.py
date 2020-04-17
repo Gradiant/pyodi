@@ -101,7 +101,7 @@ def scale_bbox_dimensions(df_annotations, input_size=(1280, 720)):
     return df_annotations
 
 
-def get_bbox_matrix(df_annotations, prefix=None):
+def get_bbox_array(df_annotations, prefix=None):
     """Returns array with bbox coordinates
 
     Parameters
