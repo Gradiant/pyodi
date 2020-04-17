@@ -3,16 +3,10 @@ import json
 import os
 from pathlib import Path
 
-from coco.utils import coco_ground_truth_to_dfs
+from coco.utils import coco_ground_truth_to_dfs, load_ground_truth_file
 from loguru import logger
-from plots.annotations import plot_bounding_box_distribution
+from plots.annotations import plot_scatter_with_histograms
 from plots.images import plot_image_shape_distribution
-
-
-def load_ground_truth_file(ground_truth_file):
-    logger.info("Loading Ground Truth File")
-    coco_ground_truth = json.load(open(ground_truth_file))
-    return coco_ground_truth
 
 
 def ground_truth_app(ground_truth_file, show=True, output=None):
@@ -26,7 +20,9 @@ def ground_truth_app(ground_truth_file, show=True, output=None):
 
     plot_image_shape_distribution(df_images, show=show, output=output)
 
-    plot_bounding_box_distribution(df_annotations, show=show, output=output)
+    plot_scatter_with_histograms(
+        df_annotations, x="width", y="height", show=show, output=output,
+    )
 
 
 if __name__ == "__main__":

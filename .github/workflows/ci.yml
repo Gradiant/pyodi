@@ -21,8 +21,10 @@ jobs:
         environment-file: conda.yaml
     - name: Install pyodi
       shell: bash -l {0}
-      run:
-        python setup.py install
+      run: |
+        which pip
+        which python
+        pip install .
     - name: Conda info
       shell: bash -l {0}
       run: |
