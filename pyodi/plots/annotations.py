@@ -2,7 +2,7 @@ import plotly.graph_objects as go
 from loguru import logger
 
 
-def plot_bounding_box_distribution(
+def plot_scatter_with_histograms(
     df_annotations,
     x="width",
     y="height",
