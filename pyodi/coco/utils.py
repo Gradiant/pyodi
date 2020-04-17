@@ -123,12 +123,12 @@ def get_bbox_matrix(df_annotations, prefix=None):
     return df_annotations[columns].to_numpy()
 
 
-def get_area_and_ratio(df_annotations, prefix=None):
+def get_area_and_ratio(df, prefix=None):
     """Returns df with area and ratio per bbox measurements
 
     Parameters
     ----------
-    df_annotations : pd.DataFrame
+    df: pd.DataFrame
         DataFrame with COCO annotations
     prefix : str
         Prefix to apply to column names, use for scaled data
