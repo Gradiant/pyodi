@@ -59,7 +59,7 @@ def coco_ground_truth_to_dfs(coco_ground_truth, max_images=200000):
 
 
 def join_annotations_with_image_sizes(df_annotations, df_images):
-    """Left join between annotations dataframe and images keeping only given keys
+    """Left join between annotations dataframe and images keeping only df_annotations keys and image sizes
 
     Parameters
     ----------
@@ -142,11 +142,7 @@ def get_area_and_ratio(df, prefix=None):
     if prefix:
         columns = [f"{prefix}_{col}" for col in columns]
 
-    df[f"{prefix}_area"] = (
-        df[columns[0]] * df[columns[1]]
-    )
-    df[f"{prefix}_ratio"] = (
-        df[columns[1]] / df[columns[0]]
-    )
+    df[f"{prefix}_area"] = df[columns[0]] * df[columns[1]]
+    df[f"{prefix}_ratio"] = df[columns[1]] / df[columns[0]]
 
     return df
