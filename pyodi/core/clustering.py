@@ -1,5 +1,6 @@
 import numpy as np
 from loguru import logger
+from sklearn.metrics import silhouette_score
 
 
 def iou(bboxes1, bboxes2):
@@ -37,7 +38,7 @@ def iou(bboxes1, bboxes2):
     return ious
 
 
-def kmeans_iou(bboxes, k, mean_distance_threshold=0.3, distance_metric=np.median):
+def kmeans_iou(bboxes, k, distance_metric=np.median):
     """Calculates k-means clustering with the Intersection over Union (IoU) metric.
 
     Parameters
@@ -46,8 +47,6 @@ def kmeans_iou(bboxes, k, mean_distance_threshold=0.3, distance_metric=np.median
        shape (n, 2), where r is the number of rows
     k : int or list
         number of desired clusters, if list multiple combinations are computed
-    mean_distance_threshold : float, optional
-        [description], by default .3
     dist : [type], optional
         [description], by default np.median
 
@@ -72,8 +71,7 @@ def kmeans_iou(bboxes, k, mean_distance_threshold=0.3, distance_metric=np.median
 
         while True:
 
-            for i in range(n_bboxes):
-                distances[i] = 1 - iou(bboxes[i], clusters)
+            distances = 1 - iou(bboxes, clusters)
 
             nearest_clusters = np.argmin(distances, axis=1)
 
@@ -90,11 +88,14 @@ def kmeans_iou(bboxes, k, mean_distance_threshold=0.3, distance_metric=np.median
 
             last_clusters = nearest_clusters
 
-        nearest_distances = distances.argsort(axis=-1)[:, -2:]
-        silhouette = (
-            nearest_distances[:, 0] - nearest_distances[:, 1]
-        ) / nearest_distances[:, 0]
+        # todo: improve and compute only upper triangular matrix
+        iou_bboxes_pairwise_distance = 1 - iou(bboxes, bboxes)
+        silhouette = silhouette_score(
+            iou_bboxes_pairwise_distance, labels=nearest_clusters, metric="precomputed"
+        )
         silhouette_metrics.append(np.mean(silhouette))
         logger.info(
             f"Mean silhouette coefficient for {n_clusters}: {silhouette_metrics[-1]}"
         )
+
+    return silhouette_metrics
