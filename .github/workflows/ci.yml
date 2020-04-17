@@ -1,0 +1,35 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ '*' ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Conda environment
+      uses: goanpeca/setup-miniconda@v1
+      with:
+        auto-update-conda: true
+        activate-environment: pyodi
+        environment-file: conda.yaml
+    - name: Conda info
+      shell: bash -l {0}
+      run: |
+        conda info
+        conda list
+    - name: Lint with flake8
+      shell: bash -l {0}
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+    - name: Test with pytest
+      shell: bash -l {0}
+      run: |
+        pytest

@@ -7,6 +7,7 @@ dependencies:
   - numpy
   - matplotlib
   - pandas
+  - flake8
   - pytest
   - pip:
     - fire
