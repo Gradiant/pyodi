@@ -75,38 +75,34 @@ def join_annotations_with_image_sizes(df_annotations, df_images):
     ]
 
 
-def scale_bbox_dimensions(df_annotations, input_size=(1280, 720)):
+def scale_bbox_dimensions(df, input_size=(1280, 720)):
     """Resizes bboxes dimensions to model input size
 
     Parameters
     ----------
-    df_annotations : pd.DataFrame
+    df : pd.DataFrame
         DataFrame with COCO annotations
     input_size : tuple(int, int)
         Model input size
     """
     # todo: add option to keep aspect ratio
-    df_annotations["scaled_col_centroid"] = np.ceil(
-        df_annotations["col_centroid"] * input_size[0] / df_annotations["img_width"]
+    df["scaled_col_centroid"] = np.ceil(
+        df["col_centroid"] * input_size[0] / df["img_width"]
     )
-    df_annotations["scaled_row_centroid"] = np.ceil(
-        df_annotations["row_centroid"] * input_size[1] / df_annotations["img_height"]
+    df["scaled_row_centroid"] = np.ceil(
+        df["row_centroid"] * input_size[1] / df["img_height"]
     )
-    df_annotations["scaled_width"] = np.ceil(
-        df_annotations["width"] * input_size[0] / df_annotations["img_width"]
-    )
-    df_annotations["scaled_height"] = np.ceil(
-        df_annotations["height"] * input_size[1] / df_annotations["img_height"]
-    )
-    return df_annotations
+    df["scaled_width"] = np.ceil(df["width"] * input_size[0] / df["img_width"])
+    df["scaled_height"] = np.ceil(df["height"] * input_size[1] / df["img_height"])
+    return df
 
 
-def get_bbox_array(df_annotations, prefix=None):
+def get_bbox_array(df, prefix=None):
     """Returns array with bbox coordinates
 
     Parameters
     ----------
-    df_annotations : pd.DataFrame
+    df : pd.DataFrame
         DataFrame with COCO annotations
     prefix : str
         Prefix to apply to column names, use for scaled data
@@ -120,7 +116,7 @@ def get_bbox_array(df_annotations, prefix=None):
     columns = ["col_centroid", "row_centroid", "width", "height"]
     if prefix:
         columns = [f"{prefix}_{col}" for col in columns]
-    return df_annotations[columns].to_numpy()
+    return df[columns].to_numpy()
 
 
 def get_area_and_ratio(df, prefix=None):
