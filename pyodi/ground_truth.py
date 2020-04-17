@@ -20,7 +20,9 @@ def ground_truth_app(ground_truth_file, show=True, output=None):
 
     plot_image_shape_distribution(df_images, show=show, output=output)
 
-    plot_bounding_box_distribution(df_annotations, show=show, output=output)
+    plot_bounding_box_distribution(
+        df_annotations, x="width", y="height", show=show, output=output,
+    )
 
 
 if __name__ == "__main__":
