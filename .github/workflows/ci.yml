@@ -2,7 +2,7 @@ name: Continuous Integration
 
 on:
   push:
-    branches: [ '*' ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -19,6 +19,10 @@ jobs:
         auto-update-conda: true
         activate-environment: pyodi
         environment-file: conda.yaml
+    - name: Install pyodi
+      shell: bash -l {0}
+      run:
+        python setup.py install
     - name: Conda info
       shell: bash -l {0}
       run: |
