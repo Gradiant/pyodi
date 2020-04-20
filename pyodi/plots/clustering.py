@@ -6,12 +6,26 @@ from plotly.colors import DEFAULT_PLOTLY_COLORS as COLORS
 
 
 def plot_clustering_results(centroids, df_annotations, show=True, output=None):
+    """Plots cluster results in two different views, width vs heihgt and area vs ratio.
+
+    Parameters
+    ----------
+    centroids : pd.DataFrame
+        Coco format dataframe with centroid coordinates, only width, height, area and ratio are used
+    df_annotations : pd.DataFrame
+        COCO annotations generated dataframe
+    show : bool, optional
+        If true plotly figure will be shown, by default True
+    output : str, optional
+        Output image folder, by default None
+    """
+
     fig = make_subplots(
         rows=1, cols=2, subplot_titles=["Width vs Height", "Area vs Ratio"]
     )
 
-    col = 1
-    for x, y in zip(("width", "area"), ("height", "ratio")):
+    for col, (x, y) in enumerate(zip(("width", "area"), ("height", "ratio")), 1):
+        # Bboxes distribution
         subplot = plot_scatter_with_histograms(
             df_annotations,
             x=f"scaled_{x}",
@@ -21,6 +35,7 @@ def plot_clustering_results(centroids, df_annotations, show=True, output=None):
             colors=COLORS,
             legendgroup="Cluster",
         )
+        # Centroids
         for i, data in enumerate(subplot.data):
             fig.append_trace(data, row=1, col=col)
             fig.append_trace(
@@ -40,7 +55,6 @@ def plot_clustering_results(centroids, df_annotations, show=True, output=None):
                 row=1,
                 col=col,
             )
-        col += 1
 
     fig["layout"].update(
         title="Anchor cluster visualization",

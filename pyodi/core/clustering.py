@@ -71,7 +71,7 @@ def kmeans_iou(bboxes, k, distance_metric=np.median):
     ----------
     boxes : np.array
        shape (n, 2), where r is the number of rows
-    k : int or list
+    k : list
         number of desired clusters, if list multiple combinations are computed
     dist : [type], optional
         [description], by default np.median
@@ -81,9 +81,6 @@ def kmeans_iou(bboxes, k, distance_metric=np.median):
     [type]
         [description]
     """
-
-    if isinstance(k, int):
-        k = [k]
 
     n_bboxes = bboxes.shape[0]
 

@@ -20,12 +20,7 @@ import plotly.graph_objects as go
 
 
 def ground_truth_app(
-    ground_truth_file,
-    show=True,
-    output=None,
-    input_size=(1280, 720),
-    clustering=True,
-    clusters=[4, 5, 6],
+    ground_truth_file, show=True, output=None, input_size=(1280, 720), clusters=None,
 ):
     """[summary]
     Parameters
@@ -38,6 +33,8 @@ def ground_truth_app(
         Output file where results are saved, by default None
     input_size : tuple, optional
         Model image input size, by default (1280, 720)
+    cluster: list or int, optional
+        Number of clusters to compute. If list, a different clustering will be computed per each number of cluster
     """
 
     if output is not None:
@@ -62,26 +59,32 @@ def ground_truth_app(
         histogram=True,
     )
 
-    if clustering:
+    if clusters is not None:
+        if isinstance(clusters, int):
+            clusters = list(clusters)
+
         bboxes = get_bbox_array(df_annotations, prefix="scaled", bbox_format="coco")
         centroids, silhouette_metrics, predicted_clusters = kmeans_iou(
             bboxes[:, 2:], k=clusters
         )
-        selected = 0
 
+        # todo: improve way of getting index & move selection to frontend
+        selected = 0
         if len(clusters) > 1 and show:
             fig = go.Figure(
                 data=[
                     go.Scattergl(x=clusters, y=silhouette_metrics, mode="lines+markers")
                 ]
             )
+            fig.update_layout(
+                xaxis_title="Number of clusters", yaxis_title="Silhouette Coefficient"
+            )
             fig.show()
-            selected = (
-                int(input("Choose best number of clusters: ")) - clusters[0]
-            )  # todo: improve way of getting index
+            selected = int(input("Choose best number of clusters: ")) - clusters[0]
 
         df_annotations["cluster"] = predicted_clusters[selected]
-        # bring coco format back
+
+        # bring coco format back adding centered coords
         centroids = np.concatenate(
             [np.zeros_like(centroids[selected]), centroids[selected]], axis=-1
         )

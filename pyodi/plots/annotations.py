@@ -34,6 +34,14 @@ def plot_scatter_with_histograms(
         output path folder , by default None
     max_values : tuple, optional
         x,y max allowed values in represention, by default None
+    histogram: bool, optional
+        when histogram is true a marginal histogram distribution of each axis is drawn, by default False
+    label: str, optional
+        category column in df_annotations, by default 'category'
+    colors: list, optional
+        list of rgb colors to use, if none default plotly colors are used
+    legendgroup: str, optional
+        when present legend is grouped by different categories (see https://plotly.com/python/legend/)
 
     Returns
     -------
