@@ -13,6 +13,8 @@ def plot_scatter_with_histograms(
     max_values=None,
     histogram=False,
     label="category",
+    colors=None,
+    legendgroup=None,
 ):
     """This plot allows to compare the relation between two variables of your coco dataset
 
@@ -48,8 +50,11 @@ def plot_scatter_with_histograms(
                 mode="markers",
                 name=str(c),
                 text=df_annotations[df_annotations[label] == c]["file_name"],
+                marker=dict(color=colors[i] if colors else None),
+                legendgroup=f"legendgroup_{i}" if legendgroup else None,
+                showlegend=False if legendgroup else True,
             )
-            for c in df_annotations[label].unique()
+            for i, c in enumerate(sorted(df_annotations[label].unique()))
         ]
     )
 
