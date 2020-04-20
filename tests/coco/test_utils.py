@@ -6,13 +6,15 @@ from pyodi.coco.utils import (
     get_area_and_ratio,
     get_bbox_array,
     scale_bbox_dimensions,
+    get_df_from_bboxes,
 )
 
 
 @pytest.fixture
 def get_simple_annotations_with_img_sizes():
-    def _get_fake_data():
-        bboxes = np.array([[0, 0, 10, 10, 100, 100], [20, 20, 50, 40, 100, 100]])
+    def _get_fake_data(bboxes=None):
+        if bboxes is None:
+            bboxes = np.array([[0, 0, 10, 10, 100, 100], [20, 20, 50, 40, 100, 100]])
         columns = [
             "col_centroid",
             "row_centroid",
@@ -48,3 +50,17 @@ def test_get_bbox_matrix_corners(get_simple_annotations_with_img_sizes):
     matrix = get_bbox_array(df_annotations, bbox_format="corners")
     expected_result = np.array([[0, 0, 5, 5], [0, 0, 45, 40]])
     np.testing.assert_equal(matrix, expected_result)
+
+
+@pytest.mark.parametrize("bbox_format", [("corners", "coco")])
+def test_get_df_from_bboxes(get_simple_annotations_with_img_sizes, bbox_format):
+    bboxes = np.array([[20, 20, 5, 5, 100, 100], [40, 40, 20, 20, 100, 100]])
+    df_annotations = get_simple_annotations_with_img_sizes(bboxes)
+    matrix = get_bbox_array(df_annotations, bbox_format=bbox_format)
+    df = get_df_from_bboxes(
+        matrix, input_bbox_format=bbox_format, output_bbox_format=bbox_format
+    )
+    expected_result = df_annotations[
+        ["col_centroid", "row_centroid", "width", "height"]
+    ]
+    pd.testing.assert_frame_equal(df, expected_result)

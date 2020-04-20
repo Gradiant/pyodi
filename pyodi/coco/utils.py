@@ -122,13 +122,7 @@ def get_bbox_array(df, prefix=None, bbox_format="coco"):
     bboxes = df[columns].to_numpy()
 
     if bbox_format == "corners":
-        mins = bboxes[..., :2] - bboxes[..., 2:] // 2
-        maxs = mins + bboxes[..., 2:]
-        bboxes = np.concatenate([mins, maxs], axis=-1)
-
-        if (bboxes < 0).any():
-            logger.warning("Clipping bboxes to min corner 0, found negative value")
-            bboxes = np.clip(bboxes, 0, None)
+        return coco_to_corners(bboxes)
 
     return bboxes
 
@@ -157,3 +151,70 @@ def get_area_and_ratio(df, prefix=None):
     df[columns[3]] = df[columns[1]] / df[columns[0]]
 
     return df
+
+
+def corners_to_coco(bboxes):
+    """Transforms bboxes array from corners format to coco
+
+    Parameters
+    ----------
+    bboxes : np.array
+        Array with dimension N x 4 with bbox coordinates in corner format
+
+    Returns
+    -------
+    np.array
+        Array with dimension N x 4 with bbox coordinates in coco format
+    """
+    dimensions = bboxes[..., 2:] - bboxes[..., :2]
+    centers = bboxes[..., :2] + dimensions // 2
+    bboxes = np.concatenate([centers, dimensions], axis=-1)
+    return bboxes
+
+
+def coco_to_corners(bboxes):
+    """Transforms bboxes array from coco format to corners
+
+    Parameters
+    ----------
+    bboxes : np.array
+        Array with dimension N x 4 with bbox coordinates in corner format
+
+    Returns
+    -------
+    np.array
+        Array with dimension N x 4 with bbox coordinates in corner format
+    """
+    mins = bboxes[..., :2] - bboxes[..., 2:] // 2
+    maxs = mins + bboxes[..., 2:]
+    bboxes = np.concatenate([mins, maxs], axis=-1)
+
+    if (bboxes < 0).any():
+        logger.warning("Clipping bboxes to min corner 0, found negative value")
+        bboxes = np.clip(bboxes, 0, None)
+    return bboxes
+
+
+def get_df_from_bboxes(bboxes, input_bbox_format="coco", output_bbox_format="corners"):
+    """Creates dataframe of annotations in coco format from array of bboxes
+
+    Parameters
+    ----------
+    bboxes : np.array
+        Array of bboxes of shape [n, 4]
+    bbox_format: str, optional
+        Can be 'coco' or 'corners'. When 'coco' input array follows [x_center, y_center, width, height],
+        when format 'corners' input is [x_min, y_min, x_max, y_max]
+
+    Returns
+    -------
+    pandas.DataFrame
+    """
+    if input_bbox_format == "corners" and output_bbox_format == "coco":
+        bboxes = corners_to_coco(bboxes)
+    elif input_bbox_format == "coco" and output_bbox_format == "corners":
+        bboxes = coco_to_corners(bboxes)
+
+    return pd.DataFrame(
+        bboxes, columns=["col_centroid", "row_centroid", "width", "height"]
+    )
