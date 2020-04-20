@@ -1,5 +1,6 @@
 import plotly.graph_objects as go
 from loguru import logger
+from plotly.subplots import make_subplots
 
 
 def plot_scatter_with_histograms(
@@ -11,6 +12,7 @@ def plot_scatter_with_histograms(
     output=None,
     max_values=None,
     histogram=False,
+    label="category",
 ):
     """This plot allows to compare the relation between two variables of your coco dataset
 
@@ -41,13 +43,13 @@ def plot_scatter_with_histograms(
     fig = go.Figure(
         data=[
             go.Scattergl(
-                x=df_annotations[df_annotations["category"] == c][x],
-                y=df_annotations[df_annotations["category"] == c][y],
+                x=df_annotations[df_annotations[label] == c][x],
+                y=df_annotations[df_annotations[label] == c][y],
                 mode="markers",
-                name=c,
-                text=df_annotations[df_annotations["category"] == c]["file_name"],
+                name=str(c),
+                text=df_annotations[df_annotations[label] == c]["file_name"],
             )
-            for c in df_annotations["category"].unique()
+            for c in df_annotations[label].unique()
         ]
     )
 
