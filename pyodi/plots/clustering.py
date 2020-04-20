@@ -2,6 +2,7 @@ import plotly.graph_objects as go
 from loguru import logger
 from plotly.subplots import make_subplots
 from plots.annotations import plot_scatter_with_histograms
+from plotly.colors import DEFAULT_PLOTLY_COLORS as COLORS
 
 
 def plot_clustering_results(centroids, df_annotations, show=True, output=None):
@@ -9,37 +10,37 @@ def plot_clustering_results(centroids, df_annotations, show=True, output=None):
         rows=1, cols=2, subplot_titles=["Width vs Height", "Area vs Ratio"]
     )
 
-    fig1 = plot_scatter_with_histograms(
-        df_annotations, x="scaled_width", y="scaled_height", show=False, label="cluster"
-    )
-    for data in fig1.data:
-        fig.append_trace(data, row=1, col=1)
-    fig.append_trace(
-        go.Scattergl(
-            x=centroids["width"],
-            y=centroids["height"],
-            mode="markers",
-            marker=dict(size=15),
-        ),
-        row=1,
-        col=1,
-    )
-
-    fig2 = plot_scatter_with_histograms(
-        df_annotations, x="scaled_area", y="scaled_ratio", show=False, label="cluster"
-    )
-    for data in fig2.data:
-        fig.append_trace(data, row=1, col=2)
-    fig.append_trace(
-        go.Scattergl(
-            x=centroids["area"],
-            y=centroids["ratio"],
-            mode="markers",
-            marker=dict(size=15),
-        ),
-        row=1,
-        col=2,
-    )
+    col = 1
+    for x, y in zip(("width", "area"), ("height", "ratio")):
+        subplot = plot_scatter_with_histograms(
+            df_annotations,
+            x=f"scaled_{x}",
+            y=f"scaled_{y}",
+            show=False,
+            label="cluster",
+            colors=COLORS,
+            legendgroup="Cluster",
+        )
+        for i, data in enumerate(subplot.data):
+            fig.append_trace(data, row=1, col=col)
+            fig.append_trace(
+                go.Scattergl(
+                    x=[centroids.iloc[i][x]],
+                    y=[centroids.iloc[i][y]],
+                    mode="markers",
+                    legendgroup=f"legendgroup_{i}",
+                    name=str(i),
+                    showlegend=col == 1,
+                    marker=dict(
+                        size=15,
+                        color=COLORS[i],
+                        line=dict(width=2, color="DarkSlateGrey"),
+                    ),
+                ),
+                row=1,
+                col=col,
+            )
+        col += 1
 
     fig["layout"].update(
         title="Anchor cluster visualization",
