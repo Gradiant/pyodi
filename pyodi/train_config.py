@@ -2,19 +2,31 @@ import argparse
 import json
 import os
 from pathlib import Path
-
+import numpy as np
 from coco.utils import (
     coco_ground_truth_to_dfs,
     get_area_and_ratio,
     join_annotations_with_image_sizes,
     load_ground_truth_file,
     scale_bbox_dimensions,
+    get_bbox_array,
+    get_df_from_bboxes,
 )
 from loguru import logger
 from plots.annotations import plot_scatter_with_histograms
+from plots.clustering import plot_clustering_results
+from core.clustering import kmeans_iou
+import plotly.graph_objects as go
 
 
-def ground_truth_app(ground_truth_file, show=True, output=None, input_size=(1280, 720)):
+def ground_truth_app(
+    ground_truth_file,
+    show=True,
+    output=None,
+    input_size=(1280, 720),
+    clustering=True,
+    clusters=[4, 5, 6],
+):
     """[summary]
     Parameters
     ----------
@@ -49,6 +61,35 @@ def ground_truth_app(ground_truth_file, show=True, output=None, input_size=(1280
         show=True,
         histogram=True,
     )
+
+    if clustering:
+        bboxes = get_bbox_array(df_annotations, prefix="scaled", bbox_format="coco")
+        centroids, silhouette_metrics, predicted_clusters = kmeans_iou(
+            bboxes[:, 2:], k=clusters
+        )
+        selected = 0
+
+        if len(clusters) > 1 and show:
+            fig = go.Figure(
+                data=[
+                    go.Scattergl(x=clusters, y=silhouette_metrics, mode="lines+markers")
+                ]
+            )
+            fig.show()
+            selected = (
+                int(input("Choose best number of clusters: ")) - clusters[0]
+            )  # todo: improve way of getting index
+
+        df_annotations["cluster"] = predicted_clusters[selected]
+        # bring coco format back
+        centroids = np.concatenate(
+            [np.zeros_like(centroids[selected]), centroids[selected]], axis=-1
+        )
+        centroids = get_df_from_bboxes(
+            centroids, input_bbox_format="coco", output_bbox_format="coco"
+        )
+        centroids = get_area_and_ratio(centroids)
+        plot_clustering_results(centroids, df_annotations)
 
 
 if __name__ == "__main__":
