@@ -1,20 +1,26 @@
 import json
 import re
 
-import streamlit as st
-from coco.cocoeval import COCOeval
-from coco.utils import load_coco_ground_truth_from_StringIO
+from typing import Optional
 
-st.title("Object Detection Insights")
+import typer
 
-st.header("Evaluation")
+from loguru import logger
 
-ground_truth_file = st.sidebar.file_uploader("COCO Ground Truth File", type="json")
-predictions_file = st.sidebar.file_uploader("COCO Predictions File", type="json")
+from pyodi.coco.cocoeval import COCOeval
+from pyodi.coco.utils import load_coco_ground_truth_from_StringIO
 
-string_to_match = st.sidebar.text_input("String to match", value="drone_racing")
 
-if ground_truth_file is not None and predictions_file is not None:
+app = typer.Typer()
+
+
+@logger.catch
+@app.command()
+def evaluation(
+    ground_truth_file: str,
+    predictions_file: str,
+    string_to_match: Optional[str] = None):
+
     coco_ground_truth = load_coco_ground_truth_from_StringIO(ground_truth_file)
     coco_predictions = coco_ground_truth.loadRes(
         json.load(predictions_file)["annotations"]
@@ -22,12 +28,15 @@ if ground_truth_file is not None and predictions_file is not None:
 
     coco_eval = COCOeval(coco_ground_truth, coco_predictions, "bbox")
 
-    filtered_ids = [
-        k
-        for k, v in coco_ground_truth.imgs.items()
-        if re.match(string_to_match, v["file_name"])
-    ]
-    st.write("Number of filtered_ids: {}".format(len(filtered_ids)))
+    if string_to_match is not None:
+        filtered_ids = [
+            k
+            for k, v in coco_ground_truth.imgs.items()
+            if re.match(string_to_match, v["file_name"])
+        ]
+        logger.info("Number of filtered_ids: {}".format(len(filtered_ids)))
+    else:
+        filtered_ids = [k for k in coco_ground_truth.keys()]
 
     coco_eval.params.imgIds = filtered_ids
     coco_eval.evaluate()
@@ -46,4 +55,8 @@ if ground_truth_file is not None and predictions_file is not None:
     for n, metric_name in enumerate(metric_names):
         eval_results[metric_name] = float("{:.3f}".format(coco_eval.stats[n]))
 
-    st.write(eval_results)
+    logger.info(eval_results)
+
+
+if __name__ == "__main__":
+    app()

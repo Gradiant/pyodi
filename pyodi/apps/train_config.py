@@ -1,9 +1,11 @@
-import argparse
-import json
-import os
 from pathlib import Path
-import numpy as np
-from coco.utils import (
+from typing import Optional, Tuple, Union, List
+
+import typer
+
+from loguru import logger
+
+from pyodi.coco.utils import (
     coco_ground_truth_to_dfs,
     get_area_and_ratio,
     join_annotations_with_image_sizes,
@@ -12,15 +14,23 @@ from coco.utils import (
     get_bbox_array,
     get_df_from_bboxes,
 )
-from loguru import logger
-from plots.annotations import plot_scatter_with_histograms
+from pyodi.plots.annotations import plot_scatter_with_histograms
 from plots.clustering import plot_clustering_results
 from core.clustering import kmeans_iou
 import plotly.graph_objects as go
+import numpy as np
+
+app = typer.Typer()
 
 
-def train_config_app(
-    ground_truth_file, show=True, output=None, input_size=(1280, 720), clusters=None,
+@logger.catch
+@app.command()
+def train_config(
+    ground_truth_file: str,
+    show: bool = True,
+    output: Optional[str] = None,
+    input_size: Tuple[int, int] = (1280, 720),
+    clusters: Union(int, List[int]) = None,
 ):
     """[summary]
     Parameters
@@ -96,17 +106,4 @@ def train_config_app(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Object Detection Insights: Ground Truth"
-    )
-
-    parser.add_argument("--file", help="COCO Ground Truth File")
-    parser.add_argument("--show", default=True, action="store_false")
-    parser.add_argument("--output", default=None)
-
-    try:
-        args = parser.parse_args()
-    except SystemExit as e:
-        os._exit(e.code)
-
-    train_config_app(args.file)
+    app()

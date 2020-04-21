@@ -1,0 +1,13 @@
+site_name: Object Detection Insights
+theme:
+  name: material
+nav:
+    - Home: index.md
+    - Reference:
+      - apps:
+        - ground-truth: reference/apps/ground-truth.md
+plugins:
+  - search
+  - mkdocstrings:
+      watch:
+        - pyodi
