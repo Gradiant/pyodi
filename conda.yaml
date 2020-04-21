@@ -15,3 +15,6 @@ dependencies:
     - plotly
     - pre-commit
     - git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI
+    - mkdocs
+    - mkdocs-material
+    - mkdocstrings

@@ -19,7 +19,8 @@ def ground_truth(
     ground_truth_file: str, 
     show: bool = True,
     output: Optional[str] = None):
-
+    """
+    """
     if output is not None:
         output = Path(output) / Path(ground_truth_file).name
 
