@@ -5,27 +5,27 @@ from sklearn.metrics import silhouette_score
 
 def origin_iou(bboxes, clusters):
     """Calculates the Intersection over Union (IoU) between a box and k clusters in coco format
-     shifted to origin
+     shifted to origin.
 
     Parameters
     ----------
     box : np.array
-        Bbox array with dimension [n, 2]
+        Bbox array with dimension [n, 2] in widht, height order
     clusters : np.array
-        Bbox array with dimension [n, 2]
+        Bbox array with dimension [n, 2] in widht, height order
 
     Returns
     -------
     np.array
         BBox array with centroids with dimensions [k, 2]
     """
-    x = np.minimum(bboxes[:, None, 0], clusters[:, 0])
-    y = np.minimum(bboxes[:, None, 1], clusters[:, 1])
+    col = np.minimum(bboxes[:, None, 0], clusters[:, 0])
+    row = np.minimum(bboxes[:, None, 1], clusters[:, 1])
 
-    if np.count_nonzero(x == 0) > 0 or np.count_nonzero(y == 0) > 0:
+    if np.count_nonzero(col == 0) > 0 or np.count_nonzero(row == 0) > 0:
         raise ValueError("Box has no area")
 
-    intersection = x * y
+    intersection = col * row
     box_area = bboxes[:, 0] * bboxes[:, 1]
     cluster_area = clusters[:, 0] * clusters[:, 1]
 
@@ -40,9 +40,11 @@ def pairwise_iou(bboxes1, bboxes2):
     Parameters
     ----------
     boxes1 : np.array
-        Array of bboxes with shape [n, 4]
+        Array of bboxes with shape [n, 4].
+        In corner format
     boxes2 : np.array
         Array of bboxes with shape [m, 4]
+        In corner format
 
     Returns
     -------
@@ -65,16 +67,17 @@ def pairwise_iou(bboxes1, bboxes2):
 
 
 def kmeans_iou(bboxes, k, distance_metric=np.median):
-    """Calculates k-means clustering with the Intersection over Union (IoU) metric.
+    """Calculates k-means clustering with the Intersection over Union (IoU) metric for different number of clusters.
+    Silhouette average metric is returned for each different k value
 
     Parameters
     ----------
     boxes : np.array
        shape (n, 2), where r is the number of rows
-    k : list
-        number of desired clusters, if list multiple combinations are computed
-    dist : [type], optional
-        [description], by default np.median
+    k : list of int
+        list with different number of clusters, different k-means will be computed per each value.
+    dist : fn, optional
+        average function used to compute cluster centroids, by default np.median
 
     Returns
     -------

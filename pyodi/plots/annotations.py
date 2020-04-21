@@ -37,7 +37,7 @@ def plot_scatter_with_histograms(
     histogram: bool, optional
         when histogram is true a marginal histogram distribution of each axis is drawn, by default False
     label: str, optional
-        category column in df_annotations, by default 'category'
+        name of the column with class information in df_annotations, by default 'category'
     colors: list, optional
         list of rgb colors to use, if none default plotly colors are used
     legendgroup: str, optional

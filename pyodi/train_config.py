@@ -19,7 +19,7 @@ from core.clustering import kmeans_iou
 import plotly.graph_objects as go
 
 
-def ground_truth_app(
+def train_config_app(
     ground_truth_file, show=True, output=None, input_size=(1280, 720), clusters=None,
 ):
     """[summary]
@@ -109,4 +109,4 @@ if __name__ == "__main__":
     except SystemExit as e:
         os._exit(e.code)
 
-    ground_truth_app(args.file)
+    train_config_app(args.file)

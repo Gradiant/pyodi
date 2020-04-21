@@ -159,12 +159,12 @@ def corners_to_coco(bboxes):
     Parameters
     ----------
     bboxes : np.array
-        Array with dimension N x 4 with bbox coordinates in corner format
+        Array with dimension N x 4 with bbox coordinates in corner format [x_min, y_min, x_max, y_max]
 
     Returns
     -------
     np.array
-        Array with dimension N x 4 with bbox coordinates in coco format
+        Array with dimension N x 4 with bbox coordinates in coco format [x_center, y_center, width, height]
     """
     dimensions = bboxes[..., 2:] - bboxes[..., :2]
     centers = bboxes[..., :2] + dimensions // 2
@@ -178,12 +178,12 @@ def coco_to_corners(bboxes):
     Parameters
     ----------
     bboxes : np.array
-        Array with dimension N x 4 with bbox coordinates in corner format
+        Array with dimension N x 4 with bbox coordinates in coco format [x_center, y_center, width, height]
 
     Returns
     -------
     np.array
-        Array with dimension N x 4 with bbox coordinates in corner format
+        Array with dimension N x 4 with bbox coordinates in corner format  [x_min, y_min, x_max, y_max]
     """
     mins = bboxes[..., :2] - bboxes[..., 2:] // 2
     maxs = mins + bboxes[..., 2:]
