@@ -10,7 +10,7 @@ dependencies:
   - flake8
   - pytest
   - pip:
-    - fire
+    - typer
     - loguru
     - plotly
     - pre-commit

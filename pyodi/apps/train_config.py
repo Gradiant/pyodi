@@ -1,20 +1,30 @@
-import argparse
-import json
-import os
 from pathlib import Path
+from typing import Optional, Tuple
 
-from coco.utils import (
+import typer
+
+from loguru import logger
+
+from pyodi.coco.utils import (
     coco_ground_truth_to_dfs,
     get_area_and_ratio,
     join_annotations_with_image_sizes,
     load_ground_truth_file,
     scale_bbox_dimensions,
 )
-from loguru import logger
-from plots.annotations import plot_scatter_with_histograms
+from pyodi.plots.annotations import plot_scatter_with_histograms
 
 
-def ground_truth_app(ground_truth_file, show=True, output=None, input_size=(1280, 720)):
+app = typer.Typer()
+
+
+@logger.catch
+@app.command()
+def train_config(
+    ground_truth_file: str,
+    show: bool = True,
+    output: Optional[str] = None,
+    input_size: Tuple[int, int] = (1280, 720)):
     """[summary]
     Parameters
     ----------
@@ -52,17 +62,4 @@ def ground_truth_app(ground_truth_file, show=True, output=None, input_size=(1280
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Object Detection Insights: Ground Truth"
-    )
-
-    parser.add_argument("--file", help="COCO Ground Truth File")
-    parser.add_argument("--show", default=True, action="store_false")
-    parser.add_argument("--output", default=None)
-
-    try:
-        args = parser.parse_args()
-    except SystemExit as e:
-        os._exit(e.code)
-
-    ground_truth_app(args.file)
+    app()
