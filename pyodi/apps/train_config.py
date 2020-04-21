@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Optional, Tuple, Union, List
+from typing import Optional, Tuple, List
 
 import typer
 
@@ -15,8 +15,8 @@ from pyodi.coco.utils import (
     get_df_from_bboxes,
 )
 from pyodi.plots.annotations import plot_scatter_with_histograms
-from plots.clustering import plot_clustering_results
-from core.clustering import kmeans_iou
+from pyodi.plots.clustering import plot_clustering_results
+from pyodi.core.clustering import kmeans_iou
 import plotly.graph_objects as go
 import numpy as np
 
@@ -30,7 +30,7 @@ def train_config(
     show: bool = True,
     output: Optional[str] = None,
     input_size: Tuple[int, int] = (1280, 720),
-    clusters: Union(int, List[int]) = None,
+    clusters: List[int] = None,
 ):
     """[summary]
     Parameters
@@ -73,7 +73,9 @@ def train_config(
         if isinstance(clusters, int):
             clusters = list(clusters)
 
-        bboxes = get_bbox_array(df_annotations, prefix="scaled", bbox_format="coco")
+        bboxes = get_bbox_array(
+            df_annotations, prefix="scaled", output_bbox_format="coco"
+        )
         centroids, silhouette_metrics, predicted_clusters = kmeans_iou(
             bboxes[:, 2:], k=clusters
         )
