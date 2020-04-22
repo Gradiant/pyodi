@@ -74,6 +74,14 @@ def join_annotations_with_image_sizes(df_annotations, df_images):
     ]
 
 
+def check_bbox_formats(*args):
+    for arg in args:
+        if not (arg in ["coco", "corners"]):
+            raise ValueError(
+                f"Invalid format {arg}, only coco and corners format are allowed"
+            )
+
+
 def scale_bbox_dimensions(df, input_size=(1280, 720)):
     """Resizes bboxes dimensions to model input size
 
@@ -96,28 +104,6 @@ def scale_bbox_dimensions(df, input_size=(1280, 720)):
     return df
 
 
-def get_bbox_array(df, prefix=None):
-    """Returns array with bbox coordinates
-
-    Parameters
-    ----------
-    df : pd.DataFrame
-        DataFrame with COCO annotations
-    prefix : str
-        Prefix to apply to column names, use for scaled data
-
-    Returns
-    -------
-    np.array
-        Array with dimension N x 4 with bbox coordinates
-    """
-
-    columns = ["col_centroid", "row_centroid", "width", "height"]
-    if prefix:
-        columns = [f"{prefix}_{col}" for col in columns]
-    return df[columns].to_numpy()
-
-
 def get_area_and_ratio(df, prefix=None):
     """Returns df with area and ratio per bbox measurements
 
@@ -133,6 +119,7 @@ def get_area_and_ratio(df, prefix=None):
     pd.DataFrame
         Dataframe with new columns [prefix_]area/ratio
     """
+
     columns = ["width", "height", "area", "ratio"]
 
     if prefix:
@@ -142,3 +129,131 @@ def get_area_and_ratio(df, prefix=None):
     df[columns[3]] = df[columns[1]] / df[columns[0]]
 
     return df
+
+
+def corners_to_coco(bboxes):
+    """Transforms bboxes array from corners format to coco
+
+    Parameters
+    ----------
+    bboxes : np.array
+        Array with dimension N x 4 with bbox coordinates in corner format [x_min, y_min, x_max, y_max]
+
+    Returns
+    -------
+    np.array
+        Array with dimension N x 4 with bbox coordinates in coco format [x_center, y_center, width, height]
+    """
+    dimensions = bboxes[..., 2:] - bboxes[..., :2]
+    centers = bboxes[..., :2] + dimensions // 2
+    bboxes = np.concatenate([centers, dimensions], axis=-1)
+    return bboxes
+
+
+def coco_to_corners(bboxes):
+    """Transforms bboxes array from coco format to corners
+
+    Parameters
+    ----------
+    bboxes : np.array
+        Array with dimension N x 4 with bbox coordinates in coco format [x_center, y_center, width, height]
+
+    Returns
+    -------
+    np.array
+        Array with dimension N x 4 with bbox coordinates in corner format  [x_min, y_min, x_max, y_max]
+    """
+    mins = bboxes[..., :2] - bboxes[..., 2:] // 2
+    maxs = mins + bboxes[..., 2:]
+    bboxes = np.concatenate([mins, maxs], axis=-1)
+
+    if (bboxes < 0).any():
+        logger.warning("Clipping bboxes to min corner 0, found negative value")
+        bboxes = np.clip(bboxes, 0, None)
+    return bboxes
+
+
+def get_bbox_column_names(bbox_format, prefix=None):
+    """Returns predefined column names for each format. When bbox_format is 'coco' column names
+     are ["col_centroid", "row_centroid", "width", "height"], when 'corners' ["col_left", "row_left", "col_right", "row_right"]
+
+    Parameters
+    ----------
+    bbox_format : str
+        Can be "coco" or "corners"
+    prefix : str
+        Prefix to apply to column names, use for scaled data
+
+    Returns
+    -------
+    List
+        Column names for specified bbox format
+    """
+    if bbox_format == "coco":
+        columns = ["col_centroid", "row_centroid", "width", "height"]
+    elif bbox_format == "corners":
+        columns = ["col_left", "row_left", "col_right", "row_right"]
+    else:
+        raise ValueError(f"Invalid bbox format, {bbox_format} does not exist")
+
+    if prefix:
+        columns = [f"{prefix}_{col}" for col in columns]
+
+    return columns
+
+
+def get_bbox_array(
+    df, prefix=None, input_bbox_format="coco", output_bbox_format="coco"
+):
+    """Returns array with bbox coordinates
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with COCO annotations
+    prefix : str
+        Prefix to apply to column names, use for scaled data
+    bbox_format: str, optional
+        Can be 'coco' or 'corners'. When 'coco' returned array is[x_center, y_center, width, height],
+        when format 'corners' returned array [x_min, y_min, x_max, y_max]
+
+    Returns
+    -------
+    np.array
+        Array with dimension N x 4 with bbox coordinates
+    """
+    check_bbox_formats(input_bbox_format, output_bbox_format)
+
+    columns = get_bbox_column_names(input_bbox_format, prefix=prefix)
+    bboxes = df[columns].to_numpy()
+
+    if input_bbox_format != output_bbox_format:
+        convert = globals()[f"{input_bbox_format}_to_{output_bbox_format}"]
+        bboxes = convert(bboxes)
+
+    return bboxes
+
+
+def get_df_from_bboxes(bboxes, input_bbox_format="coco", output_bbox_format="corners"):
+    """Creates dataframe of annotations in coco format from array of bboxes
+
+    Parameters
+    ----------
+    bboxes : np.array
+        Array of bboxes of shape [n, 4]
+    bbox_format: str, optional
+        Can be 'coco' or 'corners'. When 'coco' input array follows [x_center, y_center, width, height],
+        when format 'corners' input is [x_min, y_min, x_max, y_max]
+
+    Returns
+    -------
+    pandas.DataFrame
+    """
+
+    check_bbox_formats(input_bbox_format, output_bbox_format)
+
+    if input_bbox_format != output_bbox_format:
+        convert = locals()[f"{input_bbox_format}_{output_bbox_format}"]
+        bboxes = convert(bboxes)
+
+    return pd.DataFrame(bboxes, columns=get_bbox_column_names(output_bbox_format))

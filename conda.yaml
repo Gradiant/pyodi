@@ -9,6 +9,7 @@ dependencies:
   - pandas
   - flake8
   - pytest
+  - scikit-learn
   - pip:
     - typer
     - loguru

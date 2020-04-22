@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 
 import typer
 
@@ -11,9 +11,14 @@ from pyodi.coco.utils import (
     join_annotations_with_image_sizes,
     load_ground_truth_file,
     scale_bbox_dimensions,
+    get_bbox_array,
+    get_df_from_bboxes,
 )
 from pyodi.plots.annotations import plot_scatter_with_histograms
-
+from pyodi.plots.clustering import plot_clustering_results
+from pyodi.core.clustering import kmeans_iou
+import plotly.graph_objects as go
+import numpy as np
 
 app = typer.Typer()
 
@@ -24,7 +29,9 @@ def train_config(
     ground_truth_file: str,
     show: bool = True,
     output: Optional[str] = None,
-    input_size: Tuple[int, int] = (1280, 720)):
+    input_size: Tuple[int, int] = (1280, 720),
+    clusters: List[int] = None,
+):
     """[summary]
     Parameters
     ----------
@@ -36,6 +43,8 @@ def train_config(
         Output file where results are saved, by default None
     input_size : tuple, optional
         Model image input size, by default (1280, 720)
+    cluster: list or int, optional
+        Number of clusters to compute. If list, a different clustering will be computed per each number of cluster
     """
 
     if output is not None:
@@ -59,6 +68,43 @@ def train_config(
         show=True,
         histogram=True,
     )
+
+    if clusters is not None:
+        if isinstance(clusters, int):
+            clusters = list(clusters)
+
+        bboxes = get_bbox_array(
+            df_annotations, prefix="scaled", output_bbox_format="coco"
+        )
+        centroids, silhouette_metrics, predicted_clusters = kmeans_iou(
+            bboxes[:, 2:], k=clusters
+        )
+
+        # todo: improve way of getting index & move selection to frontend
+        selected = 0
+        if len(clusters) > 1 and show:
+            fig = go.Figure(
+                data=[
+                    go.Scattergl(x=clusters, y=silhouette_metrics, mode="lines+markers")
+                ]
+            )
+            fig.update_layout(
+                xaxis_title="Number of clusters", yaxis_title="Silhouette Coefficient"
+            )
+            fig.show()
+            selected = int(input("Choose best number of clusters: ")) - clusters[0]
+
+        df_annotations["cluster"] = predicted_clusters[selected]
+
+        # bring coco format back adding centered coords
+        centroids = np.concatenate(
+            [np.zeros_like(centroids[selected]), centroids[selected]], axis=-1
+        )
+        centroids = get_df_from_bboxes(
+            centroids, input_bbox_format="coco", output_bbox_format="coco"
+        )
+        centroids = get_area_and_ratio(centroids)
+        plot_clustering_results(centroids, df_annotations)
 
 
 if __name__ == "__main__":

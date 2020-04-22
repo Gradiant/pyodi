@@ -1,5 +1,6 @@
 import plotly.graph_objects as go
 from loguru import logger
+from plotly.subplots import make_subplots
 
 
 def plot_scatter_with_histograms(
@@ -11,6 +12,9 @@ def plot_scatter_with_histograms(
     output=None,
     max_values=None,
     histogram=False,
+    label="category",
+    colors=None,
+    legendgroup=None,
 ):
     """This plot allows to compare the relation between two variables of your coco dataset
 
@@ -30,6 +34,14 @@ def plot_scatter_with_histograms(
         output path folder , by default None
     max_values : tuple, optional
         x,y max allowed values in represention, by default None
+    histogram: bool, optional
+        when histogram is true a marginal histogram distribution of each axis is drawn, by default False
+    label: str, optional
+        name of the column with class information in df_annotations, by default 'category'
+    colors: list, optional
+        list of rgb colors to use, if none default plotly colors are used
+    legendgroup: str, optional
+        when present legend is grouped by different categories (see https://plotly.com/python/legend/)
 
     Returns
     -------
@@ -41,13 +53,16 @@ def plot_scatter_with_histograms(
     fig = go.Figure(
         data=[
             go.Scattergl(
-                x=df_annotations[df_annotations["category"] == c][x],
-                y=df_annotations[df_annotations["category"] == c][y],
+                x=df_annotations[df_annotations[label] == c][x],
+                y=df_annotations[df_annotations[label] == c][y],
                 mode="markers",
-                name=c,
-                text=df_annotations[df_annotations["category"] == c]["file_name"],
+                name=str(c),
+                text=df_annotations[df_annotations[label] == c]["file_name"],
+                marker=dict(color=colors[i] if colors else None),
+                legendgroup=f"legendgroup_{i}" if legendgroup else None,
+                showlegend=False if legendgroup else True,
             )
-            for c in df_annotations["category"].unique()
+            for i, c in enumerate(sorted(df_annotations[label].unique()))
         ]
     )
 
