@@ -1,5 +1,6 @@
 import pytest
 from pyodi.core.anchor_generator import AnchorGenerator
+from pyodi.core.clustering import pairwise_iou
 import numpy as np
 
 
@@ -20,7 +21,7 @@ def test_anchor_grid_for_different_feature_maps(feature_maps):
     anchor_sizes = [2]
     strides = [4]
     anchor_generator = AnchorGenerator(
-        strides=[4], ratios=[1.0], scales=[1.0], base_sizes=anchor_sizes
+        strides=strides, ratios=[1.0], scales=[1.0], base_sizes=anchor_sizes
     )
     base_anchor = np.array([-0.5, -0.5, 0.5, 0.5]) * anchor_sizes
 
@@ -39,3 +40,18 @@ def test_anchor_grid_for_different_feature_maps(feature_maps):
 
     assert len(multi_level_anchors) == feature_maps[0][0] * feature_maps[0][1]
     np.testing.assert_equal(multi_level_anchors, np.stack(expected_anchors))
+
+
+def test_iou_with_different_size_anchors():
+    """Create two grids of anchors of different sizes but same stride and check overlap
+    """
+    strides = [2, 2]
+    feature_maps = [(2, 2), (2, 2)]
+    anchor_generator = AnchorGenerator(
+        strides=strides, ratios=[1.0], scales=[1.0], base_sizes=[2, 4]
+    )
+    multi_level_anchors = anchor_generator.grid_anchors(feature_maps)
+    assert len(multi_level_anchors) == 2
+
+    iou = pairwise_iou(multi_level_anchors[0], multi_level_anchors[1])
+    np.testing.assert_equal(np.diag(iou), np.ones(len(iou)) * 0.25)
