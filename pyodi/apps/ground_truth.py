@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import typer
 
@@ -16,13 +16,12 @@ app = typer.Typer()
 @logger.catch
 @app.command()
 def ground_truth(
-    ground_truth_file: str, 
-    show: bool = True,
-    output: Optional[str] = None):
+    ground_truth_file: str, show: bool = True, output: Optional[str] = None
+):
     """
     """
     if output is not None:
-        output = Path(output) / Path(ground_truth_file).name
+        output = str(Path(output) / Path(ground_truth_file).name)
 
     coco_ground_truth = load_ground_truth_file(ground_truth_file)
 
@@ -33,6 +32,7 @@ def ground_truth(
     plot_scatter_with_histograms(
         df_annotations, x="width", y="height", show=show, output=output,
     )
+
 
 if __name__ == "__main__":
     app()

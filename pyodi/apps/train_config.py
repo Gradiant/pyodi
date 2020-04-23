@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Optional, Tuple, List
+from typing import Optional, Tuple, List, Union
 
 import typer
 
@@ -48,7 +48,7 @@ def train_config(
     """
 
     if output is not None:
-        output = Path(output) / Path(ground_truth_file).name
+        output = str(Path(output) / Path(ground_truth_file).name)
 
     coco_ground_truth = load_ground_truth_file(ground_truth_file)
 

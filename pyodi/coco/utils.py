@@ -5,6 +5,9 @@ import numpy as np
 import pandas as pd
 from loguru import logger
 from pycocotools.coco import COCO
+from numpy import ndarray
+from pandas.core.frame import DataFrame
+from typing import List, Optional, Tuple
 
 
 def load_coco_ground_truth_from_StringIO(string_io):
@@ -74,7 +77,7 @@ def join_annotations_with_image_sizes(df_annotations, df_images):
     ]
 
 
-def check_bbox_formats(*args):
+def check_bbox_formats(*args) -> None:
     for arg in args:
         if not (arg in ["coco", "corners"]):
             raise ValueError(
@@ -82,7 +85,9 @@ def check_bbox_formats(*args):
             )
 
 
-def scale_bbox_dimensions(df, input_size=(1280, 720)):
+def scale_bbox_dimensions(
+    df: DataFrame, input_size: Tuple[int, int] = (1280, 720)
+) -> DataFrame:
     """Resizes bboxes dimensions to model input size
 
     Parameters
@@ -104,7 +109,7 @@ def scale_bbox_dimensions(df, input_size=(1280, 720)):
     return df
 
 
-def get_area_and_ratio(df, prefix=None):
+def get_area_and_ratio(df: DataFrame, prefix: str = None) -> DataFrame:
     """Returns df with area and ratio per bbox measurements
 
     Parameters
@@ -150,7 +155,7 @@ def corners_to_coco(bboxes):
     return bboxes
 
 
-def coco_to_corners(bboxes):
+def coco_to_corners(bboxes: ndarray) -> ndarray:
     """Transforms bboxes array from coco format to corners
 
     Parameters
@@ -173,7 +178,7 @@ def coco_to_corners(bboxes):
     return bboxes
 
 
-def get_bbox_column_names(bbox_format, prefix=None):
+def get_bbox_column_names(bbox_format: str, prefix: Optional[str] = None) -> List[str]:
     """Returns predefined column names for each format. When bbox_format is 'coco' column names
      are ["col_centroid", "row_centroid", "width", "height"], when 'corners' ["col_left", "row_left", "col_right", "row_right"]
 
@@ -203,8 +208,11 @@ def get_bbox_column_names(bbox_format, prefix=None):
 
 
 def get_bbox_array(
-    df, prefix=None, input_bbox_format="coco", output_bbox_format="coco"
-):
+    df: DataFrame,
+    prefix: Optional[str] = None,
+    input_bbox_format: str = "coco",
+    output_bbox_format: str = "coco",
+) -> ndarray:
     """Returns array with bbox coordinates
 
     Parameters
@@ -234,7 +242,11 @@ def get_bbox_array(
     return bboxes
 
 
-def get_df_from_bboxes(bboxes, input_bbox_format="coco", output_bbox_format="corners"):
+def get_df_from_bboxes(
+    bboxes: ndarray,
+    input_bbox_format: str = "coco",
+    output_bbox_format: str = "corners",
+) -> DataFrame:
     """Creates dataframe of annotations in coco format from array of bboxes
 
     Parameters

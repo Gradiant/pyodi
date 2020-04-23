@@ -35,6 +35,10 @@ jobs:
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+    - name: Typecheck with mypy
+      shell: bash -l {0}
+      run: |
+        mypy -p pyodi
     - name: Test with pytest
       shell: bash -l {0}
       run: |

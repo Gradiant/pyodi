@@ -1,9 +1,10 @@
 import numpy as np
 from loguru import logger
 from sklearn.metrics import silhouette_score
+from numpy import ndarray
 
 
-def origin_iou(bboxes, clusters):
+def origin_iou(bboxes: ndarray, clusters: ndarray) -> ndarray:
     """Calculates the Intersection over Union (IoU) between a box and k clusters in coco format
      shifted to origin.
 
@@ -34,7 +35,7 @@ def origin_iou(bboxes, clusters):
     return iou_
 
 
-def pairwise_iou(bboxes1, bboxes2):
+def pairwise_iou(bboxes1: ndarray, bboxes2: ndarray) -> ndarray:
     """Calculates the pairwise Intersection over Union (IoU) between two sets of bboxes
 
     Parameters
