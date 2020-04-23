@@ -1,4 +1,6 @@
 import numpy as np
+from numpy import ndarray
+from typing import List, Optional, Tuple
 
 
 class AnchorGenerator(object):
@@ -48,16 +50,16 @@ class AnchorGenerator(object):
 
     def __init__(
         self,
-        strides,
-        ratios,
-        scales=None,
-        base_sizes=None,
-        scale_major=True,
-        octave_base_scale=None,
-        scales_per_octave=None,
-        centers=None,
-        center_offset=0.0,
-    ):
+        strides: List[int],
+        ratios: List[float],
+        scales: Optional[List[float]] = None,
+        base_sizes: Optional[List[int]] = None,
+        scale_major: bool = True,
+        octave_base_scale: None = None,
+        scales_per_octave: None = None,
+        centers: None = None,
+        center_offset: float = 0.0,
+    ) -> None:
         # check center and center_offset
         if center_offset != 0:
             assert centers is None, (
@@ -117,10 +119,10 @@ class AnchorGenerator(object):
         return [base_anchors.size(0) for base_anchors in self.base_anchors]
 
     @property
-    def num_levels(self):
+    def num_levels(self) -> int:
         return len(self.strides)
 
-    def gen_base_anchors(self):
+    def gen_base_anchors(self) -> List[ndarray]:
         multi_level_base_anchors = []
         for i, base_size in enumerate(self.base_sizes):
             center = None
@@ -133,7 +135,9 @@ class AnchorGenerator(object):
             )
         return multi_level_base_anchors
 
-    def gen_single_level_base_anchors(self, base_size, scales, ratios, center=None):
+    def gen_single_level_base_anchors(
+        self, base_size: int, scales: ndarray, ratios: ndarray, center: None = None
+    ) -> ndarray:
         w = base_size
         h = base_size
         if center is None:
@@ -163,7 +167,9 @@ class AnchorGenerator(object):
 
         return base_anchors
 
-    def _meshgrid(self, x, y, row_major=True):
+    def _meshgrid(
+        self, x: ndarray, y: ndarray, row_major: bool = True
+    ) -> Tuple[ndarray, ndarray]:
         xx = np.tile(x, len(y))
         # yy = y.view(-1, 1).repeat(1, len(x)).view(-1)
         yy = np.tile(np.reshape(y, [-1, 1]), (1, len(x))).flatten()
@@ -172,7 +178,7 @@ class AnchorGenerator(object):
         else:
             return yy, xx
 
-    def grid_anchors(self, featmap_sizes):
+    def grid_anchors(self, featmap_sizes: List[Tuple[int, int]]) -> List[ndarray]:
         """Generate grid anchors in multiple feature levels
 
         Args:
@@ -196,7 +202,9 @@ class AnchorGenerator(object):
             multi_level_anchors.append(anchors)
         return multi_level_anchors
 
-    def single_level_grid_anchors(self, base_anchors, featmap_size, stride=16):
+    def single_level_grid_anchors(
+        self, base_anchors: ndarray, featmap_size: Tuple[int, int], stride: int = 16
+    ) -> ndarray:
         feat_h, feat_w = featmap_size
         shift_x = np.arange(0, feat_w) * stride
         shift_y = np.arange(0, feat_h) * stride
