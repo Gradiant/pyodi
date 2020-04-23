@@ -163,88 +163,84 @@ class AnchorGenerator(object):
 
         return base_anchors
 
-    # def _meshgrid(self, x, y, row_major=True):
-    #     xx = x.repeat(len(y))
-    #     yy = y.view(-1, 1).repeat(1, len(x)).view(-1)
-    #     if row_major:
-    #         return xx, yy
-    #     else:
-    #         return yy, xx
+    def _meshgrid(self, x, y, row_major=True):
+        xx = np.tile(x, len(y))
+        # yy = y.view(-1, 1).repeat(1, len(x)).view(-1)
+        yy = np.tile(np.reshape(y, [-1, 1]), (1, len(x))).flatten()
+        if row_major:
+            return xx, yy
+        else:
+            return yy, xx
 
-    # def grid_anchors(self, featmap_sizes, device="cuda"):
-    #     """Generate grid anchors in multiple feature levels
+    def grid_anchors(self, featmap_sizes):
+        """Generate grid anchors in multiple feature levels
 
-    #     Args:
-    #         featmap_sizes (list[tuple]): List of feature map sizes in
-    #             multiple feature levels.
-    #         device (str): Device where the anchors will be put on.
+        Args:
+            featmap_sizes (list[tuple]): List of feature map sizes in
+                multiple feature levels.
+            device (str): Device where the anchors will be put on.
 
-    #     Return:
-    #         list[torch.Tensor]: Anchors in multiple feature levels.
-    #             The sizes of each tensor should be [N, 4], where
-    #             N = width * height * num_base_anchors, width and height
-    #             are the sizes of the corresponding feature lavel,
-    #             num_base_anchors is the number of anchors for that level.
-    #     """
-    #     assert self.num_levels == len(featmap_sizes)
-    #     multi_level_anchors = []
-    #     for i in range(self.num_levels):
-    #         anchors = self.single_level_grid_anchors(
-    #             self.base_anchors[i].to(device),
-    #             featmap_sizes[i],
-    #             self.strides[i],
-    #             device=device,
-    #         )
-    #         multi_level_anchors.append(anchors)
-    #     return multi_level_anchors
+        Return:
+            list[torch.Tensor]: Anchors in multiple feature levels.
+                The sizes of each tensor should be [N, 4], where
+                N = width * height * num_base_anchors, width and height
+                are the sizes of the corresponding feature lavel,
+                num_base_anchors is the number of anchors for that level.
+        """
+        assert self.num_levels == len(featmap_sizes)
+        multi_level_anchors = []
+        for i in range(self.num_levels):
+            anchors = self.single_level_grid_anchors(
+                self.base_anchors[i], featmap_sizes[i], self.strides[i],
+            )
+            multi_level_anchors.append(anchors)
+        return multi_level_anchors
 
-    # def single_level_grid_anchors(
-    #     self, base_anchors, featmap_size, stride=16, device="cuda"
-    # ):
-    #     feat_h, feat_w = featmap_size
-    #     shift_x = torch.arange(0, feat_w, device=device) * stride
-    #     shift_y = torch.arange(0, feat_h, device=device) * stride
-    #     shift_xx, shift_yy = self._meshgrid(shift_x, shift_y)
-    #     shifts = torch.stack([shift_xx, shift_yy, shift_xx, shift_yy], dim=-1)
-    #     shifts = shifts.type_as(base_anchors)
-    #     # first feat_w elements correspond to the first row of shifts
-    #     # add A anchors (1, A, 4) to K shifts (K, 1, 4) to get
-    #     # shifted anchors (K, A, 4), reshape to (K*A, 4)
+    def single_level_grid_anchors(self, base_anchors, featmap_size, stride=16):
+        feat_h, feat_w = featmap_size
+        shift_x = np.arange(0, feat_w) * stride
+        shift_y = np.arange(0, feat_h) * stride
+        shift_xx, shift_yy = self._meshgrid(shift_x, shift_y)
+        shifts = np.stack([shift_xx, shift_yy, shift_xx, shift_yy], axis=-1)
+        shifts = shifts.astype(base_anchors.dtype)
+        # first feat_w elements correspond to the first row of shifts
+        # add A anchors (1, A, 4) to K shifts (K, 1, 4) to get
+        # shifted anchors (K, A, 4), reshape to (K*A, 4)
 
-    #     all_anchors = base_anchors[None, :, :] + shifts[:, None, :]
-    #     all_anchors = all_anchors.view(-1, 4)
-    #     # first A rows correspond to A anchors of (0, 0) in feature map,
-    #     # then (0, 1), (0, 2), ...
-    #     return all_anchors
+        all_anchors = base_anchors[None, :, :] + shifts[:, None, :]
+        all_anchors = np.reshape(all_anchors, [-1, 4])
+        # first A rows correspond to A anchors of (0, 0) in feature map,
+        # then (0, 1), (0, 2), ...
+        return all_anchors
 
-    # def valid_flags(self, featmap_sizes, pad_shape, device="cuda"):
-    #     """Generate valid flags of anchors in multiple feature levels
+    def valid_flags(self, featmap_sizes, pad_shape, device="cuda"):
+        """Generate valid flags of anchors in multiple feature levels
 
-    #     Args:
-    #         featmap_sizes (list(tuple)): List of feature map sizes in
-    #             multiple feature levels.
-    #         pad_shape (tuple): The padded shape of the image.
-    #         device (str): Device where the anchors will be put on.
+        Args:
+            featmap_sizes (list(tuple)): List of feature map sizes in
+                multiple feature levels.
+            pad_shape (tuple): The padded shape of the image.
+            device (str): Device where the anchors will be put on.
 
-    #     Return:
-    #         list(torch.Tensor): Valid flags of anchors in multiple levels.
-    #     """
-    #     assert self.num_levels == len(featmap_sizes)
-    #     multi_level_flags = []
-    #     for i in range(self.num_levels):
-    #         anchor_stride = self.strides[i]
-    #         feat_h, feat_w = featmap_sizes[i]
-    #         h, w = pad_shape[:2]
-    #         valid_feat_h = min(int(np.ceil(h / anchor_stride)), feat_h)
-    #         valid_feat_w = min(int(np.ceil(w / anchor_stride)), feat_w)
-    #         flags = self.single_level_valid_flags(
-    #             (feat_h, feat_w),
-    #             (valid_feat_h, valid_feat_w),
-    #             self.num_base_anchors[i],
-    #             device=device,
-    #         )
-    #         multi_level_flags.append(flags)
-    #     return multi_level_flags
+        Return:
+            list(torch.Tensor): Valid flags of anchors in multiple levels.
+        """
+        assert self.num_levels == len(featmap_sizes)
+        multi_level_flags = []
+        for i in range(self.num_levels):
+            anchor_stride = self.strides[i]
+            feat_h, feat_w = featmap_sizes[i]
+            h, w = pad_shape[:2]
+            valid_feat_h = min(int(np.ceil(h / anchor_stride)), feat_h)
+            valid_feat_w = min(int(np.ceil(w / anchor_stride)), feat_w)
+            flags = self.single_level_valid_flags(
+                (feat_h, feat_w),
+                (valid_feat_h, valid_feat_w),
+                self.num_base_anchors[i],
+                device=device,
+            )
+            multi_level_flags.append(flags)
+        return multi_level_flags
 
     # def single_level_valid_flags(
     #     self, featmap_size, valid_size, num_base_anchors, device="cuda"
