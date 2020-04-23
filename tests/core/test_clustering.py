@@ -1,6 +1,7 @@
-import pytest
-from pyodi.core.clustering import pairwise_iou, origin_iou
 import numpy as np
+import pytest
+
+from pyodi.core.clustering import origin_iou, pairwise_iou
 
 
 @pytest.fixture

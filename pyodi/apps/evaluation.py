@@ -1,15 +1,12 @@
 import json
 import re
-
 from typing import Optional
 
 import typer
-
 from loguru import logger
 
 from pyodi.coco.cocoeval import COCOeval
 from pyodi.coco.utils import load_coco_ground_truth_from_StringIO
-
 
 app = typer.Typer()
 
@@ -23,9 +20,7 @@ def evaluation(
 ):
 
     coco_ground_truth = load_coco_ground_truth_from_StringIO(open(ground_truth_file))
-    coco_predictions = coco_ground_truth.loadRes(
-        json.load(open(predictions_file))
-    )
+    coco_predictions = coco_ground_truth.loadRes(json.load(open(predictions_file)))
 
     coco_eval = COCOeval(coco_ground_truth, coco_predictions, "bbox")
 

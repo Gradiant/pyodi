@@ -1,7 +1,7 @@
 import numpy as np
 from loguru import logger
-from sklearn.metrics import silhouette_score
 from numpy import ndarray
+from sklearn.metrics import silhouette_score
 
 
 def origin_iou(bboxes: ndarray, clusters: ndarray) -> ndarray:

@@ -1,8 +1,9 @@
 import plotly.graph_objects as go
 from loguru import logger
-from plotly.subplots import make_subplots
-from pyodi.plots.annotations import plot_scatter_with_histograms
 from plotly.colors import DEFAULT_PLOTLY_COLORS as COLORS
+from plotly.subplots import make_subplots
+
+from pyodi.plots.annotations import plot_scatter_with_histograms
 
 
 def plot_clustering_results(centroids, df_annotations, show=True, output=None):

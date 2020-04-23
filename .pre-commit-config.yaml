@@ -5,6 +5,15 @@ repos:
       - id: trailing-whitespace
       - id: check-yaml
       - id: end-of-file-fixer
+  - repo: https://github.com/asottile/seed-isort-config
+    rev: v2.1.0
+    hooks:
+      - id: seed-isort-config
+  - repo: https://github.com/timothycrosley/isort
+    rev: 4.3.21
+    hooks:
+      - id: isort
+        additional_dependencies: [toml]
   - repo: https://gitlab.com/pycqa/flake8.git
     rev: 3.7.9
     hooks:

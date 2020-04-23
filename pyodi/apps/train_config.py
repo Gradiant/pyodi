@@ -1,24 +1,23 @@
 from pathlib import Path
-from typing import Optional, Tuple, List, Union
+from typing import List, Optional, Tuple, Union
 
+import numpy as np
+import plotly.graph_objects as go
 import typer
-
 from loguru import logger
 
 from pyodi.coco.utils import (
     coco_ground_truth_to_dfs,
     get_area_and_ratio,
+    get_bbox_array,
+    get_df_from_bboxes,
     join_annotations_with_image_sizes,
     load_ground_truth_file,
     scale_bbox_dimensions,
-    get_bbox_array,
-    get_df_from_bboxes,
 )
+from pyodi.core.clustering import kmeans_iou
 from pyodi.plots.annotations import plot_scatter_with_histograms
 from pyodi.plots.clustering import plot_clustering_results
-from pyodi.core.clustering import kmeans_iou
-import plotly.graph_objects as go
-import numpy as np
 
 app = typer.Typer()
 

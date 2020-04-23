@@ -5,9 +5,9 @@ import pytest
 from pyodi.coco.utils import (
     get_area_and_ratio,
     get_bbox_array,
-    scale_bbox_dimensions,
-    get_df_from_bboxes,
     get_bbox_column_names,
+    get_df_from_bboxes,
+    scale_bbox_dimensions,
 )
 
 

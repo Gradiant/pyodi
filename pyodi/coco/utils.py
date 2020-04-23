@@ -1,13 +1,13 @@
 import json
 from collections import defaultdict
+from typing import List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
 from loguru import logger
-from pycocotools.coco import COCO
 from numpy import ndarray
 from pandas.core.frame import DataFrame
-from typing import List, Optional, Tuple
+from pycocotools.coco import COCO
 
 
 def load_coco_ground_truth_from_StringIO(string_io):

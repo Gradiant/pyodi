@@ -1,11 +1,13 @@
 site_name: Object Detection Insights
 theme:
   name: material
+  logo: images/logo.svg
+  favicon: images/logo.svg
 nav:
-    - Home: index.md
-    - Reference:
+  - Home: index.md
+  - Reference:
       - apps:
-        - ground-truth: reference/apps/ground-truth.md
+          - ground-truth: reference/apps/ground-truth.md
 plugins:
   - search
   - mkdocstrings:

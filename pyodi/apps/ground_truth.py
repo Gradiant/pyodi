@@ -2,13 +2,11 @@ from pathlib import Path
 from typing import Optional, Union
 
 import typer
-
 from loguru import logger
 
 from pyodi.coco.utils import coco_ground_truth_to_dfs, load_ground_truth_file
 from pyodi.plots.annotations import plot_scatter_with_histograms
 from pyodi.plots.images import plot_histogram, plot_image_shape_distribution
-
 
 app = typer.Typer()
 
