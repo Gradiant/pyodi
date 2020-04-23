@@ -7,7 +7,7 @@ from loguru import logger
 
 from pyodi.coco.utils import coco_ground_truth_to_dfs, load_ground_truth_file
 from pyodi.plots.annotations import plot_scatter_with_histograms
-from pyodi.plots.images import plot_image_shape_distribution
+from pyodi.plots.images import plot_histogram, plot_image_shape_distribution
 
 
 app = typer.Typer()
@@ -29,8 +29,18 @@ def ground_truth(
 
     plot_image_shape_distribution(df_images, show=show, output=output)
 
+    plot_histogram(
+        df_images,
+        "ratio",
+        title="Image aspect ratio (h / w)",
+        xrange=(-4, 4),
+        xbins=dict(size=0.25),
+        show=show,
+        output=output,
+    )
+
     plot_scatter_with_histograms(
-        df_annotations, x="width", y="height", show=show, output=output,
+        df_annotations, x="width", y="height", histogram=True, show=show, output=output,
     )
 
 

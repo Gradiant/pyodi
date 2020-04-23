@@ -37,7 +37,11 @@ def coco_ground_truth_to_dfs(coco_ground_truth, max_images=200000):
         for k, v in image.items():
             df_images[k].append(v)
         image_id_to_name[image["id"]] = image["file_name"]
+    
     df_images = pd.DataFrame(df_images)
+    
+    df_images["ratio"] = df_images["height"] / df_images["width"]
+    df_images["scale"] = np.sqrt(df_images["height"] * df_images["width"])
 
     df_annotations = defaultdict(list)
     for annotation in coco_ground_truth["annotations"]:
