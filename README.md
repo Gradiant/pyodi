@@ -1,7 +1,7 @@
 # pyodi
 Object Detection Insights
 
-![](https://github.com/pyodi/pyodi/workflows/Continuous%20Integration/badge.svg)
+![](https://github.com/pyodi/pyodi/workflows/Continuous%20Integration/badge.svg?branch=master)
 
 
 ```bash
