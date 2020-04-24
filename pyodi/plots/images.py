@@ -1,9 +1,8 @@
 from typing import Any, Dict, Optional, Tuple
 
 import plotly.graph_objects as go
-
-from pandas import DataFrame
 from loguru import logger
+from pandas import DataFrame
 
 
 def plot_image_shape_distribution(df_images, show=True, output=None):

@@ -1,4 +1,6 @@
 site_name: Object Detection Insights
+site_url: "http://pyodi.org"
+
 theme:
   name: material
   logo: images/logo.svg
