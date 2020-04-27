@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from pyodi.core.clustering import origin_iou, pairwise_iou
+from pyodi.core.clustering import kmeans_euclidean, origin_iou, pairwise_iou
 
 
 @pytest.fixture
@@ -46,3 +46,9 @@ def test_origin_iou(get_bboxes_matrices):
     bboxes2[:, :2] = 0
     pair_iou = pairwise_iou(bboxes1, bboxes2)
     np.testing.assert_equal(orig_iou, pair_iou)
+
+
+def test_kmeans_scale_ratio():
+    X = np.array([[1, 2], [1, 4], [1, 0], [10, 2], [10, 4], [10, 0]])
+    result = kmeans_euclidean(X, n_clusters=2, random_state=0, silhouette_metric=True)
+    np.testing.assert_almost_equal(result["silhouette"], 0.713, 3)
