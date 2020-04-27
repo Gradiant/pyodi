@@ -15,6 +15,10 @@ def plot_scatter_with_histograms(
     label="category",
     colors=None,
     legendgroup=None,
+    fig=None,
+    row=1,
+    col=1,
+    **kwargs,
 ):
     """This plot allows to compare the relation between two variables of your coco dataset
 
@@ -42,7 +46,12 @@ def plot_scatter_with_histograms(
         list of rgb colors to use, if none default plotly colors are used
     legendgroup: str, optional
         when present legend is grouped by different categories (see https://plotly.com/python/legend/)
-
+    fig: plotly.Figure, optional
+        when figure is provided, trace is automatically added on it
+    row: int, optional
+        subplot row to use when fig is provided, default 1
+    col: int, optional
+        subplot col to use when fig is provided, default 1
     Returns
     -------
     plotly figure
@@ -50,21 +59,21 @@ def plot_scatter_with_histograms(
 
     logger.info("Plotting Bounding Box Distribution")
 
-    fig = go.Figure(
-        data=[
-            go.Scattergl(
-                x=df_annotations[df_annotations[label] == c][x],
-                y=df_annotations[df_annotations[label] == c][y],
-                mode="markers",
-                name=str(c),
-                text=df_annotations[df_annotations[label] == c]["file_name"],
-                marker=dict(color=colors[i] if colors else None),
-                legendgroup=f"legendgroup_{i}" if legendgroup else None,
-                showlegend=False if legendgroup else True,
-            )
-            for i, c in enumerate(sorted(df_annotations[label].unique()))
-        ]
-    )
+    if not fig:
+        fig = make_subplots(rows=1, cols=1)
+
+    for i, c in enumerate(sorted(df_annotations[label].unique())):
+        scatter = go.Scattergl(
+            x=df_annotations[df_annotations[label] == c][x],
+            y=df_annotations[df_annotations[label] == c][y],
+            mode="markers",
+            name=str(c),
+            text=df_annotations[df_annotations[label] == c]["file_name"],
+            marker=dict(color=colors[i % len(colors)] if colors else None),
+            legendgroup=f"legendgroup_{i}" if legendgroup else None,
+            **kwargs,
+        )
+        fig.add_trace(scatter, row=row, col=col)
 
     if histogram:
         fig.add_histogram(

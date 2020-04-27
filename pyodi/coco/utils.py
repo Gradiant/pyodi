@@ -118,7 +118,7 @@ def scale_bbox_dimensions(
     return df
 
 
-def get_area_and_ratio(df: DataFrame, prefix: str = None) -> DataFrame:
+def get_scale_and_ratio(df: DataFrame, prefix: str = None) -> DataFrame:
     """Returns df with area and ratio per bbox measurements
 
     Parameters
@@ -134,12 +134,12 @@ def get_area_and_ratio(df: DataFrame, prefix: str = None) -> DataFrame:
         Dataframe with new columns [prefix_]area/ratio
     """
 
-    columns = ["width", "height", "area", "ratio"]
+    columns = ["width", "height", "scale", "ratio"]
 
     if prefix:
         columns = [f"{prefix}_{col}" for col in columns]
 
-    df[columns[2]] = df[columns[0]] * df[columns[1]]
+    df[columns[2]] = np.sqrt(df[columns[0]] * df[columns[1]])
     df[columns[3]] = df[columns[1]] / df[columns[0]]
 
     return df
@@ -278,3 +278,26 @@ def get_df_from_bboxes(
         bboxes = convert(bboxes)
 
     return pd.DataFrame(bboxes, columns=get_bbox_column_names(output_bbox_format))
+
+
+def filter_zero_area_bboxes(df: DataFrame) -> DataFrame:
+    """Filters those bboxes with height or width equal to zero
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+            DataFrame with COCO annotations
+    """
+    cols = ["width", "height"]
+    all_bboxes = len(df)
+    df = df[(df[cols] > 0).all(axis=1)].reset_index()
+    filtered_bboxes = len(df)
+
+    n_filtered = all_bboxes - filtered_bboxes
+
+    if n_filtered:
+        logger.warning(
+            f"A total of {n_filtered} bboxes have been filtered from your data for having area equal to zero."
+        )
+
+    return df

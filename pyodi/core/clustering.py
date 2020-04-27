@@ -1,6 +1,9 @@
+from typing import Dict, Union
+
 import numpy as np
 from loguru import logger
-from numpy import ndarray
+from numpy import float64, ndarray
+from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 
 
@@ -67,7 +70,7 @@ def pairwise_iou(bboxes1: ndarray, bboxes2: ndarray) -> ndarray:
     return ious
 
 
-def kmeans_iou(bboxes, k, distance_metric=np.median):
+def kmeans_iou(bboxes, k, silhouette_metric=False, distance_metric=np.median):
     """Calculates k-means clustering with the Intersection over Union (IoU) metric for different number of clusters.
     Silhouette average metric is returned for each different k value
 
@@ -88,7 +91,7 @@ def kmeans_iou(bboxes, k, distance_metric=np.median):
 
     n_bboxes = bboxes.shape[0]
 
-    silhouette_metrics, predicted_clusters, centroids = [], [], []
+    clustering_results = []
 
     for n_clusters in k:
         logger.info(f"Computing cluster for k = {n_clusters}")
@@ -115,16 +118,40 @@ def kmeans_iou(bboxes, k, distance_metric=np.median):
 
             last_clusters = nearest_clusters
 
-        # todo: improve and compute only upper triangular matrix
-        iou_bboxes_pairwise_distance = 1 - origin_iou(bboxes, bboxes)
-        silhouette = silhouette_score(
-            iou_bboxes_pairwise_distance, labels=nearest_clusters, metric="precomputed"
-        )
-        silhouette_metrics.append(np.mean(silhouette))
-        predicted_clusters.append(last_clusters)
-        centroids.append(clusters)
-        logger.info(
-            f"Mean silhouette coefficient for {n_clusters}: {silhouette_metrics[-1]}"
-        )
+        result = dict(centroids=clusters, labels=last_clusters)
 
-    return centroids, silhouette_metrics, predicted_clusters
+        if silhouette_metric:
+            # todo: improve and compute only upper triangular matrix
+            iou_bboxes_pairwise_distance = 1 - origin_iou(bboxes, bboxes)
+            silhouette = silhouette_score(
+                iou_bboxes_pairwise_distance,
+                labels=nearest_clusters,
+                metric="precomputed",
+            )
+            result["silhouette"] = np.mean(silhouette)
+            logger.info(
+                f"Mean silhouette coefficient for {n_clusters}: {result['silhouette']}"
+            )
+
+        clustering_results.append(result)
+
+    return clustering_results
+
+
+def kmeans_euclidean(
+    values: ndarray,
+    n_clusters: int = 3,
+    silhouette_metric: bool = False,
+    random_state: int = 0,
+) -> Dict[str, Union[ndarray, float64]]:
+    if len(values.shape) == 1:
+        values = values[:, None]
+
+    kmeans = KMeans(n_clusters=n_clusters)
+    kmeans.fit(values)
+    result = dict(centroids=kmeans.cluster_centers_, labels=kmeans.labels_)
+
+    if silhouette_metric:
+        result["silhouette"] = silhouette_score(values, labels=kmeans.labels_)
+
+    return result

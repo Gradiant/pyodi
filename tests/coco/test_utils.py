@@ -3,10 +3,11 @@ import pandas as pd
 import pytest
 
 from pyodi.coco.utils import (
-    get_area_and_ratio,
+    filter_zero_area_bboxes,
     get_bbox_array,
     get_bbox_column_names,
     get_df_from_bboxes,
+    get_scale_and_ratio,
     scale_bbox_dimensions,
 )
 
@@ -33,10 +34,10 @@ def test_scale_bbox_dimensions(get_simple_annotations_with_img_sizes):
 
 def test_get_area_and_ratio(get_simple_annotations_with_img_sizes):
     df_annotations = get_simple_annotations_with_img_sizes()
-    df_annotations = get_area_and_ratio(df_annotations)
-    expected_areas = np.array([100, 2000], dtype=np.int32)
+    df_annotations = get_scale_and_ratio(df_annotations)
+    expected_scales = np.sqrt([100, 2000])
     expected_ratios = np.array([1, 0.8], dtype=np.float)
-    np.testing.assert_equal(df_annotations["area"].to_numpy(), expected_areas)
+    np.testing.assert_equal(df_annotations["scale"].to_numpy(), expected_scales)
     np.testing.assert_equal(df_annotations["ratio"].to_numpy(), expected_ratios)
 
 
@@ -62,3 +63,10 @@ def test_get_df_from_bboxes(get_simple_annotations_with_img_sizes, bbox_format):
     )
     expected_result = df_annotations[get_bbox_column_names(bbox_format)]
     pd.testing.assert_frame_equal(df, expected_result)
+
+
+def test_filter_zero_area_bboxes(get_simple_annotations_with_img_sizes):
+    bboxes = np.array([[20, 20, 5, 0, 100, 100], [40, 40, 20, 20, 100, 100]])
+    df_annotations = get_simple_annotations_with_img_sizes(bboxes, bbox_format="coco")
+    df_annotations = filter_zero_area_bboxes(df_annotations)
+    assert len(df_annotations) == 1
