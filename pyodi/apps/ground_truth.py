@@ -86,8 +86,7 @@ def ground_truth(
         df_images,
         "ratio",
         title="Image aspect ratio (h / w)",
-        xrange=(-4, 4),
-        xbins=dict(size=0.25),
+        xbins=dict(size=0.2),
         show=show,
         output=output,
     )
