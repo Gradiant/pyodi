@@ -38,7 +38,7 @@ def plot_clustering_results(
         centroid_color = COLORS[len(df_annotations.category.unique()) % len(COLORS)]
 
     fig = make_subplots(
-        rows=1, cols=2, subplot_titles=["Area vs Ratio", "Width vs Height"]
+        rows=1, cols=2, subplot_titles=["Scale vs Ratio", "Width vs Height"]
     )
 
     plot_scatter_with_histograms(
@@ -111,7 +111,7 @@ def plot_clustering_results(
     fig["layout"].update(
         title="Anchor cluster visualization",
         xaxis2=dict(title="Scaled width"),
-        xaxis=dict(title="Area"),
+        xaxis=dict(title="Scale"),
         yaxis2=dict(title="Scaled height"),
         yaxis=dict(title="Ratio"),
     )
