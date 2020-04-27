@@ -80,9 +80,10 @@ def plot_clustering_results(
         x=f"scaled_width",
         y=f"scaled_height",
         show=False,
-        legendgroup="classes",
         colors=COLORS,
+        legendgroup="classes",
         histogram=False,
+        showlegend=False,
         fig=fig,
         col=2,
     )
@@ -96,6 +97,7 @@ def plot_clustering_results(
             mode="markers",
             legendgroup="centroids",
             name="centroids",
+            showlegend=False,
             marker=dict(
                 color=centroid_color,
                 size=10,

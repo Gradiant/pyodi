@@ -18,6 +18,7 @@ def plot_scatter_with_histograms(
     fig=None,
     row=1,
     col=1,
+    **kwargs,
 ):
     """This plot allows to compare the relation between two variables of your coco dataset
 
@@ -70,7 +71,7 @@ def plot_scatter_with_histograms(
             text=df_annotations[df_annotations[label] == c]["file_name"],
             marker=dict(color=colors[i] if colors else None),
             legendgroup=f"legendgroup_{i}" if legendgroup else None,
-            showlegend=False if legendgroup else True,
+            **kwargs,
         )
         fig.add_trace(scatter, row=row, col=col)
 
