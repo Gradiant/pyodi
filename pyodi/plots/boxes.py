@@ -69,7 +69,7 @@ def plot_scatter_with_histograms(
             mode="markers",
             name=str(c),
             text=df_annotations[df_annotations[label] == c]["file_name"],
-            marker=dict(color=colors[i] if colors else None),
+            marker=dict(color=colors[i % len(colors)] if colors else None),
             legendgroup=f"legendgroup_{i}" if legendgroup else None,
             **kwargs,
         )
