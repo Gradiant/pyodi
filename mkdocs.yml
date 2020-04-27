@@ -10,8 +10,15 @@ nav:
   - Reference:
       - apps:
           - ground-truth: reference/apps/ground-truth.md
+      - plots:
+          - images: reference/plots/images.md
+          - boxes: reference/plots/boxes.md
+
 plugins:
   - search
   - mkdocstrings:
       watch:
         - pyodi
+
+markdown_extensions:
+  - codehilite

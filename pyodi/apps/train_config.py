@@ -16,7 +16,7 @@ from pyodi.coco.utils import (
     scale_bbox_dimensions,
 )
 from pyodi.core.clustering import kmeans_iou
-from pyodi.plots.annotations import plot_scatter_with_histograms
+from pyodi.plots.boxes import plot_scatter_with_histograms
 from pyodi.plots.clustering import plot_clustering_results
 
 app = typer.Typer()

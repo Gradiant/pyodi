@@ -37,17 +37,19 @@ def coco_ground_truth_to_dfs(coco_ground_truth, max_images=200000):
         for k, v in image.items():
             df_images[k].append(v)
         image_id_to_name[image["id"]] = image["file_name"]
-    
+
     df_images = pd.DataFrame(df_images)
-    
+
     df_images["ratio"] = df_images["height"] / df_images["width"]
     df_images["scale"] = np.sqrt(df_images["height"] * df_images["width"])
 
+    image_id_to_count = {x: 0 for x in df_images["id"]}
     df_annotations = defaultdict(list)
     for annotation in coco_ground_truth["annotations"]:
         if annotation["image_id"] not in image_id_to_name:
             # Annotation of one of the exceeding images
             continue
+        image_id_to_count[annotation["image_id"]] += 1
         df_annotations["file_name"].append(image_id_to_name[annotation["image_id"]])
         df_annotations["category"].append(categories[annotation["category_id"]])
         df_annotations["area"].append(annotation["area"])
@@ -60,7 +62,10 @@ def coco_ground_truth_to_dfs(coco_ground_truth, max_images=200000):
         df_annotations["width"].append(int(annotation["bbox"][2]))
         df_annotations["height"].append(int(annotation["bbox"][3]))
 
+    df_images["bounding_box_count"] = image_id_to_count.values()
+
     df_annotations = pd.DataFrame(df_annotations)
+
     return df_images, df_annotations
 
 

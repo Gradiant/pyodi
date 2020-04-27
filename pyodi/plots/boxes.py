@@ -11,7 +11,7 @@ def plot_scatter_with_histograms(
     show=True,
     output=None,
     max_values=None,
-    histogram=False,
+    histogram=True,
     label="category",
     colors=None,
     legendgroup=None,
@@ -72,21 +72,27 @@ def plot_scatter_with_histograms(
             name=f"{x} distribution",
             yaxis="y2",
             marker=dict(color="#17becf"),
-            histnorm="probability",
+            histnorm="percent",
+            xbins=dict(size=10),
         )
         fig.add_histogram(
             y=df_annotations[y],
             name=f"{y} distribution",
             xaxis="x2",
             marker=dict(color="#17becf"),
-            histnorm="probability",
+            histnorm="percent",
+            ybins=dict(size=10),
         )
 
         fig.layout = dict(
             xaxis=dict(domain=[0, 0.85], showgrid=False, zeroline=False),
             yaxis=dict(domain=[0, 0.85], showgrid=False, zeroline=False),
-            xaxis2=dict(domain=[0.85, 1], showgrid=False, zeroline=False),
-            yaxis2=dict(domain=[0.85, 1], showgrid=False, zeroline=False),
+            xaxis2=dict(
+                domain=[0.85, 1], showgrid=False, zeroline=False, range=(0, 100)
+            ),
+            yaxis2=dict(
+                domain=[0.85, 1], showgrid=False, zeroline=False, range=(0, 100)
+            ),
         )
 
     if max_values:

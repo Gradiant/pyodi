@@ -5,7 +5,15 @@ from loguru import logger
 from pandas import DataFrame
 
 
-def plot_image_shape_distribution(df_images, show=True, output=None):
+def plot_image_shape_distribution(
+    df_images,
+    x="width",
+    y="height",
+    title="Image Shape Distribution",
+    histogram=True,
+    show=True,
+    output=None,
+):
     """Image Shape Distribution
 
     This plot shows the height and width distributions of all the images in the dataset.
@@ -16,18 +24,49 @@ def plot_image_shape_distribution(df_images, show=True, output=None):
     logger.info("Plotting Image Shape Distribution")
     fig = go.Figure(
         data=[
-            go.Box(
-                y=df_images[x],
-                boxpoints="all",
-                boxmean="sd",
-                name=x,
-                hovertext=df_images["file_name"],
+            go.Scattergl(
+                x=df_images[x],
+                y=df_images[y],
+                mode="markers",
+                name="Image Shapes",
+                text=df_images["file_name"],
             )
-            for x in ["height", "width"]
         ]
     )
-    fig.update_yaxes(range=[0, 8192])
-    fig.update_layout(title_text="Image Shape Distribution", title_font_size=20)
+    if histogram:
+        fig.add_histogram(
+            x=df_images[x],
+            name=f"{x} distribution",
+            yaxis="y2",
+            marker=dict(color="#17becf"),
+            histnorm="percent",
+        )
+        fig.add_histogram(
+            y=df_images[y],
+            name=f"{y} distribution",
+            xaxis="x2",
+            marker=dict(color="#17becf"),
+            histnorm="percent",
+        )
+
+        fig.layout = dict(
+            xaxis=dict(domain=[0, 0.85], showgrid=False, zeroline=False,),
+            yaxis=dict(domain=[0, 0.85], showgrid=False, zeroline=False),
+            xaxis2=dict(
+                domain=[0.85, 1], showgrid=False, zeroline=False, range=(0, 100)
+            ),
+            yaxis2=dict(
+                domain=[0.85, 1], showgrid=False, zeroline=False, range=(0, 100)
+            ),
+        )
+
+    fig.update_layout(
+        title_text=title,
+        title_font_size=20,
+        showlegend=False,
+        xaxis_title=f"{x}",
+        yaxis_title=f"{y}",
+    )
 
     if show:
         fig.show()
