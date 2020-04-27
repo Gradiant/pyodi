@@ -278,3 +278,26 @@ def get_df_from_bboxes(
         bboxes = convert(bboxes)
 
     return pd.DataFrame(bboxes, columns=get_bbox_column_names(output_bbox_format))
+
+
+def filter_zero_area_bboxes(df: DataFrame) -> DataFrame:
+    """Filters those bboxes with height or width equal to zero
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+            DataFrame with COCO annotations
+    """
+    cols = ["width", "height"]
+    all_bboxes = len(df)
+    df = df[(df[cols] > 0).all(axis=1)].reset_index()
+    filtered_bboxes = len(df)
+
+    n_filtered = all_bboxes - filtered_bboxes
+
+    if n_filtered:
+        logger.warning(
+            f"A total of {n_filtered} bboxes have been filtered from your data for having area equal to zero."
+        )
+
+    return df

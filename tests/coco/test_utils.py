@@ -3,6 +3,7 @@ import pandas as pd
 import pytest
 
 from pyodi.coco.utils import (
+    filter_zero_area_bboxes,
     get_bbox_array,
     get_bbox_column_names,
     get_df_from_bboxes,
@@ -62,3 +63,10 @@ def test_get_df_from_bboxes(get_simple_annotations_with_img_sizes, bbox_format):
     )
     expected_result = df_annotations[get_bbox_column_names(bbox_format)]
     pd.testing.assert_frame_equal(df, expected_result)
+
+
+def test_filter_zero_area_bboxes(get_simple_annotations_with_img_sizes):
+    bboxes = np.array([[20, 20, 5, 0, 100, 100], [40, 40, 20, 20, 100, 100]])
+    df_annotations = get_simple_annotations_with_img_sizes(bboxes, bbox_format="coco")
+    df_annotations = filter_zero_area_bboxes(df_annotations)
+    assert len(df_annotations) == 1
