@@ -15,7 +15,8 @@ from pyodi.coco.utils import (
     load_ground_truth_file,
     scale_bbox_dimensions,
 )
-from pyodi.core.clustering import kmeans_iou
+from pyodi.core.anchor_generator import AnchorGenerator
+from pyodi.core.clustering import kmeans_euclidean, kmeans_iou
 from pyodi.plots.boxes import plot_scatter_with_histograms
 from pyodi.plots.clustering import plot_clustering_results
 
@@ -29,9 +30,12 @@ def train_config(
     show: bool = True,
     output: Optional[str] = None,
     input_size: Tuple[int, int] = (1280, 720),
-    clusters: List[int] = None,
+    n_ratios: int = 3,
+    n_scales: int = 3,
+    strides: List[int] = [8, 16, 32, 64, 128],
 ):
-    """[summary]
+    """Computes optimal anchors for a given COCO dataset based on iou clustering.
+
     Parameters
     ----------
     ground_truth_file : str
@@ -64,46 +68,23 @@ def train_config(
         x="scaled_area",
         y="scaled_ratio",
         title="Bounding box area vs Aspect ratio",
-        show=True,
+        show=False,
         histogram=True,
     )
 
-    if clusters is not None:
-        if isinstance(clusters, int):
-            clusters = list(clusters)
+    # Get ratio and scale (sqrt of area)
+    df_annotations["scaled_scale"] = np.sqrt(df_annotations["scaled_area"])
 
-        bboxes = get_bbox_array(
-            df_annotations, prefix="scaled", output_bbox_format="coco"
+    # Cluster bboxes by scale and ratio independently
+    clustering_results = [
+        kmeans_euclidean(df_annotations[value], n_clusters=n_clusters)
+        for i, (value, n_clusters) in enumerate(
+            zip(["scaled_scale", "scaled_ratio"], [n_scales, n_ratios])
         )
-        centroids, silhouette_metrics, predicted_clusters = kmeans_iou(
-            bboxes[:, 2:], k=clusters
-        )
+    ]
 
-        # todo: improve way of getting index & move selection to frontend
-        selected = 0
-        if len(clusters) > 1 and show:
-            fig = go.Figure(
-                data=[
-                    go.Scattergl(x=clusters, y=silhouette_metrics, mode="lines+markers")
-                ]
-            )
-            fig.update_layout(
-                xaxis_title="Number of clusters", yaxis_title="Silhouette Coefficient"
-            )
-            fig.show()
-            selected = int(input("Choose best number of clusters: ")) - clusters[0]
-
-        df_annotations["cluster"] = predicted_clusters[selected]
-
-        # bring coco format back adding centered coords
-        centroids = np.concatenate(
-            [np.zeros_like(centroids[selected]), centroids[selected]], axis=-1
-        )
-        centroids = get_df_from_bboxes(
-            centroids, input_bbox_format="coco", output_bbox_format="coco"
-        )
-        centroids = get_area_and_ratio(centroids)
-        plot_clustering_results(centroids, df_annotations)
+    # Plot results
+    plot_clustering_results(clustering_results, df_annotations)
 
 
 if __name__ == "__main__":
