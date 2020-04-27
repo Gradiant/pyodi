@@ -1,7 +1,8 @@
+import numpy as np
 import pytest
+
 from pyodi.core.anchor_generator import AnchorGenerator
 from pyodi.core.clustering import pairwise_iou
-import numpy as np
 
 
 @pytest.mark.parametrize("base_sizes", [[1], [9], [16]])
