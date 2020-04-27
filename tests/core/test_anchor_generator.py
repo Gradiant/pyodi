@@ -56,15 +56,3 @@ def test_iou_with_different_size_anchors():
 
     iou = pairwise_iou(multi_level_anchors[0], multi_level_anchors[1])
     np.testing.assert_equal(np.diag(iou), np.ones(len(iou)) * 0.25)
-
-
-def test_anchors_with_octave_scales():
-    anchor_generator = AnchorGenerator(
-        strides=[2],
-        ratios=[1.0],
-        base_sizes=[1],
-        octave_base_scale=4,
-        scales_per_octave=3,
-    )
-
-    np.testing.assert_equal(anchor_generator.base_anchors, 1)
