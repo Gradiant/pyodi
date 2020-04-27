@@ -1,6 +1,7 @@
+from typing import List, Optional, Tuple
+
 import numpy as np
 from numpy import ndarray
-from typing import List, Optional, Tuple
 
 
 class AnchorGenerator(object):
@@ -250,6 +251,7 @@ class AnchorGenerator(object):
             multi_level_flags.append(flags)
         return multi_level_flags
 
+    # todo: update with numpy if necessary
     # def single_level_valid_flags(
     #     self, featmap_size, valid_size, num_base_anchors, device="cuda"
     # ):
