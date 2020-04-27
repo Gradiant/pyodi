@@ -8,6 +8,7 @@ from loguru import logger
 
 from pyodi.coco.utils import (
     coco_ground_truth_to_dfs,
+    filter_zero_area_bboxes,
     get_bbox_array,
     get_df_from_bboxes,
     get_scale_and_ratio,
@@ -58,6 +59,8 @@ def train_config(
     df_images, df_annotations = coco_ground_truth_to_dfs(coco_ground_truth)
 
     df_annotations = join_annotations_with_image_sizes(df_annotations, df_images)
+
+    df_annotations = filter_zero_area_bboxes(df_annotations)
 
     df_annotations = scale_bbox_dimensions(df_annotations, input_size=input_size)
 
