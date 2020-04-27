@@ -8,9 +8,9 @@ from loguru import logger
 
 from pyodi.coco.utils import (
     coco_ground_truth_to_dfs,
-    get_area_and_ratio,
     get_bbox_array,
     get_df_from_bboxes,
+    get_scale_and_ratio,
     join_annotations_with_image_sizes,
     load_ground_truth_file,
     scale_bbox_dimensions,
@@ -61,19 +61,7 @@ def train_config(
 
     df_annotations = scale_bbox_dimensions(df_annotations, input_size=input_size)
 
-    df_annotations = get_area_and_ratio(df_annotations, prefix="scaled")
-
-    plot_scatter_with_histograms(
-        df_annotations,
-        x="scaled_area",
-        y="scaled_ratio",
-        title="Bounding box area vs Aspect ratio",
-        show=False,
-        histogram=True,
-    )
-
-    # Get ratio and scale (sqrt of area)
-    df_annotations["scaled_scale"] = np.sqrt(df_annotations["scaled_area"])
+    df_annotations = get_scale_and_ratio(df_annotations, prefix="scaled")
 
     # Cluster bboxes by scale and ratio independently
     clustering_results = [
