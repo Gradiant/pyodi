@@ -11,9 +11,11 @@ from pyodi.coco.utils import (
     join_annotations_with_image_sizes,
     load_ground_truth_file,
     scale_bbox_dimensions,
+    get_bbox_array,
 )
-from pyodi.core.clustering import kmeans_euclidean
+from pyodi.core.clustering import kmeans_euclidean, find_pyramid_level
 from pyodi.plots.clustering import plot_clustering_results
+from pyodi.core.anchor_generator import AnchorGenerator
 
 app = typer.Typer()
 
@@ -58,16 +60,39 @@ def train_config_generation(
 
     df_annotations = get_scale_and_ratio(df_annotations, prefix="scaled")
 
+    # Assign fpn level
+    df_annotations["fpn_level"] = find_pyramid_level(
+        get_bbox_array(df_annotations, prefix="scaled")[:, 2:], strides
+    )
+
+    df_annotations["fpn_level_scale"] = df_annotations["fpn_level"].replace(
+        {i: scale for i, scale in enumerate(strides)}
+    )
+
+    df_annotations["level_scale"] = (
+        df_annotations["scaled_scale"] / df_annotations["fpn_level_scale"]
+    )
+
     # Cluster bboxes by scale and ratio independently
     clustering_results = [
         kmeans_euclidean(df_annotations[value], n_clusters=n_clusters)
         for i, (value, n_clusters) in enumerate(
-            zip(["scaled_scale", "scaled_ratio"], [n_scales, n_ratios])
+            zip(["level_scale", "scaled_ratio"], [n_scales, n_ratios])
         )
     ]
 
+    scales = clustering_results[0]["centroids"]
+    ratios = clustering_results[1]["centroids"]
+
     # Plot results
-    plot_clustering_results(clustering_results, df_annotations)
+    plot_clustering_results(df_annotations, scales, ratios, strides)
+
+    anchor_config = dict(
+        type="AnchorGenerator", scales=scales, ratios=ratios, strides=strides
+    )
+    logger.info(f"Anchor configuration: {anchor_config}")
+
+    return anchor_config
 
 
 if __name__ == "__main__":
