@@ -155,3 +155,10 @@ def kmeans_euclidean(
         result["silhouette"] = silhouette_score(values, labels=kmeans.labels_)
 
     return result
+
+
+def find_pyramid_level(bboxes, strides):
+    strides = sorted(strides)
+    levels = np.tile(strides, (2, 1)).T
+    ious = origin_iou(bboxes, levels)
+    return np.argmax(ious, axis=1)
