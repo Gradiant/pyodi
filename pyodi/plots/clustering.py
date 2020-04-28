@@ -26,10 +26,14 @@ def plot_clustering_results(
 
     Parameters
     ----------
-    clustering_results : List[dict]
-        List of dictionaries with cluster information, see output for `core.clustering.kmeans_euclidean`
     df_annotations : pd.DataFrame
         COCO annotations generated dataframe
+    scales: List[float]
+        List with scales
+    ratios: List[float]
+        List with ratios
+    strides: List[int]
+        List with strides
     show : bool, optional
         If true plotly figure will be shown, by default True
     output : str, optional
