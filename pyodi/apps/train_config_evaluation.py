@@ -1,6 +1,5 @@
 import os.path as osp
 import sys
-
 from importlib import import_module
 from pathlib import Path
 from shutil import copyfile
@@ -8,15 +7,10 @@ from tempfile import TemporaryDirectory
 from typing import Optional
 
 import typer
-
 from loguru import logger
 
-from pyodi.coco.utils import (
-    coco_ground_truth_to_dfs,
-    load_ground_truth_file
-)
+from pyodi.coco.utils import coco_ground_truth_to_dfs, load_ground_truth_file
 from pyodi.core.anchor_generator import AnchorGenerator
-
 
 app = typer.Typer()
 
@@ -24,18 +18,17 @@ app = typer.Typer()
 def load_train_config_file(train_config_file: str) -> dict:
     logger.info("Loading Train Config File")
     with TemporaryDirectory() as temp_config_dir:
-        copyfile(train_config_file,
-                        osp.join(temp_config_dir, '_tempconfig.py'))
+        copyfile(train_config_file, osp.join(temp_config_dir, "_tempconfig.py"))
         sys.path.insert(0, temp_config_dir)
-        mod = import_module('_tempconfig')
+        mod = import_module("_tempconfig")
         sys.path.pop(0)
         train_config = {
             name: value
             for name, value in mod.__dict__.items()
-            if not name.startswith('__')
+            if not name.startswith("__")
         }
         # delete imported module
-        del sys.modules['_tempconfig']
+        del sys.modules["_tempconfig"]
     return train_config
 
 
@@ -87,12 +80,11 @@ def train_config_evaluation(
     df_images, df_annotations = coco_ground_truth_to_dfs(coco_ground_truth)
 
     train_config = load_train_config_file(train_config_file)
-    
+
     del train_config["anchor_generator"]["type"]
     anchor_generator = AnchorGenerator(**train_config["anchor_generator"])
-    
-    logger.info(anchor_generator)
 
+    logger.info(anchor_generator)
 
 
 if __name__ == "__main__":

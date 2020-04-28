@@ -2,7 +2,6 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 import typer
-
 from loguru import logger
 
 from pyodi.coco.utils import (
@@ -13,10 +12,8 @@ from pyodi.coco.utils import (
     load_ground_truth_file,
     scale_bbox_dimensions,
 )
-
 from pyodi.core.clustering import kmeans_euclidean
 from pyodi.plots.clustering import plot_clustering_results
-
 
 app = typer.Typer()
 
