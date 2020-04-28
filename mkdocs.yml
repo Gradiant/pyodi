@@ -10,6 +10,9 @@ nav:
   - Reference:
       - apps:
           - ground-truth: reference/apps/ground-truth.md
+          - train-config:
+            - evaluation: reference/apps/train-config-evaluation.md
+            - generation: reference/apps/train-config-generation.md
       - plots:
           - images: reference/plots/images.md
           - boxes: reference/plots/boxes.md
