@@ -1,11 +1,10 @@
-__author__ = "tsungyi"
-
 import copy
 import datetime
 import time
 from collections import defaultdict
 
 import numpy as np
+from loguru import logger
 from pycocotools import mask as maskUtils
 
 
@@ -78,7 +77,6 @@ class COCOeval:
         self._dts = defaultdict(list)  # dt for evaluation
         self.params = Params(iouType=iouType)  # parameters
         self._paramsEval = {}  # parameters for evaluation
-        self.stats = []  # result summarization
         self.ious = {}  # ious between all gts and dts
         if not cocoGt is None:
             self.params.imgIds = sorted(cocoGt.getImgIds())
@@ -287,13 +285,13 @@ class COCOeval:
             else self.ious[imgId, catId]
         )
 
-        T = len(p.iouThrs)
+        n_thresholds = len(p.iouThrs)
         G = len(gt)
         D = len(dt)
-        gtm = np.zeros((T, G))
-        dtm = np.zeros((T, D))
+        gtm = np.zeros((n_thresholds, G))
+        dtm = np.zeros((n_thresholds, D))
         gtIg = np.array([g["_ignore"] for g in gt])
-        dtIg = np.zeros((T, D))
+        dtIg = np.zeros((n_thresholds, D))
         if not len(ious) == 0:
             for tind, t in enumerate(p.iouThrs):
                 for dind, d in enumerate(dt):
@@ -323,7 +321,9 @@ class COCOeval:
         a = np.array([d["area"] < aRng[0] or d["area"] > aRng[1] for d in dt]).reshape(
             (1, len(dt))
         )
-        dtIg = np.logical_or(dtIg, np.logical_and(dtm == 0, np.repeat(a, T, 0)))
+        dtIg = np.logical_or(
+            dtIg, np.logical_and(dtm == 0, np.repeat(a, n_thresholds, 0))
+        )
         # store results for given image and category
         return {
             "image_id": imgId,
@@ -382,6 +382,8 @@ class COCOeval:
         A0 = len(_pe.areaRng)
         # retrieve E at each category, area range, and max number of detections
         for k, k0 in enumerate(k_list):
+            logger.debug(f"k: {k}")
+            logger.debug(f"k0: {k0}")
             Nk = k0 * A0 * I0
             for a, a0 in enumerate(a_list):
                 Na = a0 * I0
@@ -444,6 +446,7 @@ class COCOeval:
                             pass
                         precision[t, :, k, a, m] = np.array(q)
                         scores[t, :, k, a, m] = np.array(ss)
+
         self.eval = {
             "params": p,
             "counts": [T, R, K, A, M],
@@ -461,7 +464,9 @@ class COCOeval:
         Note this functin can *only* be applied on the default parameter setting
         """
 
-        def _summarize(ap=1, iouThr=None, areaRng="all", maxDets=100):
+        def _summarize(
+            ap=1, iouThr=None, areaRng="all", maxDets=100, per_category=False
+        ):
             p = self.params
             iStr = " {:<18} {} @[ IoU={:<9} | area={:>6s} | maxDets={:>3d} ] = {:0.3f}"
             titleStr = "Average Precision" if ap == 1 else "Average Recall"
@@ -493,47 +498,81 @@ class COCOeval:
                 mean_s = -1
             else:
                 mean_s = np.mean(s[s > -1])
-            print(iStr.format(titleStr, typeStr, iouStr, areaRng, maxDets, mean_s))
-            return mean_s
 
-        def _summarizeDets():
-            stats = np.zeros((12,))
-            stats[0] = _summarize(1)
-            stats[1] = _summarize(1, iouThr=0.5, maxDets=self.params.maxDets[2])
-            stats[2] = _summarize(1, iouThr=0.75, maxDets=self.params.maxDets[2])
-            stats[3] = _summarize(1, areaRng="small", maxDets=self.params.maxDets[2])
-            stats[4] = _summarize(1, areaRng="medium", maxDets=self.params.maxDets[2])
-            stats[5] = _summarize(1, areaRng="large", maxDets=self.params.maxDets[2])
-            stats[6] = _summarize(0, maxDets=self.params.maxDets[0])
-            stats[7] = _summarize(0, maxDets=self.params.maxDets[1])
-            stats[8] = _summarize(0, maxDets=self.params.maxDets[2])
-            stats[9] = _summarize(0, areaRng="small", maxDets=self.params.maxDets[2])
-            stats[10] = _summarize(0, areaRng="medium", maxDets=self.params.maxDets[2])
-            stats[11] = _summarize(0, areaRng="large", maxDets=self.params.maxDets[2])
-            return stats
-
-        def _summarizeKps():
-            stats = np.zeros((10,))
-            stats[0] = _summarize(1, maxDets=20)
-            stats[1] = _summarize(1, maxDets=20, iouThr=0.5)
-            stats[2] = _summarize(1, maxDets=20, iouThr=0.75)
-            stats[3] = _summarize(1, maxDets=20, areaRng="medium")
-            stats[4] = _summarize(1, maxDets=20, areaRng="large")
-            stats[5] = _summarize(0, maxDets=20)
-            stats[6] = _summarize(0, maxDets=20, iouThr=0.5)
-            stats[7] = _summarize(0, maxDets=20, iouThr=0.75)
-            stats[8] = _summarize(0, maxDets=20, areaRng="medium")
-            stats[9] = _summarize(0, maxDets=20, areaRng="large")
-            return stats
+            if per_category:
+                per_category_s = s.mean((0, 1, 3))
+                for cat_index, cat_id in enumerate(p.catIds):
+                    class_name = self.cocoGt.cats[cat_id]["name"]
+                    iStr = " {:<40} {} @[ IoU={:<9} | area={:>6s} | maxDets={:>3d} ] = {:0.3f}"
+                    titleStr = "Average Precision" if ap == 1 else "Average Recall"
+                    titleStr = f"{titleStr}: {class_name}"
+                    typeStr = "(AP)" if ap == 1 else "(AR)"
+                    iouStr = (
+                        "{:0.2f}:{:0.2f}".format(p.iouThrs[0], p.iouThrs[-1])
+                        if iouThr is None
+                        else "{:0.2f}".format(iouThr)
+                    )
+                    print(
+                        iStr.format(
+                            titleStr,
+                            typeStr,
+                            iouStr,
+                            areaRng,
+                            maxDets,
+                            per_category_s[cat_index],
+                        )
+                    )
+                return per_category_s
+            else:
+                print(iStr.format(titleStr, typeStr, iouStr, areaRng, maxDets, mean_s))
+                return mean_s
 
         if not self.eval:
             raise Exception("Please run accumulate() first")
-        iouType = self.params.iouType
-        if iouType == "segm" or iouType == "bbox":
-            summarize = _summarizeDets
-        elif iouType == "keypoints":
-            summarize = _summarizeKps
-        self.stats = summarize()
+
+        self.mean_stats = np.zeros((12,))
+        self.mean_stats[0] = _summarize(1)
+        self.mean_stats[1] = _summarize(1, iouThr=0.5, maxDets=self.params.maxDets[2])
+        self.mean_stats[2] = _summarize(1, iouThr=0.75, maxDets=self.params.maxDets[2])
+        self.mean_stats[3] = _summarize(
+            1, areaRng="small", maxDets=self.params.maxDets[2]
+        )
+        self.mean_stats[4] = _summarize(
+            1, areaRng="medium", maxDets=self.params.maxDets[2]
+        )
+        self.mean_stats[5] = _summarize(
+            1, areaRng="large", maxDets=self.params.maxDets[2]
+        )
+        self.mean_stats[6] = _summarize(0, maxDets=self.params.maxDets[0])
+        self.mean_stats[7] = _summarize(0, maxDets=self.params.maxDets[1])
+        self.mean_stats[8] = _summarize(0, maxDets=self.params.maxDets[2])
+        self.mean_stats[9] = _summarize(
+            0, areaRng="small", maxDets=self.params.maxDets[2]
+        )
+        self.mean_stats[10] = _summarize(
+            0, areaRng="medium", maxDets=self.params.maxDets[2]
+        )
+        self.mean_stats[11] = _summarize(
+            0, areaRng="large", maxDets=self.params.maxDets[2]
+        )
+
+        self.per_category_stats = np.zeros((12, len(self.cocoGt.cats)))
+        self.per_category_stats[0] = _summarize(1, per_category=True)
+        self.per_category_stats[1] = _summarize(
+            1, iouThr=0.5, maxDets=self.params.maxDets[2], per_category=True
+        )
+        self.per_category_stats[2] = _summarize(
+            1, iouThr=0.75, maxDets=self.params.maxDets[2], per_category=True
+        )
+        self.per_category_stats[3] = _summarize(
+            1, areaRng="small", maxDets=self.params.maxDets[2], per_category=True
+        )
+        self.per_category_stats[4] = _summarize(
+            1, areaRng="medium", maxDets=self.params.maxDets[2], per_category=True
+        )
+        self.per_category_stats[5] = _summarize(
+            1, areaRng="large", maxDets=self.params.maxDets[2], per_category=True
+        )
 
     def __str__(self):
         self.summarize()
