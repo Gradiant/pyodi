@@ -77,7 +77,10 @@ def train_config_evaluation(
             ratios=[0.5, 1.0, 2.0],
             strides=[4, 8, 16, 32, 64]
         )
-
+    input_size : Tuple[int, int],
+        Model image input size, by default (1280, 720)
+    strides: List[int]
+        List with strides
     show : bool, optional
         Show results or not, by default True
     output : str, optional
@@ -117,7 +120,7 @@ def train_config_evaluation(
 
     df_annotations["overlaps"] = overlaps
 
-    plot_overlap_result(df_annotations)
+    plot_overlap_result(df_annotations, show=show, output=output)
 
 
 if __name__ == "__main__":

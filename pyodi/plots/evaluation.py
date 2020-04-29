@@ -91,4 +91,8 @@ def plot_overlap_result(
         legend=dict(y=0.5),
     )
 
-    fig.show()
+    if show:
+        fig.show()
+
+    if output:
+        fig.write_image(f"{output}/overlap.png")
