@@ -2,7 +2,7 @@ import copy
 import datetime
 import time
 from collections import defaultdict
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 from loguru import logger
@@ -102,6 +102,14 @@ class COCOeval:
         self.max_detections = sorted(max_detections)
         self.lrp_iou_threshold = lrp_iou_threshold
         self.f1_iou_threshold = f1_iou_threshold
+
+        #  per-image per-category evaluation results [KxAxI] elements
+        self.evalImgs: Dict[Any, Any] = defaultdict(list)
+        self.eval: Dict[Any, Any] = {}  # accumulated evaluation results
+        self._gts: Dict[Any, Any] = defaultdict(list)  # gt for evaluation
+        self._dts: Dict[Any, Any] = defaultdict(list)  # dt for evaluation
+
+        self.ious: Dict[Any, Any] = {}
 
         self.image_ids = list(np.unique(sorted(ground_truth.getImgIds())))
         self.category_ids = list(np.unique(sorted(ground_truth.getCatIds())))
