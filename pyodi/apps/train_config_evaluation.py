@@ -12,6 +12,7 @@ from loguru import logger
 
 from pyodi.coco.utils import (
     coco_ground_truth_to_dfs,
+    filter_zero_area_bboxes,
     get_bbox_array,
     get_scale_and_ratio,
     join_annotations_with_image_sizes,
@@ -19,7 +20,7 @@ from pyodi.coco.utils import (
     scale_bbox_dimensions,
 )
 from pyodi.core.anchor_generator import AnchorGenerator
-from pyodi.core.clustering import pairwise_iou
+from pyodi.core.clustering import get_max_overlap
 from pyodi.plots.evaluation import plot_overlap_result
 
 app = typer.Typer()
@@ -96,6 +97,8 @@ def train_config_evaluation(
 
     df_annotations = join_annotations_with_image_sizes(df_annotations, df_images)
 
+    df_annotations = filter_zero_area_bboxes(df_annotations)
+
     df_annotations = scale_bbox_dimensions(df_annotations, input_size=input_size)
 
     df_annotations = get_scale_and_ratio(df_annotations, prefix="scaled")
@@ -115,11 +118,17 @@ def train_config_evaluation(
     )
 
     overlaps = np.zeros(bboxes.shape[0])
+
+    logger.info("Computing overlaps between anchors and ground truth")
     for anchor_level in anchors_per_level:
-        overlaps = np.maximum(overlaps, pairwise_iou(bboxes, anchor_level).max(axis=1))
+        level_overlaps = get_max_overlap(
+            bboxes.astype(np.float32), anchor_level.astype(np.float32)
+        )
+        overlaps = np.maximum(overlaps, level_overlaps)
 
     df_annotations["overlaps"] = overlaps
 
+    logger.info("Plotting results")
     plot_overlap_result(df_annotations, show=show, output=output)
 
 
