@@ -5,7 +5,26 @@ from pandas.core.frame import DataFrame
 from plotly.subplots import make_subplots
 
 
-def plot_overlap_result(df: DataFrame, max_bins: int = 30, show: Optional[bool] = True):
+def plot_overlap_result(
+    df: DataFrame,
+    max_bins: int = 30,
+    show: Optional[bool] = True,
+    output: Optional[str] = None,
+):
+    """Generates plot for train config evaluation based on overlap
+
+    Parameters
+    ----------
+    df : DataFrame
+        COCO annotations generated dataframe with overlap
+    max_bins : int, optional
+        Max bins to use in histograms, by default 30
+    show : Optional[bool], optional
+        If true plotly figure will be shown, by default True
+    output : str, optional
+        Output image folder, by default None
+    """
+
     fig = make_subplots(
         rows=2,
         cols=2,
@@ -19,7 +38,10 @@ def plot_overlap_result(df: DataFrame, max_bins: int = 30, show: Optional[bool] 
 
     fig.append_trace(
         go.Histogram(
-            x=df["overlaps"], histnorm="probability", cumulative_enabled=True,
+            x=df["overlaps"],
+            histnorm="probability",
+            cumulative_enabled=True,
+            showlegend=False,
         ),
         row=1,
         col=1,
@@ -30,6 +52,7 @@ def plot_overlap_result(df: DataFrame, max_bins: int = 30, show: Optional[bool] 
             x=df["scaled_width"],
             y=df["scaled_height"],
             mode="markers",
+            showlegend=False,
             marker=dict(
                 color=df["overlaps"],
                 colorscale="Electric",
@@ -37,7 +60,7 @@ def plot_overlap_result(df: DataFrame, max_bins: int = 30, show: Optional[bool] 
                 cmax=1,
                 showscale=True,
                 colorbar=dict(
-                    title="Overlap value", lenmode="fraction", len=0.25, y=0.8
+                    title="Overlap value", lenmode="fraction", len=0.5, y=0.8
                 ),
             ),
         ),
@@ -48,7 +71,11 @@ def plot_overlap_result(df: DataFrame, max_bins: int = 30, show: Optional[bool] 
     for i, column in enumerate(["scaled_scale", "scaled_ratio"], 1):
         fig.append_trace(
             go.Histogram(
-                x=df[column], y=df["overlaps"], histfunc="avg", nbinsx=max_bins
+                x=df[column],
+                y=df["overlaps"],
+                histfunc="avg",
+                nbinsx=max_bins,
+                showlegend=False,
             ),
             row=2,
             col=i,
