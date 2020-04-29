@@ -615,7 +615,6 @@ class COCOeval:
             )
         )
 
-        print("\nPer Category mAP\n")
         self.per_category_stats = np.zeros((12, len(self.category_ids)))
         self.per_category_stats[0] = _summarize("precision", per_category=True)
         self.per_category_stats[1] = _summarize(
