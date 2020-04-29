@@ -2,10 +2,10 @@ import numpy as np
 import pytest
 
 from pyodi.core.clustering import (
+    find_pyramid_level,
     kmeans_euclidean,
     origin_iou,
     pairwise_iou,
-    find_pyramid_level,
 )
 
 

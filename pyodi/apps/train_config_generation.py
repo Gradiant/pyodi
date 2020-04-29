@@ -7,15 +7,15 @@ from loguru import logger
 from pyodi.coco.utils import (
     coco_ground_truth_to_dfs,
     filter_zero_area_bboxes,
+    get_bbox_array,
     get_scale_and_ratio,
     join_annotations_with_image_sizes,
     load_ground_truth_file,
     scale_bbox_dimensions,
-    get_bbox_array,
 )
-from pyodi.core.clustering import kmeans_euclidean, find_pyramid_level
-from pyodi.plots.clustering import plot_clustering_results
 from pyodi.core.anchor_generator import AnchorGenerator
+from pyodi.core.clustering import find_pyramid_level, kmeans_euclidean
+from pyodi.plots.clustering import plot_clustering_results
 
 app = typer.Typer()
 

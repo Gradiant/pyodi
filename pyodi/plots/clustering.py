@@ -8,9 +8,9 @@ from pandas.core.frame import DataFrame
 from plotly.colors import DEFAULT_PLOTLY_COLORS as COLORS
 from plotly.subplots import make_subplots
 
-from pyodi.plots.boxes import plot_scatter_with_histograms
-from pyodi.core.anchor_generator import AnchorGenerator
 from pyodi.coco.utils import get_df_from_bboxes
+from pyodi.core.anchor_generator import AnchorGenerator
+from pyodi.plots.boxes import plot_scatter_with_histograms
 
 
 def plot_clustering_results(
