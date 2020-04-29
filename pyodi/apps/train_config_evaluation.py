@@ -4,13 +4,22 @@ from importlib import import_module
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
-from typing import Optional
-
+from typing import List, Optional, Tuple
+import numpy as np
 import typer
 from loguru import logger
 
-from pyodi.coco.utils import coco_ground_truth_to_dfs, load_ground_truth_file
+from pyodi.coco.utils import (
+    coco_ground_truth_to_dfs,
+    load_ground_truth_file,
+    join_annotations_with_image_sizes,
+    scale_bbox_dimensions,
+    get_bbox_array,
+    get_scale_and_ratio,
+)
 from pyodi.core.anchor_generator import AnchorGenerator
+from pyodi.core.clustering import pairwise_iou
+from pyodi.plots.evaluation import plot_overlap_result
 
 app = typer.Typer()
 
@@ -37,6 +46,8 @@ def load_train_config_file(train_config_file: str) -> dict:
 def train_config_evaluation(
     ground_truth_file: str,
     train_config_file: str,
+    input_size: Tuple[int, int] = (1280, 720),
+    strides: List[int] = [8, 16, 32, 64, 128],
     show: bool = True,
     output: Optional[str] = None,
 ):
@@ -79,12 +90,33 @@ def train_config_evaluation(
 
     df_images, df_annotations = coco_ground_truth_to_dfs(coco_ground_truth)
 
+    df_annotations = join_annotations_with_image_sizes(df_annotations, df_images)
+
+    df_annotations = scale_bbox_dimensions(df_annotations, input_size=input_size)
+
+    df_annotations = get_scale_and_ratio(df_annotations, prefix="scaled")
+
     train_config = load_train_config_file(train_config_file)
 
     del train_config["anchor_generator"]["type"]
     anchor_generator = AnchorGenerator(**train_config["anchor_generator"])
-
     logger.info(anchor_generator)
+
+    width, height = input_size
+    featmap_sizes = [(width // stride, height // stride) for stride in strides]
+    anchors_per_level = anchor_generator.grid_anchors(featmap_sizes=featmap_sizes)
+
+    bboxes = get_bbox_array(
+        df_annotations, prefix="scaled", output_bbox_format="corners"
+    )
+
+    overlaps = np.zeros(bboxes.shape[0])
+    for anchor_level in anchors_per_level:
+        overlaps = np.maximum(overlaps, pairwise_iou(bboxes, anchor_level).max(axis=1))
+
+    df_annotations["overlaps"] = overlaps
+
+    plot_overlap_result(df_annotations)
 
 
 if __name__ == "__main__":
