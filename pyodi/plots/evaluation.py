@@ -1,7 +1,8 @@
-from plotly.subplots import make_subplots
+from typing import Dict, List, Optional, Union
+
 import plotly.graph_objects as go
 from pandas.core.frame import DataFrame
-from typing import Dict, List, Optional, Union
+from plotly.subplots import make_subplots
 
 
 def plot_overlap_result(df: DataFrame, max_bins: int = 30, show: Optional[bool] = True):

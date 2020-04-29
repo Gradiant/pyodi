@@ -5,17 +5,18 @@ from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
 from typing import List, Optional, Tuple
+
 import numpy as np
 import typer
 from loguru import logger
 
 from pyodi.coco.utils import (
     coco_ground_truth_to_dfs,
-    load_ground_truth_file,
-    join_annotations_with_image_sizes,
-    scale_bbox_dimensions,
     get_bbox_array,
     get_scale_and_ratio,
+    join_annotations_with_image_sizes,
+    load_ground_truth_file,
+    scale_bbox_dimensions,
 )
 from pyodi.core.anchor_generator import AnchorGenerator
 from pyodi.core.clustering import pairwise_iou
