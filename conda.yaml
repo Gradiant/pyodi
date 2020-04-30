@@ -10,15 +10,16 @@ dependencies:
   - flake8
   - pytest
   - scikit-learn
+  - numba
   - pip:
-    - typer
-    - loguru
-    - plotly
-    - pre-commit
-    - mypy
-    - black
-    - isort
-    - git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI
-    - mkdocs
-    - mkdocs-material
-    - mkdocstrings
+      - typer
+      - loguru
+      - plotly
+      - pre-commit
+      - mypy
+      - black
+      - isort
+      - git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI
+      - mkdocs
+      - mkdocs-material
+      - mkdocstrings
