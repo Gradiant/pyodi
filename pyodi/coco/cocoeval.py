@@ -415,10 +415,10 @@ class COCOeval:
 
                         # Only use tps for lrp_iou_threshold threshold
                         tps = tps[
-                            np.argmax(self.iou_thresholds == self.lrp_iou_threshold)
+                            np.where(self.iou_thresholds == self.lrp_iou_threshold)[0]
                         ]
                         fps = fps[
-                            np.argmax(self.iou_thresholds == self.lrp_iou_threshold)
+                            np.where(self.iou_thresholds == self.lrp_iou_threshold)[0]
                         ]
                         IoUoverlap = np.multiply(IoUoverlap, tps)
 
@@ -461,9 +461,11 @@ class COCOeval:
         moLRP = np.mean(OptLRPError)
 
         precision_for_f1 = precision[
-            np.argmax(self.iou_thresholds == self.f1_iou_threshold)
+            np.where(self.iou_thresholds == self.f1_iou_threshold)[0]
         ].mean(0)
-        recall_for_f1 = recall[np.argmax(self.iou_thresholds == self.f1_iou_threshold)]
+        recall_for_f1 = recall[
+            np.where(self.iou_thresholds == self.f1_iou_threshold)[0]
+        ]
         f1 = 2 * (
             (precision_for_f1 * recall_for_f1) / (precision_for_f1 + recall_for_f1)
         )
