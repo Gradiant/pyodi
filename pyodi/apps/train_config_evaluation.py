@@ -49,7 +49,6 @@ def train_config_evaluation(
     ground_truth_file: str,
     train_config_file: str,
     input_size: Tuple[int, int] = (1280, 720),
-    strides: List[int] = [8, 16, 32, 64, 128],
     show: bool = True,
     output: Optional[str] = None,
 ):
@@ -80,8 +79,6 @@ def train_config_evaluation(
         )
     input_size : Tuple[int, int],
         Model image input size, by default (1280, 720)
-    strides: List[int]
-        List with strides
     show : bool, optional
         Show results or not, by default True
     output : str, optional
@@ -110,7 +107,9 @@ def train_config_evaluation(
     logger.info(anchor_generator)
 
     width, height = input_size
-    featmap_sizes = [(width // stride, height // stride) for stride in strides]
+    featmap_sizes = [
+        (width // stride, height // stride) for stride in anchor_generator.strides
+    ]
     anchors_per_level = anchor_generator.grid_anchors(featmap_sizes=featmap_sizes)
 
     bboxes = get_bbox_array(
