@@ -78,19 +78,13 @@ class COCOeval:
             }
 
         if iou_thresholds is None:
-            iou_thresholds = np.linspace(
-                0.5, 0.95, int(np.round((0.95 - 0.5) / 0.05)) + 1, endpoint=True
-            )
+            iou_thresholds = np.arange(0.5, 1, 0.05)
 
         if recall_thresholds is None:
-            recall_thresholds = np.linspace(
-                0.0, 1.00, int(np.round((1.00 - 0.0) / 0.01)) + 1, endpoint=True
-            )
+            recall_thresholds = np.arange(0, 1.01, 0.01)
 
         if score_thresholds is None:
-            score_thresholds = np.linspace(
-                0.0, 1.00, int(np.round((1.00 - 0.0) / 0.01)) + 1, endpoint=True
-            )
+            score_thresholds = np.arange(0, 1.01, 0.01)
 
         self.ground_truth = ground_truth
         self.predictions = predictions
