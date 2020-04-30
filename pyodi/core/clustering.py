@@ -87,7 +87,7 @@ def get_max_overlap(boxes: np.array, anchors: np.array):
     Returns
     -------
     np.array
-        Pairwise iou array with shape [n, 1]
+        Max iou between box and anchors with shape [n, 1]
     """
     rows = boxes.shape[0]
     cols = anchors.shape[0]
