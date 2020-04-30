@@ -117,15 +117,18 @@ def train_config_evaluation(
     )
 
     overlaps = np.zeros(bboxes.shape[0])
+    max_overlap_level = np.zeros(bboxes.shape[0])
 
     logger.info("Computing overlaps between anchors and ground truth")
-    for anchor_level in anchors_per_level:
+    for i, anchor_level in enumerate(anchors_per_level):
         level_overlaps = get_max_overlap(
             bboxes.astype(np.float32), anchor_level.astype(np.float32)
         )
+        max_overlap_level[level_overlaps > overlaps] = i
         overlaps = np.maximum(overlaps, level_overlaps)
 
     df_annotations["overlaps"] = overlaps
+    df_annotations["max_overlap_level"] = max_overlap_level
 
     logger.info("Plotting results")
     plot_overlap_result(df_annotations, show=show, output=output)
