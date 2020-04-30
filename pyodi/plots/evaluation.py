@@ -87,7 +87,7 @@ def plot_overlap_result(
         xaxis2=dict(title="Scaled width"),
         xaxis3=dict(title="Scale"),
         xaxis4=dict(title="Ratio"),
-        yaxis=dict(title="Accumulated overlap"),
+        yaxis=dict(title="Accumulated percentage"),
         yaxis2=dict(title="Scaled heigh"),
         yaxis3=dict(title="Mean overlap"),
         yaxis4=dict(title="Mean overlap"),
