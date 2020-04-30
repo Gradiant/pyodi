@@ -30,7 +30,7 @@ def plot_overlap_result(
         cols=2,
         subplot_titles=(
             "Cumulative overlap distribution",
-            "Plot 2",
+            "Bounding Box Distribution",
             "Scale and mean overlap",
             "Ratio and mean overlap",
         ),
@@ -84,8 +84,11 @@ def plot_overlap_result(
     fig["layout"].update(
         title="Train config evaluation",
         xaxis=dict(title="Overlap values"),
+        xaxis2=dict(title="Scaled width"),
         xaxis3=dict(title="Scale"),
         xaxis4=dict(title="Ratio"),
+        yaxis=dict(title="Accumulated overlap"),
+        yaxis2=dict(title="Scaled heigh"),
         yaxis3=dict(title="Mean overlap"),
         yaxis4=dict(title="Mean overlap"),
         legend=dict(y=0.5),
