@@ -95,7 +95,9 @@ def check_bbox_formats(*args) -> None:
 
 
 def scale_bbox_dimensions(
-    df: DataFrame, input_size: Tuple[int, int] = (1280, 720)
+    df: DataFrame,
+    input_size: Tuple[int, int] = (1280, 720),
+    keep_aspect_ratio: bool = False,
 ) -> DataFrame:
     """Resizes bboxes dimensions to model input size
 
@@ -105,16 +107,27 @@ def scale_bbox_dimensions(
         DataFrame with COCO annotations
     input_size : tuple(int, int)
         Model input size
+    keep_aspect_ratio : bool
+        Whether to keep the aspect ratio or not
     """
-    # todo: add option to keep aspect ratio
+    if keep_aspect_ratio:
+        transform_ratio = float(input_size[0] * df["img_height"]) / (
+            input_size[1] * df["img_width"]
+        )
+    else:
+        transform_ratio = 1.0
+
     df["scaled_col_centroid"] = np.ceil(
         df["col_centroid"] * input_size[0] / df["img_width"]
     )
     df["scaled_row_centroid"] = np.ceil(
-        df["row_centroid"] * input_size[1] / df["img_height"]
+        transform_ratio * df["row_centroid"] * input_size[1] / df["img_height"]
     )
     df["scaled_width"] = np.ceil(df["width"] * input_size[0] / df["img_width"])
-    df["scaled_height"] = np.ceil(df["height"] * input_size[1] / df["img_height"])
+    df["scaled_height"] = np.ceil(
+        transform_ratio * df["height"] * input_size[1] / df["img_height"]
+    )
+
     return df
 
 
