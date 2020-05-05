@@ -2,6 +2,7 @@ from typing import Dict, List, Union
 
 import numpy as np
 from loguru import logger
+from numba import float32, njit, prange
 from numpy import float64, ndarray
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
@@ -68,6 +69,46 @@ def pairwise_iou(bboxes1: ndarray, bboxes2: ndarray) -> ndarray:
     ious = intersection_area / (area1[:, None] + area2 - intersection_area)
 
     return ious
+
+
+@njit(float32[:](float32[:, :], float32[:, :]), parallel=True)
+def get_max_overlap(boxes: np.array, anchors: np.array):
+    """Computes max intersection-over-union between box and anchors.
+
+    Parameters
+    ----------
+    boxes : np.array
+        Array of bboxes with shape [n, 4].
+        In corner format
+    anchors : np.array
+        Array of bboxes with shape [m, 4]
+        In corner format
+
+    Returns
+    -------
+    np.array
+        Max iou between box and anchors with shape [n, 1]
+    """
+    rows = boxes.shape[0]
+    cols = anchors.shape[0]
+    overlap = np.zeros(rows, dtype=np.float32)
+    box_areas = (boxes[:, 2] - boxes[:, 0]) * (boxes[:, 3] - boxes[:, 1])
+    anchors_areas = (anchors[:, 2] - anchors[:, 0]) * (anchors[:, 3] - anchors[:, 1])
+
+    for row in prange(rows):
+
+        for col in range(cols):
+            ymin = max(boxes[row, 0], anchors[col, 0])
+            xmin = max(boxes[row, 1], anchors[col, 1])
+            ymax = min(boxes[row, 2], anchors[col, 2])
+            xmax = min(boxes[row, 3], anchors[col, 3])
+
+            intersection = max(0, ymax - ymin) * max(0, xmax - xmin)
+            union = box_areas[row] + anchors_areas[col] - intersection
+
+            overlap[row] = max(intersection / union, overlap[row])
+
+    return overlap
 
 
 def kmeans_iou(bboxes, k, silhouette_metric=False, distance_metric=np.median):

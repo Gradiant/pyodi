@@ -3,6 +3,7 @@ import pytest
 
 from pyodi.core.clustering import (
     find_pyramid_level,
+    get_max_overlap,
     kmeans_euclidean,
     origin_iou,
     pairwise_iou,
@@ -28,6 +29,15 @@ def test_pairwise_iou(get_bboxes_matrices):
         [[2.0 / 16.0, 0, 6.0 / 400.0], [1.0 / 16.0, 0.0, 5.0 / 400.0]]
     )
     iou_values = pairwise_iou(bboxes1, bboxes2)
+
+    np.testing.assert_equal(expected_result, iou_values)
+
+
+def test_max_overlap(get_bboxes_matrices):
+    bboxes1, bboxes2 = get_bboxes_matrices()
+
+    expected_result = np.array([2.0 / 16.0, 1.0 / 16.0])
+    iou_values = get_max_overlap(bboxes1.astype(np.float32), bboxes2.astype(np.float32))
 
     np.testing.assert_equal(expected_result, iou_values)
 

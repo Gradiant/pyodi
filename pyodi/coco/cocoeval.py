@@ -1,12 +1,15 @@
-__author__ = "tsungyi"
-
 import copy
 import datetime
 import time
 from collections import defaultdict
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
+from loguru import logger
 from pycocotools import mask as maskUtils
+from pycocotools.coco import COCO
+
+Num = Union[int, float]
 
 
 class COCOeval:
@@ -51,81 +54,81 @@ class COCOeval:
     #  counts     - [T,R,K,A,M] parameter dimensions (see above)
     #  precision  - [TxRxKxAxM] precision for every evaluation setting
     #  recall     - [TxKxAxM] max recall for every evaluation setting
-    # Note: precision and recall==-1 for settings with no gt objects.
-    #
-    # See also coco, mask, pycocoDemo, pycocoEvalDemo
-    #
-    # Microsoft COCO Toolbox.      version 2.0
-    # Data, paper, and tutorials available at:  http://mscoco.org/
-    # Code written by Piotr Dollar and Tsung-Yi Lin, 2015.
-    # Licensed under the Simplified BSD License [see coco/license.txt]
-    def __init__(self, cocoGt=None, cocoDt=None, iouType="segm"):
+    def __init__(
+        self,
+        ground_truth: COCO,
+        predictions: COCO,
+        area_ranges: Optional[Dict[str, Tuple[Num, Num]]] = None,
+        iou_thresholds: Optional[List[float]] = None,
+        recall_thresholds: Optional[List[float]] = None,
+        score_thresholds: Optional[List[float]] = None,
+        max_detections: Tuple[int, ...] = (1, 10, 100),
+        lrp_iou_threshold: float = 0.5,
+        f1_iou_threshold: float = 0.5,
+    ):
         """
-        Initialize CocoEval using coco APIs for gt and dt
-        :param cocoGt: coco object with ground truth annotations
-        :param cocoDt: coco object with detection results
-        :return: None
+
         """
-        if not iouType:
-            print("iouType not specified. use default iouType segm")
-        self.cocoGt = cocoGt  # ground truth COCO API
-        self.cocoDt = cocoDt  # detections COCO API
-        self.evalImgs = defaultdict(
-            list
-        )  # per-image per-category evaluation results [KxAxI] elements
-        self.eval = {}  # accumulated evaluation results
-        self._gts = defaultdict(list)  # gt for evaluation
-        self._dts = defaultdict(list)  # dt for evaluation
-        self.params = Params(iouType=iouType)  # parameters
-        self._paramsEval = {}  # parameters for evaluation
-        self.stats = []  # result summarization
-        self.ious = {}  # ious between all gts and dts
-        if not cocoGt is None:
-            self.params.imgIds = sorted(cocoGt.getImgIds())
-            self.params.catIds = sorted(cocoGt.getCatIds())
+        if area_ranges is None:
+            area_ranges = {
+                "all": (0 ** 2, 1e5 ** 2),
+                "small": (0 ** 2, 32 ** 2),
+                "medium": (32 ** 2, 96 ** 2),
+                "large": (96 ** 2, 1e5 ** 2),
+            }
+
+        if iou_thresholds is None:
+            iou_thresholds = np.arange(0.5, 1, 0.05)
+
+        if recall_thresholds is None:
+            recall_thresholds = np.arange(0, 1.01, 0.01)
+
+        if score_thresholds is None:
+            score_thresholds = np.arange(0, 1.01, 0.01)
+
+        self.ground_truth = ground_truth
+        self.predictions = predictions
+
+        self.area_ranges = area_ranges
+        self.iou_thresholds = iou_thresholds
+        self.recall_thresholds = recall_thresholds
+        self.score_thresholds = score_thresholds
+        self.max_detections = sorted(max_detections)
+        self.lrp_iou_threshold = lrp_iou_threshold
+        self.f1_iou_threshold = f1_iou_threshold
+
+        #  per-image per-category evaluation results [KxAxI] elements
+        self.evalImgs: Dict[Any, Any] = defaultdict(list)
+        self.eval: Dict[Any, Any] = {}  # accumulated evaluation results
+        self._gts: Dict[Any, Any] = defaultdict(list)  # gt for evaluation
+        self._dts: Dict[Any, Any] = defaultdict(list)  # dt for evaluation
+
+        self.ious: Dict[Any, Any] = {}
+
+        self.image_ids = list(np.unique(sorted(ground_truth.getImgIds())))
+        self.category_ids = list(np.unique(sorted(ground_truth.getCatIds())))
+        self.maxDets = [1, 10, 100]
 
     def _prepare(self):
         """
         Prepare ._gts and ._dts for evaluation based on params
         :return: None
         """
+        gts = self.ground_truth.loadAnns(
+            self.ground_truth.getAnnIds(imgIds=self.image_ids, catIds=self.category_ids)
+        )
+        dts = self.predictions.loadAnns(
+            self.predictions.getAnnIds(imgIds=self.image_ids, catIds=self.category_ids)
+        )
 
-        def _toMask(anns, coco):
-            # modify ann['segmentation'] by reference
-            for ann in anns:
-                rle = coco.annToRLE(ann)
-                ann["segmentation"] = rle
-
-        p = self.params
-        if p.useCats:
-            gts = self.cocoGt.loadAnns(
-                self.cocoGt.getAnnIds(imgIds=p.imgIds, catIds=p.catIds)
-            )
-            dts = self.cocoDt.loadAnns(
-                self.cocoDt.getAnnIds(imgIds=p.imgIds, catIds=p.catIds)
-            )
-        else:
-            gts = self.cocoGt.loadAnns(self.cocoGt.getAnnIds(imgIds=p.imgIds))
-            dts = self.cocoDt.loadAnns(self.cocoDt.getAnnIds(imgIds=p.imgIds))
-
-        # convert ground truth to mask if iouType == 'segm'
-        if p.iouType == "segm":
-            _toMask(gts, self.cocoGt)
-            _toMask(dts, self.cocoDt)
-        # set ignore flag
         for gt in gts:
             gt["ignore"] = gt["ignore"] if "ignore" in gt else 0
             gt["ignore"] = "iscrowd" in gt and gt["iscrowd"]
-            if p.iouType == "keypoints":
-                gt["ignore"] = (gt["num_keypoints"] == 0) or gt["ignore"]
-        self._gts = defaultdict(list)  # gt for evaluation
-        self._dts = defaultdict(list)  # dt for evaluation
+
         for gt in gts:
             self._gts[gt["image_id"], gt["category_id"]].append(gt)
         for dt in dts:
             self._dts[dt["image_id"], dt["category_id"]].append(dt)
-        self.evalImgs = defaultdict(list)  # per-image per-category evaluation results
-        self.eval = {}  # accumulated evaluation results
 
     def evaluate(self):
         """
@@ -134,209 +137,147 @@ class COCOeval:
         """
         tic = time.time()
         print("Running per image evaluation...")
-        p = self.params
-        # add backward compatibility if useSegm is specified in params
-        if not p.useSegm is None:
-            p.iouType = "segm" if p.useSegm == 1 else "bbox"
-            print(
-                "useSegm (deprecated) is not None. Running {} evaluation".format(
-                    p.iouType
-                )
-            )
-        print("Evaluate annotation type *{}*".format(p.iouType))
-        p.imgIds = list(np.unique(p.imgIds))
-        if p.useCats:
-            p.catIds = list(np.unique(p.catIds))
-        p.maxDets = sorted(p.maxDets)
-        self.params = p
-
         self._prepare()
-        # loop through images, area range, max detection number
-        catIds = p.catIds if p.useCats else [-1]
 
-        if p.iouType == "segm" or p.iouType == "bbox":
-            computeIoU = self.computeIoU
-        elif p.iouType == "keypoints":
-            computeIoU = self.computeOks
         self.ious = {
-            (imgId, catId): computeIoU(imgId, catId)
-            for imgId in p.imgIds
-            for catId in catIds
+            (image_id, category_id): self.compute_iou(image_id, category_id)
+            for image_id in self.image_ids
+            for category_id in self.category_ids
         }
 
-        evaluateImg = self.evaluateImg
-        maxDet = p.maxDets[-1]
-        self.evalImgs = [
-            evaluateImg(imgId, catId, areaRng, maxDet)
-            for catId in catIds
-            for areaRng in p.areaRng
-            for imgId in p.imgIds
+        self.eval_images = [
+            self.evaluateImg(image_id, category_id, area_range, self.max_detections[-1])
+            for category_id in self.category_ids
+            for area_range in self.area_ranges.values()
+            for image_id in self.image_ids
         ]
-        self._paramsEval = copy.deepcopy(self.params)
         toc = time.time()
         print("DONE (t={:0.2f}s).".format(toc - tic))
 
-    def computeIoU(self, imgId, catId):
-        p = self.params
-        if p.useCats:
-            gt = self._gts[imgId, catId]
-            dt = self._dts[imgId, catId]
-        else:
-            gt = [_ for cId in p.catIds for _ in self._gts[imgId, cId]]
-            dt = [_ for cId in p.catIds for _ in self._dts[imgId, cId]]
-        if len(gt) == 0 and len(dt) == 0:
+    def compute_iou(self, image_id, category_id):
+        gt = self._gts[image_id, category_id]
+        dt = self._dts[image_id, category_id]
+
+        if not (gt or gt):
             return []
+
         inds = np.argsort([-d["score"] for d in dt], kind="mergesort")
         dt = [dt[i] for i in inds]
-        if len(dt) > p.maxDets[-1]:
-            dt = dt[0 : p.maxDets[-1]]
 
-        if p.iouType == "segm":
-            g = [g["segmentation"] for g in gt]
-            d = [d["segmentation"] for d in dt]
-        elif p.iouType == "bbox":
-            g = [g["bbox"] for g in gt]
-            d = [d["bbox"] for d in dt]
-        else:
-            raise Exception("unknown iouType for iou computation")
+        if len(dt) > self.max_detections[-1]:
+            dt = dt[0 : self.max_detections[-1]]
+
+        g = [g["bbox"] for g in gt]
+        d = [d["bbox"] for d in dt]
 
         # compute iou between each dt and gt region
         iscrowd = [int(o["iscrowd"]) for o in gt]
         ious = maskUtils.iou(d, g, iscrowd)
         return ious
 
-    def computeOks(self, imgId, catId):
-        p = self.params
-        # dimention here should be Nxm
-        gts = self._gts[imgId, catId]
-        dts = self._dts[imgId, catId]
-        inds = np.argsort([-d["score"] for d in dts], kind="mergesort")
-        dts = [dts[i] for i in inds]
-        if len(dts) > p.maxDets[-1]:
-            dts = dts[0 : p.maxDets[-1]]
-        # if len(gts) == 0 and len(dts) == 0:
-        if len(gts) == 0 or len(dts) == 0:
-            return []
-        ious = np.zeros((len(dts), len(gts)))
-        sigmas = p.kpt_oks_sigmas
-        vars = (sigmas * 2) ** 2
-        k = len(sigmas)
-        # compute oks between each detection and ground truth object
-        for j, gt in enumerate(gts):
-            # create bounds for ignore regions(double the gt bbox)
-            g = np.array(gt["keypoints"])
-            xg = g[0::3]
-            yg = g[1::3]
-            vg = g[2::3]
-            k1 = np.count_nonzero(vg > 0)
-            bb = gt["bbox"]
-            x0 = bb[0] - bb[2]
-            x1 = bb[0] + bb[2] * 2
-            y0 = bb[1] - bb[3]
-            y1 = bb[1] + bb[3] * 2
-            for i, dt in enumerate(dts):
-                d = np.array(dt["keypoints"])
-                xd = d[0::3]
-                yd = d[1::3]
-                if k1 > 0:
-                    # measure the per-keypoint distance if keypoints visible
-                    dx = xd - xg
-                    dy = yd - yg
-                else:
-                    # measure minimum distance to keypoints in (x0,y0) & (x1,y1)
-                    z = np.zeros((k))
-                    dx = np.max((z, x0 - xd), axis=0) + np.max((z, xd - x1), axis=0)
-                    dy = np.max((z, y0 - yd), axis=0) + np.max((z, yd - y1), axis=0)
-                e = (dx ** 2 + dy ** 2) / vars / (gt["area"] + np.spacing(1)) / 2
-                if k1 > 0:
-                    e = e[vg > 0]
-                ious[i, j] = np.sum(np.exp(-e)) / e.shape[0]
-        return ious
-
-    def evaluateImg(self, imgId, catId, aRng, maxDet):
+    def evaluateImg(self, image_id, category_id, area_range, maxDet):
         """
         perform evaluation for single category and image
         :return: dict (single image results)
         """
-        p = self.params
-        if p.useCats:
-            gt = self._gts[imgId, catId]
-            dt = self._dts[imgId, catId]
-        else:
-            gt = [_ for cId in p.catIds for _ in self._gts[imgId, cId]]
-            dt = [_ for cId in p.catIds for _ in self._dts[imgId, cId]]
-        if len(gt) == 0 and len(dt) == 0:
+        ground_truth = self._gts[image_id, category_id]
+        predictions = self._dts[image_id, category_id]
+
+        if not (ground_truth or predictions):
             return None
 
-        for g in gt:
-            if g["ignore"] or (g["area"] < aRng[0] or g["area"] > aRng[1]):
+        for g in ground_truth:
+            if g["ignore"] or (g["area"] < area_range[0] or g["area"] > area_range[1]):
                 g["_ignore"] = 1
             else:
                 g["_ignore"] = 0
 
         # sort dt highest score first, sort gt ignore last
-        gtind = np.argsort([g["_ignore"] for g in gt], kind="mergesort")
-        gt = [gt[i] for i in gtind]
-        dtind = np.argsort([-d["score"] for d in dt], kind="mergesort")
-        dt = [dt[i] for i in dtind[0:maxDet]]
-        iscrowd = [int(o["iscrowd"]) for o in gt]
-        # load computed ious
+        gtind = np.argsort([g["_ignore"] for g in ground_truth], kind="mergesort")
+        ground_truth = [ground_truth[i] for i in gtind]
+
+        dtind = np.argsort([-d["score"] for d in predictions], kind="mergesort")
+        predictions = [predictions[i] for i in dtind[:maxDet]]
+
+        iscrowd = [int(o["iscrowd"]) for o in ground_truth]
+
         ious = (
-            self.ious[imgId, catId][:, gtind]
-            if len(self.ious[imgId, catId]) > 0
-            else self.ious[imgId, catId]
+            self.ious[image_id, category_id][:, gtind]
+            if len(self.ious[image_id, category_id]) > 0
+            else self.ious[image_id, category_id]
         )
 
-        T = len(p.iouThrs)
-        G = len(gt)
-        D = len(dt)
-        gtm = np.zeros((T, G))
-        dtm = np.zeros((T, D))
-        gtIg = np.array([g["_ignore"] for g in gt])
-        dtIg = np.zeros((T, D))
-        if not len(ious) == 0:
-            for tind, t in enumerate(p.iouThrs):
-                for dind, d in enumerate(dt):
+        n_thresholds = len(self.iou_thresholds)
+        n_ground_truth = len(ground_truth)
+        n_predictions = len(predictions)
+
+        ground_truth_matched = np.zeros((n_thresholds, n_ground_truth))
+        predictions_matched = np.zeros((n_thresholds, n_predictions))
+
+        predictions_iou = np.zeros(n_predictions)
+
+        ground_truth_ignore = np.array([g["_ignore"] for g in ground_truth])
+        predictions_ignore = np.zeros((n_thresholds, n_predictions))
+
+        if len(ious) > 0:
+            for tind, t in enumerate(self.iou_thresholds):
+                for dind, d in enumerate(predictions):
                     # information about best match so far (m=-1 -> unmatched)
                     iou = min([t, 1 - 1e-10])
-                    m = -1
-                    for gind, g in enumerate(gt):
+                    match = -1
+                    for gind, g in enumerate(ground_truth):
                         # if this gt already matched, and not a crowd, continue
-                        if gtm[tind, gind] > 0 and not iscrowd[gind]:
+                        if ground_truth_matched[tind, gind] > 0 and not iscrowd[gind]:
                             continue
                         # if dt matched to reg gt, and on ignore gt, stop
-                        if m > -1 and gtIg[m] == 0 and gtIg[gind] == 1:
+                        if (
+                            match > -1
+                            and ground_truth_ignore[match] == 0
+                            and ground_truth_ignore[gind] == 1
+                        ):
                             break
                         # continue to next gt unless better match made
                         if ious[dind, gind] < iou:
                             continue
                         # if match successful and best so far, store appropriately
                         iou = ious[dind, gind]
-                        m = gind
-                    # if match made store id of match for both dt and gt
-                    if m == -1:
+                        match = gind
+                    if match == -1:
                         continue
-                    dtIg[tind, dind] = gtIg[m]
-                    dtm[tind, dind] = gt[m]["id"]
-                    gtm[tind, m] = d["id"]
+                    # if match made store id of match for both dt and gt
+                    predictions_ignore[tind, dind] = ground_truth_ignore[match]
+                    predictions_matched[tind, dind] = ground_truth[match]["id"]
+                    ground_truth_matched[tind, match] = d["id"]
+
+                    # LRP
+                    if t == self.lrp_iou_threshold:
+                        predictions_iou[dind] = iou
+
         # set unmatched detections outside of area range to ignore
-        a = np.array([d["area"] < aRng[0] or d["area"] > aRng[1] for d in dt]).reshape(
-            (1, len(dt))
+        a = np.array(
+            [
+                d["area"] < area_range[0] or d["area"] > area_range[1]
+                for d in predictions
+            ]
+        ).reshape((1, n_predictions))
+        predictions_ignore = np.logical_or(
+            predictions_ignore,
+            np.logical_and(predictions_matched == 0, np.repeat(a, n_thresholds, 0)),
         )
-        dtIg = np.logical_or(dtIg, np.logical_and(dtm == 0, np.repeat(a, T, 0)))
         # store results for given image and category
         return {
-            "image_id": imgId,
-            "category_id": catId,
-            "aRng": aRng,
-            "maxDet": maxDet,
-            "dtIds": [d["id"] for d in dt],
-            "gtIds": [g["id"] for g in gt],
-            "dtMatches": dtm,
-            "gtMatches": gtm,
-            "dtScores": [d["score"] for d in dt],
-            "gtIgnore": gtIg,
-            "dtIgnore": dtIg,
+            "image_id": image_id,
+            "category_id": category_id,
+            "area_range": area_range,
+            "max_detections": self.max_detections[-1],
+            "dtIds": [d["id"] for d in predictions],
+            "gtIds": [g["id"] for g in ground_truth],
+            "dtMatches": predictions_matched,
+            "gtMatches": ground_truth_matched,
+            "dtScores": [d["score"] for d in predictions],
+            "gtIgnore": ground_truth_ignore,
+            "dtIgnore": predictions_ignore,
+            "dtIoUs": predictions_iou,
         }
 
     def accumulate(self, p=None):
@@ -347,50 +288,62 @@ class COCOeval:
         """
         print("Accumulating evaluation results...")
         tic = time.time()
-        if not self.evalImgs:
-            print("Please run evaluate() first")
-        # allows input customized parameters
-        if p is None:
-            p = self.params
-        p.catIds = p.catIds if p.useCats == 1 else [-1]
-        T = len(p.iouThrs)
-        R = len(p.recThrs)
-        K = len(p.catIds) if p.useCats else 1
-        A = len(p.areaRng)
-        M = len(p.maxDets)
-        precision = -np.ones(
-            (T, R, K, A, M)
-        )  # -1 for the precision of absent categories
-        recall = -np.ones((T, K, A, M))
-        scores = -np.ones((T, R, K, A, M))
 
-        # create dictionary for future indexing
-        _pe = self._paramsEval
-        catIds = _pe.catIds if _pe.useCats else [-1]
-        setK = set(catIds)
-        setA = set(map(tuple, _pe.areaRng))
-        setM = set(_pe.maxDets)
-        setI = set(_pe.imgIds)
-        # get inds to evaluate
-        k_list = [n for n, k in enumerate(p.catIds) if k in setK]
-        m_list = [m for n, m in enumerate(p.maxDets) if m in setM]
-        a_list = [
-            n for n, a in enumerate(map(lambda x: tuple(x), p.areaRng)) if a in setA
-        ]
-        i_list = [n for n, i in enumerate(p.imgIds) if i in setI]
-        I0 = len(_pe.imgIds)
-        A0 = len(_pe.areaRng)
+        n_iou_thresholds = len(self.iou_thresholds)
+        n_recall_thresholds = len(self.recall_thresholds)
+        n_categories = len(self.category_ids)
+        n_max_detections = len(self.max_detections)
+        n_images = len(self.image_ids)
+        n_area_ranges = len(self.area_ranges)
+        n_score_thresholds = len(self.score_thresholds)
+
+        # -1 for the precision of absent categories
+        precision = -np.ones(
+            (
+                n_iou_thresholds,
+                n_recall_thresholds,
+                n_categories,
+                n_area_ranges,
+                n_max_detections,
+            )
+        )
+        recall = -np.ones(
+            (n_iou_thresholds, n_categories, n_area_ranges, n_max_detections)
+        )
+        scores = -np.ones(
+            (
+                n_iou_thresholds,
+                n_recall_thresholds,
+                n_categories,
+                n_area_ranges,
+                n_max_detections,
+            )
+        )
+
+        omega = np.zeros((n_score_thresholds, n_categories))
+        nhat = np.zeros((n_score_thresholds, n_categories))
+        mhat = np.zeros((n_score_thresholds, n_categories))
+        LRPError = -np.ones((n_score_thresholds, n_categories))
+        LocError = -np.ones((n_score_thresholds, n_categories))
+        FPError = -np.ones((n_score_thresholds, n_categories))
+        FNError = -np.ones((n_score_thresholds, n_categories))
+        OptLRPError = -np.ones((1, n_categories))
+        OptLocError = -np.ones((1, n_categories))
+        OptFPError = -np.ones((1, n_categories))
+        OptFNError = -np.ones((1, n_categories))
+        Threshold = -np.ones((1, n_categories))
+
         # retrieve E at each category, area range, and max number of detections
-        for k, k0 in enumerate(k_list):
-            Nk = k0 * A0 * I0
-            for a, a0 in enumerate(a_list):
-                Na = a0 * I0
-                for m, maxDet in enumerate(m_list):
-                    E = [self.evalImgs[Nk + Na + i] for i in i_list]
-                    E = [e for e in E if not e is None]
+        for k in range(n_categories):
+            Nk = k * n_area_ranges * n_images
+            for a, area_range in enumerate(self.area_ranges):
+                Na = a * n_images
+                for m, maxDet in enumerate(self.max_detections):
+                    E = [self.eval_images[Nk + Na + i] for i in range(n_images)]
+                    E = [e for e in E if e is not None]
                     if len(E) == 0:
                         continue
-                    dtScores = np.concatenate([e["dtScores"][0:maxDet] for e in E])
+                    dtScores = np.concatenate([e["dtScores"][:maxDet] for e in E])
 
                     # different sorting method generates slightly different results.
                     # mergesort is used to be consistent as Matlab implementation.
@@ -398,28 +351,31 @@ class COCOeval:
                     dtScoresSorted = dtScores[inds]
 
                     dtm = np.concatenate(
-                        [e["dtMatches"][:, 0:maxDet] for e in E], axis=1
+                        [e["dtMatches"][:, :maxDet] for e in E], axis=1
                     )[:, inds]
                     dtIg = np.concatenate(
-                        [e["dtIgnore"][:, 0:maxDet] for e in E], axis=1
+                        [e["dtIgnore"][:, :maxDet] for e in E], axis=1
                     )[:, inds]
                     gtIg = np.concatenate([e["gtIgnore"] for e in E])
                     npig = np.count_nonzero(gtIg == 0)
                     if npig == 0:
                         continue
+
                     tps = np.logical_and(dtm, np.logical_not(dtIg))
                     fps = np.logical_and(np.logical_not(dtm), np.logical_not(dtIg))
 
                     tp_sum = np.cumsum(tps, axis=1).astype(dtype=np.float)
                     fp_sum = np.cumsum(fps, axis=1).astype(dtype=np.float)
+
+                    # COCO mAP
                     for t, (tp, fp) in enumerate(zip(tp_sum, fp_sum)):
                         tp = np.array(tp)
                         fp = np.array(fp)
                         nd = len(tp)
                         rc = tp / npig
                         pr = tp / (fp + tp + np.spacing(1))
-                        q = np.zeros((R,))
-                        ss = np.zeros((R,))
+                        q = np.zeros((n_recall_thresholds,))
+                        ss = np.zeros((n_recall_thresholds,))
 
                         if nd:
                             recall[t, k, a, m] = rc[-1]
@@ -435,22 +391,111 @@ class COCOeval:
                             if pr[i] > pr[i - 1]:
                                 pr[i - 1] = pr[i]
 
-                        inds = np.searchsorted(rc, p.recThrs, side="left")
+                        recall_inds = np.searchsorted(
+                            rc, self.recall_thresholds, side="left"
+                        )
                         try:
-                            for ri, pi in enumerate(inds):
+                            for ri, pi in enumerate(recall_inds):
                                 q[ri] = pr[pi]
                                 ss[ri] = dtScoresSorted[pi]
                         except:
                             pass
                         precision[t, :, k, a, m] = np.array(q)
                         scores[t, :, k, a, m] = np.array(ss)
+
+                    # LRP
+                    if area_range == "all" and maxDet == max(self.max_detections):
+                        IoUoverlap = np.concatenate([e["dtIoUs"][:maxDet] for e in E])[
+                            inds
+                        ]
+
+                        for i in range(len(IoUoverlap)):
+                            if IoUoverlap[i] != 0:
+                                IoUoverlap[i] = 1 - IoUoverlap[i]
+
+                        # Only use tps for lrp_iou_threshold threshold
+                        tps = tps[
+                          self.iou_thresholds == self.lrp_iou_threshold
+                        ]
+                        fps = fps[
+                           self.iou_thresholds == self.lrp_iou_threshold
+                        ]
+                        IoUoverlap = np.multiply(IoUoverlap, tps)
+
+                        for s, s0 in enumerate(self.score_thresholds):
+                            thrind = np.sum(dtScoresSorted >= s0)
+                            omega[s, k] = np.sum(tps[:thrind])
+                            nhat[s, k] = np.sum(fps[:thrind])
+                            mhat[s, k] = npig - omega[s, k]
+                            normalize = np.maximum((omega[s, k] + nhat[s, k]), npig)
+                            FPError[s, k] = (1 - self.lrp_iou_threshold) * (
+                                nhat[s, k] / normalize
+                            )
+                            FNError[s, k] = (1 - self.lrp_iou_threshold) * (
+                                mhat[s, k] / normalize
+                            )
+                            Z = (omega[s, k] + mhat[s, k] + nhat[s, k]) / normalize
+                            LRPError[s, k] = (
+                                (np.sum(IoUoverlap[:thrind]) / normalize)
+                                + FPError[s, k]
+                                + FNError[s, k]
+                            )
+                            LRPError[s, k] = LRPError[s, k] / Z
+                            LRPError[s, k] = LRPError[s, k] / (
+                                1 - self.lrp_iou_threshold
+                            )
+                            LocError[s, k] = np.sum(IoUoverlap[:thrind]) / omega[s, k]
+                            FPError[s, k] = nhat[s, k] / (omega[s, k] + nhat[s, k])
+                            FNError[s, k] = mhat[s, k] / npig
+
+                        OptLRPError[0, k] = min(LRPError[:, k])
+                        ind = np.argmin(LRPError[:, k])
+                        OptLocError[0, k] = LocError[ind, k]
+                        OptFPError[0, k] = FPError[ind, k]
+                        OptFNError[0, k] = FNError[ind, k]
+                        Threshold[0, k] = ind * 0.01
+
+        moLRPLoc = np.nanmean(OptLocError)
+        moLRPFP = np.nanmean(OptFPError)
+        moLRPFN = np.nanmean(OptFNError)
+        moLRP = np.mean(OptLRPError)
+
+        precision_for_f1 = precision[
+           self.iou_thresholds == self.f1_iou_threshold
+        ].mean(0)
+        recall_for_f1 = recall[
+            self.iou_thresholds == self.f1_iou_threshold
+        ]
+        f1 = 2 * (
+            (precision_for_f1 * recall_for_f1) / (precision_for_f1 + recall_for_f1)
+        )
         self.eval = {
-            "params": p,
-            "counts": [T, R, K, A, M],
+            "counts": [
+                n_iou_thresholds,
+                n_recall_thresholds,
+                n_categories,
+                n_area_ranges,
+                n_max_detections,
+                n_score_thresholds,
+            ],
             "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "precision": precision,
             "recall": recall,
+            "f1": f1,
             "scores": scores,
+            "LRPError": LRPError,
+            "BoxLocComp": LocError,
+            "FPComp": FPError,
+            "FNComp": FNError,
+            "oLRPError": OptLRPError,
+            "oBoxLocComp": OptLocError,
+            "oFPComp": OptFPError,
+            "oFNComp": OptFNError,
+            "moLRP": moLRP,
+            "moLRPLoc": moLRPLoc,
+            "moLRPFP": moLRPFP,
+            "moLRPFN": moLRPFN,
+            "OptThresholds": Threshold,
         }
         toc = time.time()
         print("DONE (t={:0.2f}s).".format(toc - tic))
@@ -461,155 +506,137 @@ class COCOeval:
         Note this functin can *only* be applied on the default parameter setting
         """
 
-        def _summarize(ap=1, iouThr=None, areaRng="all", maxDets=100):
-            p = self.params
-            iStr = " {:<18} {} @[ IoU={:<9} | area={:>6s} | maxDets={:>3d} ] = {:0.3f}"
-            titleStr = "Average Precision" if ap == 1 else "Average Recall"
-            typeStr = "(AP)" if ap == 1 else "(AR)"
+        def _summarize(
+            mode="precision",
+            iouThr=None,
+            areaRng="all",
+            maxDets=100,
+            per_category=False,
+        ):
+            iStr = " {:<40} {} @[ IoU={:<9} | area={:>6s} | maxDets={:>3d} ] = {:0.3f}"
+            titleStr = f"Average {mode.title()}"
+            typeStr = {"precision": "(AP)", "recall": "(AR)", "f1": "(F1)"}[mode]
             iouStr = (
-                "{:0.2f}:{:0.2f}".format(p.iouThrs[0], p.iouThrs[-1])
+                "{:0.2f}:{:0.2f}".format(
+                    self.iou_thresholds[0], self.iou_thresholds[-1]
+                )
                 if iouThr is None
                 else "{:0.2f}".format(iouThr)
             )
 
-            aind = [i for i, aRng in enumerate(p.areaRngLbl) if aRng == areaRng]
-            mind = [i for i, mDet in enumerate(p.maxDets) if mDet == maxDets]
-            if ap == 1:
-                # dimension of precision: [TxRxKxAxM]
-                s = self.eval["precision"]
-                # IoU
+            aind = list(self.area_ranges.keys()).index(areaRng)
+            mind = self.max_detections.index(maxDets)
+
+            results = self.eval[mode]
+
+            if mode in ["precision", "recall", "f1"]:
                 if iouThr is not None:
-                    t = np.where(iouThr == p.iouThrs)[0]
-                    s = s[t]
-                s = s[:, :, :, aind, mind]
+                    results = results[np.where(iouThr == self.iou_thresholds)[0]]
+                results = results[..., aind, mind]
+
+            if per_category:
+                per_category_results = results.mean(tuple(range(results.ndim - 1)))
+
+                """
+                for cat_index, cat_id in enumerate(self.category_ids):
+                    class_name = self.ground_truth.cats[cat_id]["name"]
+                    class_titleStr = f"{titleStr}: {class_name}"
+                    print(
+                        iStr.format(
+                            class_titleStr,
+                            typeStr,
+                            iouStr,
+                            areaRng,
+                            maxDets,
+                            per_category_results[cat_index],
+                        )
+                    )
+                """
+                return per_category_results
             else:
-                # dimension of recall: [TxKxAxM]
-                s = self.eval["recall"]
-                if iouThr is not None:
-                    t = np.where(iouThr == p.iouThrs)[0]
-                    s = s[t]
-                s = s[:, :, aind, mind]
-            if len(s[s > -1]) == 0:
-                mean_s = -1
-            else:
-                mean_s = np.mean(s[s > -1])
-            print(iStr.format(titleStr, typeStr, iouStr, areaRng, maxDets, mean_s))
-            return mean_s
+                if np.sum(results > -1) == 0:
+                    mean_results = -1
+                else:
+                    mean_results = np.mean(results[results > -1])
+                print(
+                    iStr.format(
+                        titleStr, typeStr, iouStr, areaRng, maxDets, mean_results
+                    )
+                )
+                return mean_results
 
-        def _summarizeDets():
-            stats = np.zeros((12,))
-            stats[0] = _summarize(1)
-            stats[1] = _summarize(1, iouThr=0.5, maxDets=self.params.maxDets[2])
-            stats[2] = _summarize(1, iouThr=0.75, maxDets=self.params.maxDets[2])
-            stats[3] = _summarize(1, areaRng="small", maxDets=self.params.maxDets[2])
-            stats[4] = _summarize(1, areaRng="medium", maxDets=self.params.maxDets[2])
-            stats[5] = _summarize(1, areaRng="large", maxDets=self.params.maxDets[2])
-            stats[6] = _summarize(0, maxDets=self.params.maxDets[0])
-            stats[7] = _summarize(0, maxDets=self.params.maxDets[1])
-            stats[8] = _summarize(0, maxDets=self.params.maxDets[2])
-            stats[9] = _summarize(0, areaRng="small", maxDets=self.params.maxDets[2])
-            stats[10] = _summarize(0, areaRng="medium", maxDets=self.params.maxDets[2])
-            stats[11] = _summarize(0, areaRng="large", maxDets=self.params.maxDets[2])
-            return stats
+        self.mean_stats = np.zeros((13,))
 
-        def _summarizeKps():
-            stats = np.zeros((10,))
-            stats[0] = _summarize(1, maxDets=20)
-            stats[1] = _summarize(1, maxDets=20, iouThr=0.5)
-            stats[2] = _summarize(1, maxDets=20, iouThr=0.75)
-            stats[3] = _summarize(1, maxDets=20, areaRng="medium")
-            stats[4] = _summarize(1, maxDets=20, areaRng="large")
-            stats[5] = _summarize(0, maxDets=20)
-            stats[6] = _summarize(0, maxDets=20, iouThr=0.5)
-            stats[7] = _summarize(0, maxDets=20, iouThr=0.75)
-            stats[8] = _summarize(0, maxDets=20, areaRng="medium")
-            stats[9] = _summarize(0, maxDets=20, areaRng="large")
-            return stats
+        print("\nCOCO mAP\n")
+        print("------------------------------------------------------\n")
+        self.mean_stats[0] = _summarize("precision")
+        self.mean_stats[1] = _summarize(
+            "precision", iouThr=0.5, maxDets=self.max_detections[2]
+        )
+        self.mean_stats[2] = _summarize(
+            "precision", iouThr=0.75, maxDets=self.max_detections[2]
+        )
+        self.mean_stats[3] = _summarize(
+            "precision", areaRng="small", maxDets=self.max_detections[2]
+        )
+        self.mean_stats[4] = _summarize(
+            "precision", areaRng="medium", maxDets=self.max_detections[2]
+        )
+        self.mean_stats[5] = _summarize(
+            "precision", areaRng="large", maxDets=self.max_detections[2]
+        )
 
-        if not self.eval:
-            raise Exception("Please run accumulate() first")
-        iouType = self.params.iouType
-        if iouType == "segm" or iouType == "bbox":
-            summarize = _summarizeDets
-        elif iouType == "keypoints":
-            summarize = _summarizeKps
-        self.stats = summarize()
+        self.mean_stats[6] = _summarize("recall", maxDets=self.max_detections[0])
+        self.mean_stats[7] = _summarize("recall", maxDets=self.max_detections[1])
+        self.mean_stats[8] = _summarize("recall", maxDets=self.max_detections[2])
+        self.mean_stats[9] = _summarize(
+            "recall", areaRng="small", maxDets=self.max_detections[2]
+        )
+        self.mean_stats[10] = _summarize(
+            "recall", areaRng="medium", maxDets=self.max_detections[2]
+        )
+        self.mean_stats[11] = _summarize(
+            "recall", areaRng="large", maxDets=self.max_detections[2]
+        )
+        self.mean_stats[12] = _summarize("f1", iouThr=0.5)
+
+        print("\nMean Optimal LRP and Components\n")
+        print("------------------------------------------------------\n")
+        print(
+            "moLRP={:0.4f}, moLRP_LocComp={:0.4f}, moLRP_FPComp={:0.4f}, moLRP_FPComp={:0.4f} \n".format(
+                self.eval["moLRP"],
+                self.eval["moLRPLoc"],
+                self.eval["moLRPFP"],
+                self.eval["moLRPFN"],
+            )
+        )
+
+        self.per_category_stats = np.zeros((12, len(self.category_ids)))
+        self.per_category_stats[0] = _summarize("precision", per_category=True)
+        self.per_category_stats[1] = _summarize(
+            "recall", iouThr=0.5, maxDets=self.max_detections[2], per_category=True
+        )
+        self.per_category_stats[2] = _summarize(
+            "precision", iouThr=0.75, maxDets=self.max_detections[2], per_category=True
+        )
+        self.per_category_stats[3] = _summarize(
+            "precision",
+            areaRng="small",
+            maxDets=self.max_detections[2],
+            per_category=True,
+        )
+        self.per_category_stats[4] = _summarize(
+            "precision",
+            areaRng="medium",
+            maxDets=self.max_detections[2],
+            per_category=True,
+        )
+        self.per_category_stats[5] = _summarize(
+            "precision",
+            areaRng="large",
+            maxDets=self.max_detections[2],
+            per_category=True,
+        )
 
     def __str__(self):
         self.summarize()
-
-
-class Params:
-    """
-    Params for coco evaluation api
-    """
-
-    def setDetParams(self):
-        self.imgIds = []
-        self.catIds = []
-        # np.arange causes trouble.  the data point on arange is slightly larger than the true value
-        self.iouThrs = np.linspace(
-            0.5, 0.95, int(np.round((0.95 - 0.5) / 0.05)) + 1, endpoint=True
-        )
-        self.recThrs = np.linspace(
-            0.0, 1.00, int(np.round((1.00 - 0.0) / 0.01)) + 1, endpoint=True
-        )
-        self.maxDets = [1, 10, 100]
-        self.areaRng = [
-            [0 ** 2, 1e5 ** 2],
-            [0 ** 2, 32 ** 2],
-            [32 ** 2, 96 ** 2],
-            [96 ** 2, 1e5 ** 2],
-        ]
-        self.areaRngLbl = ["all", "small", "medium", "large"]
-        self.useCats = 1
-
-    def setKpParams(self):
-        self.imgIds = []
-        self.catIds = []
-        # np.arange causes trouble.  the data point on arange is slightly larger than the true value
-        self.iouThrs = np.linspace(
-            0.5, 0.95, int(np.round((0.95 - 0.5) / 0.05)) + 1, endpoint=True
-        )
-        self.recThrs = np.linspace(
-            0.0, 1.00, int(np.round((1.00 - 0.0) / 0.01)) + 1, endpoint=True
-        )
-        self.maxDets = [20]
-        self.areaRng = [[0 ** 2, 1e5 ** 2], [32 ** 2, 96 ** 2], [96 ** 2, 1e5 ** 2]]
-        self.areaRngLbl = ["all", "medium", "large"]
-        self.useCats = 1
-        self.kpt_oks_sigmas = (
-            np.array(
-                [
-                    0.26,
-                    0.25,
-                    0.25,
-                    0.35,
-                    0.35,
-                    0.79,
-                    0.79,
-                    0.72,
-                    0.72,
-                    0.62,
-                    0.62,
-                    1.07,
-                    1.07,
-                    0.87,
-                    0.87,
-                    0.89,
-                    0.89,
-                ]
-            )
-            / 10.0
-        )
-
-    def __init__(self, iouType="segm"):
-        if iouType == "segm" or iouType == "bbox":
-            self.setDetParams()
-        elif iouType == "keypoints":
-            self.setKpParams()
-        else:
-            raise Exception("iouType not supported")
-        self.iouType = iouType
-        # useSegm is deprecated
-        self.useSegm = None
