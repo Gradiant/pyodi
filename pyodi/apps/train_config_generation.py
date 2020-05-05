@@ -28,7 +28,7 @@ def train_config_generation(
     strides: List[int] = [8, 16, 32, 64, 128],
     show: bool = True,
     output: Optional[str] = None,
-    keep_aspect_ratio: bool = False,
+    keep_ratio: bool = False,
 ):
     """Computes optimal anchors for a given COCO dataset based on iou clustering.
 
@@ -42,6 +42,8 @@ def train_config_generation(
         Output file where results are saved, by default None
     input_size : tuple, optional
         Model image input size, by default (1280, 720)
+    keep_ratio: bool, optional
+        Whether to keep the aspect ratio, by default False
     """
 
     if output is not None:
@@ -56,7 +58,7 @@ def train_config_generation(
     df_annotations = filter_zero_area_bboxes(df_annotations)
 
     df_annotations = scale_bbox_dimensions(
-        df_annotations, input_size=input_size, keep_aspect_ratio=keep_aspect_ratio
+        df_annotations, input_size=input_size, keep_ratio=keep_ratio
     )
 
     df_annotations = get_scale_and_ratio(df_annotations, prefix="scaled")
