@@ -111,7 +111,7 @@ def scale_bbox_dimensions(
         Whether to keep the aspect ratio or not
     """
     if keep_aspect_ratio:
-        transform_ratio = float(input_size[0] * df["img_height"]) / (
+        transform_ratio = (input_size[0] * df["img_height"]) / (
             input_size[1] * df["img_width"]
         )
     else:
