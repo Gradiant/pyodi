@@ -95,9 +95,7 @@ def check_bbox_formats(*args) -> None:
 
 
 def scale_bbox_dimensions(
-    df: DataFrame,
-    input_size: Tuple[int, int] = (1280, 720),
-    keep_aspect_ratio: bool = False,
+    df: DataFrame, input_size: Tuple[int, int] = (1280, 720), keep_ratio: bool = False,
 ) -> DataFrame:
     """Resizes bboxes dimensions to model input size
 
@@ -107,26 +105,27 @@ def scale_bbox_dimensions(
         DataFrame with COCO annotations
     input_size : tuple(int, int)
         Model input size
-    keep_aspect_ratio : bool
-        Whether to keep the aspect ratio or not
+    keep_ratio : bool
+        Whether to keep the aspect ratio
     """
-    if keep_aspect_ratio:
-        transform_ratio = (input_size[0] * df["img_height"]) / (
-            input_size[1] * df["img_width"]
-        )
+    if keep_ratio:
+        scale_factor = pd.concat(
+            [
+                max(input_size) / df[["img_height", "img_width"]].max(1),
+                min(input_size) / df[["img_height", "img_width"]].min(1),
+            ],
+            axis=1,
+        ).min(1)
+        w_scale = np.round(df["img_width"] * scale_factor) / df["img_width"]
+        h_scale = np.round(df["img_height"] * scale_factor) / df["img_height"]
     else:
-        transform_ratio = 1.0
+        w_scale = input_size[0] / df["img_width"]
+        h_scale = input_size[1] / df["img_height"]
 
-    df["scaled_col_centroid"] = np.ceil(
-        df["col_centroid"] * input_size[0] / df["img_width"]
-    )
-    df["scaled_row_centroid"] = np.ceil(
-        transform_ratio * df["row_centroid"] * input_size[1] / df["img_height"]
-    )
-    df["scaled_width"] = np.ceil(df["width"] * input_size[0] / df["img_width"])
-    df["scaled_height"] = np.ceil(
-        transform_ratio * df["height"] * input_size[1] / df["img_height"]
-    )
+    df["scaled_col_centroid"] = np.ceil(df["col_centroid"] * w_scale)
+    df["scaled_row_centroid"] = np.ceil(df["row_centroid"] * h_scale)
+    df["scaled_width"] = np.ceil(df["width"] * w_scale)
+    df["scaled_height"] = np.ceil(df["height"] * h_scale)
 
     return df
 
