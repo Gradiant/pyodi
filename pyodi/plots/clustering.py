@@ -8,12 +8,16 @@ from pandas.core.frame import DataFrame
 from plotly.colors import DEFAULT_PLOTLY_COLORS as COLORS
 from plotly.subplots import make_subplots
 
+from pyodi.coco.utils import get_df_from_bboxes
+from pyodi.core.anchor_generator import AnchorGenerator
 from pyodi.plots.boxes import plot_scatter_with_histograms
 
 
 def plot_clustering_results(
-    clustering_results: List[Dict[str, Union[ndarray, float64]]],
     df_annotations: DataFrame,
+    scales: List[float],
+    ratios: List[float],
+    strides: List[int],
     show: Optional[bool] = True,
     output: Optional[str] = None,
     centroid_color: Optional[tuple] = None,
@@ -22,10 +26,14 @@ def plot_clustering_results(
 
     Parameters
     ----------
-    clustering_results : List[dict]
-        List of dictionaries with cluster information, see output for `core.clustering.kmeans_euclidean`
     df_annotations : pd.DataFrame
         COCO annotations generated dataframe
+    scales: List[float]
+        List with scales
+    ratios: List[float]
+        List with ratios
+    strides: List[int]
+        List with strides
     show : bool, optional
         If true plotly figure will be shown, by default True
     output : str, optional
@@ -38,12 +46,12 @@ def plot_clustering_results(
         centroid_color = COLORS[len(df_annotations.category.unique()) % len(COLORS)]
 
     fig = make_subplots(
-        rows=1, cols=2, subplot_titles=["Scale vs Ratio", "Width vs Height"]
+        rows=1, cols=2, subplot_titles=["Relative Scale vs Ratio", "Width vs Height"]
     )
 
     plot_scatter_with_histograms(
         df_annotations,
-        x=f"scaled_scale",
+        x=f"level_scale",
         y=f"scaled_ratio",
         legendgroup="classes",
         show=False,
@@ -52,11 +60,7 @@ def plot_clustering_results(
         fig=fig,
     )
 
-    scale_clusters = clustering_results[0]["centroids"]
-    ratio_clusters = clustering_results[1]["centroids"]
-    cluster_grid = np.array(np.meshgrid(scale_clusters, ratio_clusters)).T.reshape(
-        -1, 2
-    )
+    cluster_grid = np.array(np.meshgrid(scales, ratios)).T.reshape(-1, 2)
 
     fig.append_trace(
         go.Scattergl(
@@ -88,30 +92,36 @@ def plot_clustering_results(
         col=2,
     )
 
-    cluster_widths = cluster_grid[:, 0] / np.sqrt(cluster_grid[:, 1])
-    cluster_heights = cluster_widths * cluster_grid[:, 1]
-    fig.append_trace(
-        go.Scattergl(
-            x=cluster_widths,
-            y=cluster_heights,
-            mode="markers",
-            legendgroup="centroids",
-            name="centroids",
-            showlegend=False,
-            marker=dict(
-                color=centroid_color,
-                size=10,
-                line=dict(width=2, color="DarkSlateGrey"),
+    base_anchors = AnchorGenerator(
+        strides=strides, ratios=ratios, scales=scales
+    ).base_anchors
+
+    for anchor_level in base_anchors:
+        anchor_level = get_df_from_bboxes(
+            anchor_level, input_bbox_format="corners", output_bbox_format="coco"
+        )
+        fig.append_trace(
+            go.Scattergl(
+                x=anchor_level["width"],
+                y=anchor_level["height"],
+                mode="markers",
+                legendgroup="centroids",
+                name="centroids",
+                showlegend=False,
+                marker=dict(
+                    color=centroid_color,
+                    size=10,
+                    line=dict(width=2, color="DarkSlateGrey"),
+                ),
             ),
-        ),
-        row=1,
-        col=2,
-    )
+            row=1,
+            col=2,
+        )
 
     fig["layout"].update(
         title="Anchor cluster visualization",
         xaxis2=dict(title="Scaled width"),
-        xaxis=dict(title="Scale"),
+        xaxis=dict(title="Relative Scale"),
         yaxis2=dict(title="Scaled height"),
         yaxis=dict(title="Ratio"),
     )

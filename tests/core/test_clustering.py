@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from pyodi.core.clustering import (
+    find_pyramid_level,
     get_max_overlap,
     kmeans_euclidean,
     origin_iou,
@@ -66,3 +67,10 @@ def test_kmeans_scale_ratio():
     X = np.array([[1, 2], [1, 4], [1, 0], [10, 2], [10, 4], [10, 0]])
     result = kmeans_euclidean(X, n_clusters=2, random_state=0, silhouette_metric=True)
     np.testing.assert_almost_equal(result["silhouette"], 0.713, 3)
+
+
+def test_find_levels():
+    X = np.array([[1, 1], [10, 10], [64, 64]])
+    strides = [4, 8, 16, 32, 64]
+    levels = find_pyramid_level(X, strides)
+    np.testing.assert_equal(levels, np.array([0, 1, 4]))
