@@ -94,8 +94,8 @@ def plot_scatter_with_histograms(
         )
 
         fig.layout = dict(
-            xaxis=dict(domain=[0, 0.85], showgrid=False, zeroline=False),
-            yaxis=dict(domain=[0, 0.85], showgrid=False, zeroline=False),
+            xaxis=dict(domain=[0, 0.84], showgrid=False, zeroline=False),
+            yaxis=dict(domain=[0, 0.83], showgrid=False, zeroline=False),
             xaxis2=dict(
                 domain=[0.85, 1], showgrid=False, zeroline=False, range=(0, 100)
             ),
