@@ -2,8 +2,6 @@ from typing import Dict, List, Optional, Union
 
 import numpy as np
 import plotly.graph_objects as go
-from loguru import logger
-from numpy import float64, ndarray
 from pandas.core.frame import DataFrame
 from plotly.colors import DEFAULT_PLOTLY_COLORS as COLORS
 from plotly.subplots import make_subplots
@@ -15,9 +13,7 @@ from pyodi.plots.boxes import plot_scatter_with_histograms
 
 def plot_clustering_results(
     df_annotations: DataFrame,
-    scales: List[float],
-    ratios: List[float],
-    strides: List[int],
+    anchor_generator: AnchorGenerator,
     show: Optional[bool] = True,
     output: Optional[str] = None,
     centroid_color: Optional[tuple] = None,
@@ -29,12 +25,8 @@ def plot_clustering_results(
     ----------
     df_annotations : pd.DataFrame
         COCO annotations generated dataframe
-    scales: List[float]
-        List with scales
-    ratios: List[float]
-        List with ratios
-    strides: List[int]
-        List with strides
+    anchor_generator: core.AnchorGenerator
+        Anchor generator instance
     show : bool, optional
         If true plotly figure will be shown, by default True
     output : str, optional
@@ -63,7 +55,9 @@ def plot_clustering_results(
         fig=fig,
     )
 
-    cluster_grid = np.array(np.meshgrid(scales, ratios)).T.reshape(-1, 2)
+    cluster_grid = np.array(
+        np.meshgrid(anchor_generator.scales, anchor_generator.ratios)
+    ).T.reshape(-1, 2)
 
     fig.append_trace(
         go.Scattergl(
@@ -95,11 +89,7 @@ def plot_clustering_results(
         col=2,
     )
 
-    base_anchors = AnchorGenerator(
-        strides=strides, ratios=ratios, scales=scales
-    ).base_anchors
-
-    for anchor_level in base_anchors:
+    for anchor_level in anchor_generator.base_anchors:
         anchor_level = get_df_from_bboxes(
             anchor_level, input_bbox_format="corners", output_bbox_format="coco"
         )
