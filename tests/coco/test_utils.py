@@ -32,6 +32,14 @@ def test_scale_bbox_dimensions(get_simple_annotations_with_img_sizes):
     np.testing.assert_equal(bboxes, expected_bboxes)
 
 
+def test_scale_bbox_dimensions_with_keep_ratio(get_simple_annotations_with_img_sizes):
+    df_annotations = get_simple_annotations_with_img_sizes()
+    df_annotations = scale_bbox_dimensions(df_annotations, (1280, 720), keep_ratio=True)
+    bboxes = get_bbox_array(df_annotations, prefix="scaled")
+    expected_bboxes = np.array([[0, 0, 72, 72], [144, 144, 360, 288]], dtype=np.int32)
+    np.testing.assert_equal(bboxes, expected_bboxes)
+
+
 def test_get_area_and_ratio(get_simple_annotations_with_img_sizes):
     df_annotations = get_simple_annotations_with_img_sizes()
     df_annotations = get_scale_and_ratio(df_annotations)
