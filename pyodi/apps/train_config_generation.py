@@ -49,7 +49,11 @@ def train_config_generation(
     """
 
     if output is not None:
-        output = str(Path(output) / Path(ground_truth_file).name)
+        output = str(Path(output) / Path(ground_truth_file).stem)
+        output_dir_path = Path(output)
+
+        if not output_dir_path.exists():
+            output_dir_path.mkdir(parents=True)
 
     coco_ground_truth = load_ground_truth_file(ground_truth_file)
 
@@ -90,10 +94,12 @@ def train_config_generation(
     ratios = clustering_results[1]["centroids"]
 
     # Plot results
-    plot_clustering_results(df_annotations, scales, ratios, strides)
+    plot_clustering_results(
+        df_annotations, scales, ratios, strides, show=show, output=output,
+    )
 
     anchor_config = dict(
-        type="AnchorGenerator", scales=scales, ratios=ratios, strides=strides
+        type="AnchorGenerator", scales=scales, ratios=ratios, strides=strides,
     )
     logger.info(f"Anchor configuration: {anchor_config}")
 

@@ -21,6 +21,7 @@ def plot_clustering_results(
     show: Optional[bool] = True,
     output: Optional[str] = None,
     centroid_color: Optional[tuple] = None,
+    title: Optional[str] = None,
 ):
     """Plots cluster results in two different views, width vs heihgt and area vs ratio.
 
@@ -40,6 +41,8 @@ def plot_clustering_results(
         Output image folder, by default None
     centroid_color: tuple, optional
         Plotly rgb color format for painting centroids, by default None
+    title: str, optional
+        Plot title and filename is output is not None, by default None
     """
 
     if centroid_color is None:
@@ -119,7 +122,7 @@ def plot_clustering_results(
         )
 
     fig["layout"].update(
-        title="Anchor cluster visualization",
+        title=title,
         xaxis2=dict(title="Scaled width"),
         xaxis=dict(title="Relative Scale"),
         yaxis2=dict(title="Scaled height"),
@@ -129,5 +132,6 @@ def plot_clustering_results(
     if show:
         fig.show()
 
-    if output:
-        fig.write_image(f"{output}/clusters.png")
+    if output and title:
+        title = title.replace(" ", "_")
+        fig.write_image(f"{output}/{title}.png")
