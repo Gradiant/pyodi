@@ -122,3 +122,35 @@ def plot_scatter_with_histograms(
         fig.write_image(f"{output}/{title}.png")
 
     return fig
+
+
+def get_centroids_heatmap(df, n_rows=9, n_cols=9):
+    import numpy as np
+
+    rows = df["row_centroid"] / df["img_height"]
+    cols = df["col_centroid"] / df["img_width"]
+    heatmap = np.zeros((n_rows, n_cols))
+    for row, col in zip(rows, cols):
+        row = int(row * n_rows)
+        col = int(col * n_cols)
+        heatmap[row, col] += 1
+
+    return heatmap
+
+
+def plot_heatmap(heatmap, title="", show=True, output=None):
+    fig = go.Figure(data=go.Heatmap(z=heatmap))
+
+    fig.update_layout(title_text=title, title_font_size=20)
+
+    fig.update_xaxes(showticklabels=False)
+    fig.update_yaxes(showticklabels=False)
+
+    if show:
+        fig.show()
+
+    if output:
+        title = title.replace(" ", "_")
+        fig.write_image(f"{output}/{title}.png")
+
+    return fig
