@@ -80,7 +80,7 @@ def plot_scatter_with_histograms(
             x=df_annotations[x],
             name=f"{x} distribution",
             yaxis="y2",
-            marker=dict(color="#17becf"),
+            marker=dict(color="rgb(246, 207, 113)"),
             histnorm="percent",
             xbins=dict(size=10),
         )
@@ -88,7 +88,7 @@ def plot_scatter_with_histograms(
             y=df_annotations[y],
             name=f"{y} distribution",
             xaxis="x2",
-            marker=dict(color="#17becf"),
+            marker=dict(color="rgb(102, 197, 204)"),
             histnorm="percent",
             ybins=dict(size=10),
         )
