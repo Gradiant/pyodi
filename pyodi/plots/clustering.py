@@ -46,8 +46,8 @@ def plot_clustering_results(
 
     plot_scatter_with_histograms(
         df_annotations,
-        x=f"level_scale",
-        y=f"scaled_ratio",
+        x=f"log_level_scale",
+        y=f"log_ratio",
         legendgroup="classes",
         show=False,
         colors=COLORS,
@@ -56,7 +56,7 @@ def plot_clustering_results(
     )
 
     cluster_grid = np.array(
-        np.meshgrid(anchor_generator.scales, anchor_generator.ratios)
+        np.meshgrid(np.log(anchor_generator.scales), np.log(anchor_generator.ratios))
     ).T.reshape(-1, 2)
 
     fig.append_trace(
@@ -121,7 +121,7 @@ def plot_clustering_results(
 
     if show:
         fig.show()
-
     if output and title:
         title = title.replace(" ", "_")
+        fig.update_layout(width=1600, height=900)
         fig.write_image(f"{output}/{title}.png")

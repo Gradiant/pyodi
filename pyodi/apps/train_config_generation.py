@@ -90,28 +90,34 @@ def train_config_generation(
         df_annotations["scaled_scale"] / df_annotations["fpn_level_scale"]
     )
 
-    # Normalize ratio to logn scale
+    # Normalize to log scale
     df_annotations["log_ratio"] = np.log(df_annotations["scaled_ratio"])
+    df_annotations["log_level_scale"] = np.log(df_annotations["level_scale"])
 
     # Cluster bboxes by scale and ratio independently
     clustering_results = [
         kmeans_euclidean(df_annotations[value], n_clusters=n_clusters)
         for i, (value, n_clusters) in enumerate(
-            zip(["level_scale", "log_ratio"], [n_scales, n_ratios])
+            zip(["log_level_scale", "log_ratio"], [n_scales, n_ratios])
         )
     ]
 
-    scales = clustering_results[0]["centroids"]
+    # Bring back
+    scales = np.e ** clustering_results[0]["centroids"]
     ratios = np.e ** clustering_results[1]["centroids"]
 
     anchor_generator = AnchorGenerator(
-        strides=strides, ratios=ratios, scales=scales, base_sizes=anchor_base_sizes
+        strides=strides, ratios=ratios, scales=scales, base_sizes=anchor_base_sizes,
     )
     logger.info(f"Anchor configuration: \n{anchor_generator}")
 
     # Plot results
     plot_clustering_results(
-        df_annotations, anchor_generator, show=show, output=output,
+        df_annotations,
+        anchor_generator,
+        show=show,
+        output=output,
+        title="COCO_anchor_generation",
     )
 
     anchor_config = dict(
