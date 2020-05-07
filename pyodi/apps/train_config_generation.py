@@ -5,9 +5,15 @@ The [`pyodi train-config generation`][pyodi.apps.train_config_generation.train_c
 to automatically generate a [mmdetection](https://github.com/open-mmlab/mmdetection) anchor configuration to train your model.
 
 ## Procedure
-Ground truth boxes are assigned to the anchor base sizes with highest Intersection over Union (IoU) score. After this, box scales are normalized
-with respect to their matched base size and box aspect ratios are transormed using natural log function. Both features, scales and ratios
-are independently clustered with kmeans algorithm. The number of clusters depends on input values for `n_scales` and `n_ratios`.
+Ground truth boxes are assigned to the anchor base size that has highest Intersection over Union (IoU) score with them.
+This step, allow us to locate each bounding box in a feature level of the FPN pyramid.
+
+Once this is done, we compute a ratio between the scales of ground truth boxes and the scales of their associated anchors.
+We apply a log transform to this ratio between scales and cluster them using kmeans algorithm, where the number of
+obtained clusters depends on `n_scales` parameter.
+
+Then a similar procedure is followed to obtain the reference scale ratios of the dataset, computing log scales ratios
+of each box and clustering them with number of clusters equal to `n_ratios`.
 
 Example usage:
 ``` bash
@@ -18,9 +24,19 @@ The app allows you to observe two different plots:
 
 ## Scale vs Ratio
 
-In this graphic you can distinguish how your bounding boxes scales and ratios are distributed. The x axis represent the scale with respect to
-the matched anchor base size scale and the y axis contains the bounding box ratios. Centroids are a combination obtained after clustering both
-features independently. In example below we see a total of nine centroids, obtained through combinating the ratios and scales obtained with kmeans.
+In this graphic you can distinguish how your bounding boxes log scales and ratios are distributed. The x axis represent the log scale of the ratio between
+the bounding box scales and the scale of their matched anchor base size. The y axis contains the bounding box log ratios.
+Centroids are the result of combinating the obtained scales and ratios obtained with kmeans.
+
+
+![COCO scale_ratio](../../images/train-config-generation/COCO_scale_vs_ratio.png)
+
+See how clusters appear in those areas where box distribution is more dense. For COCO dataset, most of object have log relative scales between (-.5, .5).
+Nevertheless, aspect ratio log distribution looks quite different and their values are more spread. We could increase the value of `n_ratios` from three to
+four, having into account that this would result in a larger number of anchors that would increase the computational cost of our training.
+In plot below we can oberve the result for n_Ratios equal to four.
+
+![COCO scale_ratio](../../images/train-config-generation/COCO_scale_vs_ratio_4.png)
 
 ## Bounding Box Distribution
 
@@ -58,7 +74,7 @@ app = typer.Typer()
 def train_config_generation(
     ground_truth_file: str,
     input_size: Tuple[int, int] = (1280, 720),
-    n_ratios: int = 3,
+    n_ratios: int = 4,
     n_scales: int = 3,
     strides: List[int] = [4, 8, 16, 32, 64],
     anchor_base_sizes: List[int] = [32, 64, 128, 256, 512],
