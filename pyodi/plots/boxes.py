@@ -10,7 +10,7 @@ def plot_scatter_with_histograms(
     title=None,
     show=True,
     output=None,
-    max_values=None,
+    max_values=(1, 1),
     histogram=True,
     label="category",
     colors=None,
@@ -82,7 +82,7 @@ def plot_scatter_with_histograms(
             yaxis="y2",
             marker=dict(color="#17becf"),
             histnorm="percent",
-            xbins=dict(size=10),
+            xbins=dict(size=0.02),
         )
         fig.add_histogram(
             y=df_annotations[y],
@@ -90,12 +90,22 @@ def plot_scatter_with_histograms(
             xaxis="x2",
             marker=dict(color="#17becf"),
             histnorm="percent",
-            ybins=dict(size=10),
+            ybins=dict(size=0.02),
         )
 
         fig.layout = dict(
-            xaxis=dict(domain=[0, 0.84], showgrid=False, zeroline=False),
-            yaxis=dict(domain=[0, 0.83], showgrid=False, zeroline=False),
+            xaxis=dict(
+                domain=[0, 0.84],
+                showgrid=False,
+                zeroline=False,
+                range=[-0.01, max_values[0]],
+            ),
+            yaxis=dict(
+                domain=[0, 0.83],
+                showgrid=False,
+                zeroline=False,
+                range=[-0.01, max_values[1]],
+            ),
             xaxis2=dict(
                 domain=[0.85, 1], showgrid=False, zeroline=False, range=(0, 100)
             ),
@@ -103,10 +113,6 @@ def plot_scatter_with_histograms(
                 domain=[0.85, 1], showgrid=False, zeroline=False, range=(0, 100)
             ),
         )
-
-    if max_values:
-        fig.update_xaxes(title=x, range=[0, max_values[0]])
-        fig.update_yaxes(title=y, range=[0, max_values[1]])
 
     if title is None:
         title = f"{x} vs {y}"

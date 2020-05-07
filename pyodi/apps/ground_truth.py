@@ -91,6 +91,12 @@ def ground_truth(
     )
 
     df_annotations = join_annotations_with_image_sizes(df_annotations, df_images)
+    df_annotations["absolute_height"] = (
+        df_annotations["height"] / df_annotations["img_height"]
+    )
+    df_annotations["absolute_width"] = (
+        df_annotations["width"] / df_annotations["img_width"]
+    )
 
     plot_heatmap(
         get_centroids_heatmap(df_annotations),
@@ -101,6 +107,9 @@ def ground_truth(
 
     plot_scatter_with_histograms(
         df_annotations,
+        x="absolute_width",
+        y="absolute_height",
+        max_values=(1.01, 1.01),
         title=f"{Path(ground_truth_file).stem}: Bounding Box Shapes",
         show=show,
         output=output,
