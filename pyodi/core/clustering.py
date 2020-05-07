@@ -198,22 +198,21 @@ def kmeans_euclidean(
     return result
 
 
-def find_pyramid_level(bboxes: ndarray, strides: List[int]) -> ndarray:
+def find_pyramid_level(bboxes: ndarray, anchor_base_sizes: List[int]) -> ndarray:
     """Matches bboxes with pyramid levels given their stride
 
     Parameters
     ----------
     bboxes : ndarray
         Bbox array with dimension [n, 2] in widht, height order
-    strides : List[int]
-        List with strides
-
+    anchor_base_sizes : List[int]
+        List with anchor base sizes
     Returns
     -------
     ndarray
         Best match per bbox correponding with index of stride
     """
-    strides = sorted(strides)
-    levels = np.tile(strides, (2, 1)).T
+    anchor_base_sizes = sorted(anchor_base_sizes)
+    levels = np.tile(anchor_base_sizes, (2, 1)).T
     ious = origin_iou(bboxes, levels)
     return np.argmax(ious, axis=1)

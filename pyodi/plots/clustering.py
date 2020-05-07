@@ -2,8 +2,6 @@ from typing import Dict, List, Optional, Union
 
 import numpy as np
 import plotly.graph_objects as go
-from loguru import logger
-from numpy import float64, ndarray
 from pandas.core.frame import DataFrame
 from plotly.colors import DEFAULT_PLOTLY_COLORS as COLORS
 from plotly.subplots import make_subplots
@@ -15,12 +13,11 @@ from pyodi.plots.boxes import plot_scatter_with_histograms
 
 def plot_clustering_results(
     df_annotations: DataFrame,
-    scales: List[float],
-    ratios: List[float],
-    strides: List[int],
+    anchor_generator: AnchorGenerator,
     show: Optional[bool] = True,
     output: Optional[str] = None,
     centroid_color: Optional[tuple] = None,
+    title: Optional[str] = None,
 ):
     """Plots cluster results in two different views, width vs heihgt and area vs ratio.
 
@@ -28,18 +25,16 @@ def plot_clustering_results(
     ----------
     df_annotations : pd.DataFrame
         COCO annotations generated dataframe
-    scales: List[float]
-        List with scales
-    ratios: List[float]
-        List with ratios
-    strides: List[int]
-        List with strides
+    anchor_generator: core.AnchorGenerator
+        Anchor generator instance
     show : bool, optional
         If true plotly figure will be shown, by default True
     output : str, optional
         Output image folder, by default None
     centroid_color: tuple, optional
         Plotly rgb color format for painting centroids, by default None
+    title: str, optional
+        Plot title and filename is output is not None, by default None
     """
 
     if centroid_color is None:
@@ -60,7 +55,9 @@ def plot_clustering_results(
         fig=fig,
     )
 
-    cluster_grid = np.array(np.meshgrid(scales, ratios)).T.reshape(-1, 2)
+    cluster_grid = np.array(
+        np.meshgrid(anchor_generator.scales, anchor_generator.ratios)
+    ).T.reshape(-1, 2)
 
     fig.append_trace(
         go.Scattergl(
@@ -92,11 +89,7 @@ def plot_clustering_results(
         col=2,
     )
 
-    base_anchors = AnchorGenerator(
-        strides=strides, ratios=ratios, scales=scales
-    ).base_anchors
-
-    for anchor_level in base_anchors:
+    for anchor_level in anchor_generator.base_anchors:
         anchor_level = get_df_from_bboxes(
             anchor_level, input_bbox_format="corners", output_bbox_format="coco"
         )
@@ -119,7 +112,7 @@ def plot_clustering_results(
         )
 
     fig["layout"].update(
-        title="Anchor cluster visualization",
+        title=title,
         xaxis2=dict(title="Scaled width"),
         xaxis=dict(title="Relative Scale"),
         yaxis2=dict(title="Scaled height"),
@@ -129,5 +122,6 @@ def plot_clustering_results(
     if show:
         fig.show()
 
-    if output:
-        fig.write_image(f"{output}/clusters.png")
+    if output and title:
+        title = title.replace(" ", "_")
+        fig.write_image(f"{output}/{title}.png")
