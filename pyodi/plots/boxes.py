@@ -1,5 +1,9 @@
+from typing import Optional
+
+import numpy as np
 import plotly.graph_objects as go
 from loguru import logger
+from pandas import DataFrame
 from plotly.subplots import make_subplots
 
 
@@ -130,21 +134,24 @@ def plot_scatter_with_histograms(
     return fig
 
 
-def get_centroids_heatmap(df, n_rows=9, n_cols=9):
-    import numpy as np
-
+def get_centroids_heatmap(
+    df: DataFrame, n_rows: int = 9, n_cols: int = 9
+) -> np.ndarray:
     rows = df["row_centroid"] / df["img_height"]
     cols = df["col_centroid"] / df["img_width"]
     heatmap = np.zeros((n_rows, n_cols))
     for row, col in zip(rows, cols):
-        row = int(row * n_rows)
-        col = int(col * n_cols)
-        heatmap[row, col] += 1
+        heatmap[int(row * n_rows), int(col * n_cols)] += 1
 
     return heatmap
 
 
-def plot_heatmap(heatmap, title="", show=True, output=None):
+def plot_heatmap(
+    heatmap: np.ndarray,
+    title: str = "",
+    show: bool = True,
+    output: Optional[str] = None,
+) -> go.Figure:
     fig = go.Figure(data=go.Heatmap(z=heatmap))
 
     fig.update_layout(title_text=title, title_font_size=20)
