@@ -38,20 +38,20 @@ def plot_image_shape_distribution(
             x=df_images[x],
             name=f"{x} distribution",
             yaxis="y2",
-            marker=dict(color="#17becf"),
+            marker=dict(color="rgb(246, 207, 113)"),
             histnorm="percent",
         )
         fig.add_histogram(
             y=df_images[y],
             name=f"{y} distribution",
             xaxis="x2",
-            marker=dict(color="#17becf"),
+            marker=dict(color="rgb(102, 197, 204)"),
             histnorm="percent",
         )
 
         fig.layout = dict(
-            xaxis=dict(domain=[0, 0.85], showgrid=False, zeroline=False,),
-            yaxis=dict(domain=[0, 0.85], showgrid=False, zeroline=False),
+            xaxis=dict(domain=[0, 0.84], showgrid=False, zeroline=False,),
+            yaxis=dict(domain=[0, 0.83], showgrid=False, zeroline=False),
             xaxis2=dict(
                 domain=[0.85, 1], showgrid=False, zeroline=False, range=(0, 100)
             ),
