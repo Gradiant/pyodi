@@ -10,6 +10,7 @@ def plot_scatter_with_histograms(
     title=None,
     show=True,
     output=None,
+    output_size=(1600, 900),
     max_values=None,
     histogram=True,
     label="category",
@@ -35,9 +36,11 @@ def plot_scatter_with_histograms(
     show : bool, optional
         if activated figure is shown, by default True
     output : str, optional
-        output path folder , by default None
+        output path folder, by default None
+    output_size : tuple
+        size of saved images, by default (1600, 900)
     max_values : tuple, optional
-        x,y max allowed values in represention, by default None
+        x,y max allowed values in representation, by default None
     histogram: bool, optional
         when histogram is true a marginal histogram distribution of each axis is drawn, by default False
     label: str, optional
@@ -119,6 +122,7 @@ def plot_scatter_with_histograms(
 
     if output:
         title = title.replace(" ", "_")
+        fig.update_layout(width=output_size[0], height=output_size[1])
         fig.write_image(f"{output}/{title}.png")
 
     return fig

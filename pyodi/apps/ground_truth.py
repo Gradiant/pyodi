@@ -36,7 +36,7 @@ The app is divided in two sections:
 # API REFERENCE
 """
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional, Tuple, Union
 
 import typer
 from loguru import logger
@@ -51,7 +51,10 @@ app = typer.Typer()
 @logger.catch
 @app.command()
 def ground_truth(
-    ground_truth_file: str, show: bool = True, output: Optional[str] = None
+    ground_truth_file: str,
+    show: bool = True,
+    output: Optional[str] = None,
+    output_size: Tuple[int, int] = (1600, 900),
 ) -> None:
     """Explore the images and bounding boxes of a dataset.
 
@@ -62,14 +65,19 @@ def ground_truth(
 
     show : bool, optional
         Default: True.
-        Wheter to show results or not.
+        Whether to show results or not.
 
     output : str, optional
         Default: None
         If not None, results will be saved under `output` dir.
+
+    output_size : tuple
+        Default: (1600, 900)
+        Size of the saved images when output is defined.
     """
     if output is not None:
-        output = str(Path(output) / Path(ground_truth_file).name)
+        output = str(Path(output) / Path(ground_truth_file).stem)
+        Path(output).mkdir(parents=True, exist_ok=True)
 
     coco_ground_truth = load_ground_truth_file(ground_truth_file)
 
@@ -80,22 +88,25 @@ def ground_truth(
         title=f"{Path(ground_truth_file).stem}: Image Shape Distribution",
         show=show,
         output=output,
+        output_size=output_size,
     )
 
     plot_histogram(
         df_images,
         "ratio",
-        title="Image aspect ratio (h / w)",
+        title="Image Aspect Ratio",
         xbins=dict(size=0.2),
         show=show,
         output=output,
+        output_size=output_size,
     )
 
     plot_scatter_with_histograms(
         df_annotations,
-        title=f"{Path(ground_truth_file).stem}: Bounding Box Distribution",
+        title="Bounding Box Distribution",
         show=show,
         output=output,
+        output_size=output_size,
     )
 
 
