@@ -33,7 +33,7 @@ def plot_scatter_with_histograms(
     show=True,
     output=None,
     output_size=(1600, 900),
-    max_values=(1, 1),
+    max_values=None,
     histogram=True,
     label="category",
     colors=None,
@@ -125,18 +125,8 @@ def plot_scatter_with_histograms(
         )
 
         fig.layout = dict(
-            xaxis=dict(
-                domain=[0, 0.84],
-                showgrid=False,
-                zeroline=False,
-                range=[-0.01, max_values[0]],
-            ),
-            yaxis=dict(
-                domain=[0, 0.83],
-                showgrid=False,
-                zeroline=False,
-                range=[-0.01, max_values[1]],
-            ),
+            xaxis=dict(domain=[0, 0.84], showgrid=False, zeroline=False,),
+            yaxis=dict(domain=[0, 0.83], showgrid=False, zeroline=False,),
             xaxis2=dict(
                 domain=[0.85, 1], showgrid=False, zeroline=False, range=(0, 100)
             ),
@@ -144,6 +134,10 @@ def plot_scatter_with_histograms(
                 domain=[0.85, 1], showgrid=False, zeroline=False, range=(0, 100)
             ),
         )
+
+    if max_values:
+        fig.update_xaxes(title=x, range=[-0.01, max_values[0]])
+        fig.update_yaxes(title=y, range=[-0.01, max_values[1]])
 
     if title is None:
         title = f"{x} vs {y}"
