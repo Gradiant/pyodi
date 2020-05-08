@@ -13,6 +13,7 @@ def plot_image_shape_distribution(
     histogram=True,
     show=True,
     output=None,
+    output_size=(1600, 900),
 ):
     """Image Shape Distribution
 
@@ -38,20 +39,20 @@ def plot_image_shape_distribution(
             x=df_images[x],
             name=f"{x} distribution",
             yaxis="y2",
-            marker=dict(color="#17becf"),
+            marker=dict(color="rgb(246, 207, 113)"),
             histnorm="percent",
         )
         fig.add_histogram(
             y=df_images[y],
             name=f"{y} distribution",
             xaxis="x2",
-            marker=dict(color="#17becf"),
+            marker=dict(color="rgb(102, 197, 204)"),
             histnorm="percent",
         )
 
         fig.layout = dict(
-            xaxis=dict(domain=[0, 0.85], showgrid=False, zeroline=False,),
-            yaxis=dict(domain=[0, 0.85], showgrid=False, zeroline=False),
+            xaxis=dict(domain=[0, 0.84], showgrid=False, zeroline=False,),
+            yaxis=dict(domain=[0, 0.83], showgrid=False, zeroline=False),
             xaxis2=dict(
                 domain=[0.85, 1], showgrid=False, zeroline=False, range=(0, 100)
             ),
@@ -71,6 +72,7 @@ def plot_image_shape_distribution(
     if show:
         fig.show()
     if output:
+        fig.update_layout(width=output_size[0], height=output_size[1])
         fig.write_image(f"{output}/Image_Shape_Distribution.png")
 
     return fig
@@ -86,6 +88,7 @@ def plot_histogram(
     histnorm: Optional[str] = "percent",
     show: bool = False,
     output: Optional[str] = None,
+    output_size: Tuple[int, int] = (1600, 900),
 ):
 
     logger.info(f"Plotting {column} Histogram")
@@ -113,6 +116,7 @@ def plot_histogram(
 
     if output:
         title = title.replace(" ", "_")
+        fig.update_layout(width=output_size[0], height=output_size[1])
         fig.write_image(f"{output}/{title}.png")
 
     return fig

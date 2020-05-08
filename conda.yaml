@@ -1,6 +1,7 @@
 name: pyodi
 channels:
   - anaconda
+  - plotly
 dependencies:
   - python=3.6
   - cython
@@ -11,10 +12,13 @@ dependencies:
   - pytest
   - scikit-learn
   - numba
+  - plotly-orca
   - pip:
       - typer
+      - requests
       - loguru
       - plotly
+      - psutil
       - pre-commit
       - mypy
       - black
