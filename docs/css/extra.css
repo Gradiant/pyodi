@@ -1,0 +1,7 @@
+p { text-align: justify;}
+
+img[src*='#center'] {
+    display: block;
+    margin: auto;
+    max-height: 450px;
+}
