@@ -29,7 +29,7 @@ the bounding box scales and the scale of their matched anchor base size. The y a
 Centroids are the result of combinating the obtained scales and ratios obtained with kmeans.
 
 
-![COCO scale_ratio](../../images/train-config-generation/COCO_scale_vs_ratio.png)
+![COCO scale_ratio](../../images/train-config-generation/COCO_scale_vs_ratio.png#center)
 
 See how clusters appear in those areas where box distribution is more dense. For COCO dataset, most of objects have log relative scales between (-.5, .5).
 Nevertheless, aspect ratio log distribution looks quite different and their values are more spread.
@@ -43,7 +43,7 @@ pyodi train-config generation "data/COCO/COCO_train2017.json" --n-ratios 4
 
 In plot below we can oberve the result for `n_ratios` equal to four.
 
-![COCO scale_ratio](../../images/train-config-generation/COCO_scale_vs_ratio_4.png)
+![COCO scale_ratio](../../images/train-config-generation/COCO_scale_vs_ratio_4.png#center)
 
 ## Bounding Box Distribution
 
@@ -56,7 +56,7 @@ Therefore the total amount of anchors will be `anchor_base_sizes` x `n_ratios` x
 
 In figure below, we show how the anchors we previously generated fit COCO bounding box distribution.
 
-![COCO width_height](../../images/train-config-generation/COCO_width_vs_height.png)
+![COCO width_height](../../images/train-config-generation/COCO_width_vs_height.png#center)
 
 Note that, although most anchors follow boxes distribution, there is one that lies outside the allowed sizes. This is due to the meshgrid we create after
 applying kmeans, the combination of scale and ratio for that pyramid level result in anchor that is too large for our actual image input size. This could
@@ -65,7 +65,7 @@ and ratios per pyramid level, which is still not supported.
 
 If we increase once again the number of `n_ratios` we would see how the number of anchors increase and adapts to the bounding box distribution.
 
-![COCO width_height](../../images/train-config-generation/COCO_width_vs_height.png)
+![COCO width_height](../../images/train-config-generation/COCO_width_vs_height.png#center)
 
 You can use [`pyodi train-config evaluation`][pyodi.apps.train_config_evaluation.train_config_evaluation] to decide which generated
 anchor config suits better your data.
