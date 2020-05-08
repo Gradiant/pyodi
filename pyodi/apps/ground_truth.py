@@ -41,8 +41,16 @@ from typing import Optional, Union
 import typer
 from loguru import logger
 
-from pyodi.coco.utils import coco_ground_truth_to_dfs, load_ground_truth_file
-from pyodi.plots.boxes import plot_scatter_with_histograms
+from pyodi.coco.utils import (
+    coco_ground_truth_to_dfs,
+    join_annotations_with_image_sizes,
+    load_ground_truth_file,
+)
+from pyodi.plots.boxes import (
+    get_centroids_heatmap,
+    plot_heatmap,
+    plot_scatter_with_histograms,
+)
 from pyodi.plots.images import plot_histogram, plot_image_shape_distribution
 
 app = typer.Typer()
@@ -77,23 +85,32 @@ def ground_truth(
 
     plot_image_shape_distribution(
         df_images,
-        title=f"{Path(ground_truth_file).stem}: Image Shape Distribution",
+        title=f"{Path(ground_truth_file).stem}: Image Shapes",
         show=show,
         output=output,
     )
 
-    plot_histogram(
-        df_images,
-        "ratio",
-        title="Image aspect ratio (h / w)",
-        xbins=dict(size=0.2),
+    df_annotations = join_annotations_with_image_sizes(df_annotations, df_images)
+    df_annotations["absolute_height"] = (
+        df_annotations["height"] / df_annotations["img_height"]
+    )
+    df_annotations["absolute_width"] = (
+        df_annotations["width"] / df_annotations["img_width"]
+    )
+
+    plot_heatmap(
+        get_centroids_heatmap(df_annotations),
+        title=f"{Path(ground_truth_file).stem}: Bounding Box Centers",
         show=show,
         output=output,
     )
 
     plot_scatter_with_histograms(
         df_annotations,
-        title=f"{Path(ground_truth_file).stem}: Bounding Box Distribution",
+        x="absolute_width",
+        y="absolute_height",
+        max_values=(1.01, 1.01),
+        title=f"{Path(ground_truth_file).stem}: Bounding Box Shapes",
         show=show,
         output=output,
     )
