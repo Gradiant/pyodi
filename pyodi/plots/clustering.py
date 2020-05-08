@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import plotly.graph_objects as go
@@ -16,6 +16,7 @@ def plot_clustering_results(
     df_annotations: DataFrame,
     show: Optional[bool] = True,
     output: Optional[str] = None,
+    output_size: Tuple[int, int] = (1600, 900),
     centroid_color: Optional[tuple] = None,
 ):
     """Plots cluster results in two different views, width vs heihgt and area vs ratio.
@@ -120,4 +121,5 @@ def plot_clustering_results(
         fig.show()
 
     if output:
+        fig.update_layout(width=output_size[0], height=output_size[1])
         fig.write_image(f"{output}/clusters.png")
