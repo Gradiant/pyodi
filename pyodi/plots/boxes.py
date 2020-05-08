@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Tuple
 
 import numpy as np
 import plotly.graph_objects as go
@@ -14,6 +14,7 @@ def plot_scatter_with_histograms(
     title=None,
     show=True,
     output=None,
+    output_size=(1600, 900),
     max_values=(1, 1),
     histogram=True,
     label="category",
@@ -39,9 +40,11 @@ def plot_scatter_with_histograms(
     show : bool, optional
         if activated figure is shown, by default True
     output : str, optional
-        output path folder , by default None
+        output path folder, by default None
+    output_size : tuple
+        size of saved images, by default (1600, 900)
     max_values : tuple, optional
-        x,y max allowed values in represention, by default None
+        x,y max allowed values in representation, by default None
     histogram: bool, optional
         when histogram is true a marginal histogram distribution of each axis is drawn, by default False
     label: str, optional
@@ -129,6 +132,7 @@ def plot_scatter_with_histograms(
 
     if output:
         title = title.replace(" ", "_")
+        fig.update_layout(width=output_size[0], height=output_size[1])
         fig.write_image(f"{output}/{title}.png")
 
     return fig
@@ -151,6 +155,7 @@ def plot_heatmap(
     title: str = "",
     show: bool = True,
     output: Optional[str] = None,
+    output_size: Tuple[int, int] = (1600, 900),
 ) -> go.Figure:
     fig = go.Figure(data=go.Heatmap(z=heatmap))
 
@@ -164,6 +169,7 @@ def plot_heatmap(
 
     if output:
         title = title.replace(" ", "_")
+        fig.update_layout(width=output_size[0], height=output_size[1])
         fig.write_image(f"{output}/{title}.png")
 
     return fig

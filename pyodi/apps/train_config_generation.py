@@ -28,6 +28,7 @@ def train_config_generation(
     strides: List[int] = [8, 16, 32, 64, 128],
     show: bool = True,
     output: Optional[str] = None,
+    output_size: Tuple[int, int] = (1600, 900),
     keep_ratio: bool = False,
 ):
     """Computes optimal anchors for a given COCO dataset based on iou clustering.
@@ -40,6 +41,8 @@ def train_config_generation(
         Show results or not, by default True
     output : str, optional
         Output file where results are saved, by default None
+    output_size : tuple
+        Size of saved images, by default (1600, 900)
     input_size : tuple, optional
         Model image input size, by default (1280, 720)
     keep_ratio: bool, optional
@@ -47,7 +50,8 @@ def train_config_generation(
     """
 
     if output is not None:
-        output = str(Path(output) / Path(ground_truth_file).name)
+        output = str(Path(output) / Path(ground_truth_file).stem)
+        Path(output).mkdir(parents=True, exist_ok=True)
 
     coco_ground_truth = load_ground_truth_file(ground_truth_file)
 
@@ -72,7 +76,13 @@ def train_config_generation(
     ]
 
     # Plot results
-    plot_clustering_results(clustering_results, df_annotations)
+    plot_clustering_results(
+        clustering_results,
+        df_annotations,
+        show=show,
+        output=output,
+        output_size=output_size,
+    )
 
 
 if __name__ == "__main__":

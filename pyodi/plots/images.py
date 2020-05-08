@@ -13,6 +13,7 @@ def plot_image_shape_distribution(
     histogram=True,
     show=True,
     output=None,
+    output_size=(1600, 900),
 ):
     """Image Shape Distribution
 
@@ -71,6 +72,7 @@ def plot_image_shape_distribution(
     if show:
         fig.show()
     if output:
+        fig.update_layout(width=output_size[0], height=output_size[1])
         fig.write_image(f"{output}/Image_Shape_Distribution.png")
 
     return fig
@@ -86,6 +88,7 @@ def plot_histogram(
     histnorm: Optional[str] = "percent",
     show: bool = False,
     output: Optional[str] = None,
+    output_size: Tuple[int, int] = (1600, 900),
 ):
 
     logger.info(f"Plotting {column} Histogram")
@@ -113,6 +116,7 @@ def plot_histogram(
 
     if output:
         title = title.replace(" ", "_")
+        fig.update_layout(width=output_size[0], height=output_size[1])
         fig.write_image(f"{output}/{title}.png")
 
     return fig
