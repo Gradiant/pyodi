@@ -112,6 +112,7 @@ def ground_truth(
         title=f"{Path(ground_truth_file).stem}: Bounding Box Centers",
         show=show,
         output=output,
+        output_size=output_size,
     )
 
     plot_scatter_with_histograms(
