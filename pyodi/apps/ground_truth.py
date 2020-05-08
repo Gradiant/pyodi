@@ -36,13 +36,21 @@ The app is divided in two sections:
 # API REFERENCE
 """
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional, Tuple, Union
 
 import typer
 from loguru import logger
 
-from pyodi.coco.utils import coco_ground_truth_to_dfs, load_ground_truth_file
-from pyodi.plots.boxes import plot_scatter_with_histograms
+from pyodi.coco.utils import (
+    coco_ground_truth_to_dfs,
+    join_annotations_with_image_sizes,
+    load_ground_truth_file,
+)
+from pyodi.plots.boxes import (
+    get_centroids_heatmap,
+    plot_heatmap,
+    plot_scatter_with_histograms,
+)
 from pyodi.plots.images import plot_histogram, plot_image_shape_distribution
 
 app = typer.Typer()
@@ -51,7 +59,10 @@ app = typer.Typer()
 @logger.catch
 @app.command()
 def ground_truth(
-    ground_truth_file: str, show: bool = True, output: Optional[str] = None
+    ground_truth_file: str,
+    show: bool = True,
+    output: Optional[str] = None,
+    output_size: Tuple[int, int] = (1600, 900),
 ) -> None:
     """Explore the images and bounding boxes of a dataset.
 
@@ -62,14 +73,19 @@ def ground_truth(
 
     show : bool, optional
         Default: True.
-        Wheter to show results or not.
+        Whether to show results or not.
 
     output : str, optional
         Default: None
         If not None, results will be saved under `output` dir.
+
+    output_size : tuple
+        Default: (1600, 900)
+        Size of the saved images when output is defined.
     """
     if output is not None:
-        output = str(Path(output) / Path(ground_truth_file).name)
+        output = str(Path(output) / Path(ground_truth_file).stem)
+        Path(output).mkdir(parents=True, exist_ok=True)
 
     coco_ground_truth = load_ground_truth_file(ground_truth_file)
 
@@ -77,25 +93,37 @@ def ground_truth(
 
     plot_image_shape_distribution(
         df_images,
-        title=f"{Path(ground_truth_file).stem}: Image Shape Distribution",
+        title=f"{Path(ground_truth_file).stem}: Image Shapes",
         show=show,
         output=output,
+        output_size=output_size,
     )
 
-    plot_histogram(
-        df_images,
-        "ratio",
-        title="Image aspect ratio (h / w)",
-        xbins=dict(size=0.2),
+    df_annotations = join_annotations_with_image_sizes(df_annotations, df_images)
+    df_annotations["absolute_height"] = (
+        df_annotations["height"] / df_annotations["img_height"]
+    )
+    df_annotations["absolute_width"] = (
+        df_annotations["width"] / df_annotations["img_width"]
+    )
+
+    plot_heatmap(
+        get_centroids_heatmap(df_annotations),
+        title=f"{Path(ground_truth_file).stem}: Bounding Box Centers",
         show=show,
         output=output,
+        output_size=output_size,
     )
 
     plot_scatter_with_histograms(
         df_annotations,
-        title=f"{Path(ground_truth_file).stem}: Bounding Box Distribution",
+        x="absolute_width",
+        y="absolute_height",
+        max_values=(1.01, 1.01),
+        title=f"{Path(ground_truth_file).stem}: Bounding Box Shapes",
         show=show,
         output=output,
+        output_size=output_size,
     )
 
 

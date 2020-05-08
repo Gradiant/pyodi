@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import plotly.graph_objects as go
@@ -16,6 +16,7 @@ def plot_clustering_results(
     anchor_generator: AnchorGenerator,
     show: Optional[bool] = True,
     output: Optional[str] = None,
+    output_size: Tuple[int, int] = (1600, 900),
     centroid_color: Optional[tuple] = None,
     title: Optional[str] = None,
 ):
@@ -46,8 +47,8 @@ def plot_clustering_results(
 
     plot_scatter_with_histograms(
         df_annotations,
-        x=f"level_scale",
-        y=f"scaled_ratio",
+        x=f"log_level_scale",
+        y=f"log_ratio",
         legendgroup="classes",
         show=False,
         colors=COLORS,
@@ -56,7 +57,7 @@ def plot_clustering_results(
     )
 
     cluster_grid = np.array(
-        np.meshgrid(anchor_generator.scales, anchor_generator.ratios)
+        np.meshgrid(np.log(anchor_generator.scales), np.log(anchor_generator.ratios))
     ).T.reshape(-1, 2)
 
     fig.append_trace(
@@ -124,4 +125,5 @@ def plot_clustering_results(
 
     if output and title:
         title = title.replace(" ", "_")
+        fig.update_layout(width=output_size[0], height=output_size[1])
         fig.write_image(f"{output}/{title}.png")

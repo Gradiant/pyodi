@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import plotly.graph_objects as go
 from pandas.core.frame import DataFrame
@@ -10,6 +10,7 @@ def plot_overlap_result(
     max_bins: int = 30,
     show: Optional[bool] = True,
     output: Optional[str] = None,
+    output_size: Tuple[int, int] = (1600, 900),
 ):
     """Generates plot for train config evaluation based on overlap
 
@@ -23,6 +24,8 @@ def plot_overlap_result(
         If true plotly figure will be shown, by default True
     output : str, optional
         Output image folder, by default None
+    output_size : tuple
+        Size of the saved images, by default (1600, 900)
     """
 
     fig = make_subplots(
@@ -98,4 +101,5 @@ def plot_overlap_result(
         fig.show()
 
     if output:
+        fig.update_layout(width=output_size[0], height=output_size[1])
         fig.write_image(f"{output}/overlap.png")

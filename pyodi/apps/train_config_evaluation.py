@@ -51,6 +51,7 @@ def train_config_evaluation(
     input_size: Tuple[int, int] = (1280, 720),
     show: bool = True,
     output: Optional[str] = None,
+    output_size: Tuple[int, int] = (1600, 900),
 ):
     """Evaluates the fitness between `ground_truth_file` and `train_config_file`.
 
@@ -83,10 +84,13 @@ def train_config_evaluation(
         Show results or not, by default True
     output : str, optional
         Output file where results are saved, by default None
+    output_size : tuple
+        Size of saved images, by default (1600, 900)
     """
 
     if output is not None:
-        output = str(Path(output) / Path(ground_truth_file).name)
+        output = str(Path(output) / Path(ground_truth_file).stem)
+        Path(output).mkdir(parents=True, exist_ok=True)
 
     coco_ground_truth = load_ground_truth_file(ground_truth_file)
 
@@ -131,7 +135,9 @@ def train_config_evaluation(
     df_annotations["max_overlap_level"] = max_overlap_level
 
     logger.info("Plotting results")
-    plot_overlap_result(df_annotations, show=show, output=output)
+    plot_overlap_result(
+        df_annotations, show=show, output=output, output_size=output_size
+    )
 
 
 if __name__ == "__main__":

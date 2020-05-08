@@ -100,6 +100,7 @@ def train_config_generation(
     anchor_base_sizes: List[int] = [32, 64, 128, 256, 512],
     show: bool = True,
     output: Optional[str] = None,
+    output_size: Tuple[int, int] = (1600, 900),
     keep_ratio: bool = False,
 ):
     """Computes optimal anchors for a given COCO dataset based on iou clustering.
@@ -120,6 +121,8 @@ def train_config_generation(
         Show results or not, by default True
     output : str, optional
         Output file where results are saved, by default None
+    output_size : tuple
+        Size of saved images, by default (1600, 900)
     input_size : tuple, optional
         Model image input size, by default (1280, 720)
     keep_ratio: bool, optional
@@ -128,8 +131,7 @@ def train_config_generation(
 
     if output is not None:
         output = str(Path(output) / Path(ground_truth_file).stem)
-        output_dir_path = Path(output)
-        output_dir_path.mkdir(parents=True, exist_ok=True)
+        Path(output).mkdir(parents=True, exist_ok=True)
 
     coco_ground_truth = load_ground_truth_file(ground_truth_file)
 
@@ -158,28 +160,34 @@ def train_config_generation(
         df_annotations["scaled_scale"] / df_annotations["fpn_level_scale"]
     )
 
-    # Normalize ratio to logn scale
+    # Normalize to log scale
     df_annotations["log_ratio"] = np.log(df_annotations["scaled_ratio"])
+    df_annotations["log_level_scale"] = np.log(df_annotations["level_scale"])
 
     # Cluster bboxes by scale and ratio independently
     clustering_results = [
         kmeans_euclidean(df_annotations[value], n_clusters=n_clusters)
         for i, (value, n_clusters) in enumerate(
-            zip(["level_scale", "log_ratio"], [n_scales, n_ratios])
+            zip(["log_level_scale", "log_ratio"], [n_scales, n_ratios])
         )
     ]
 
-    scales = clustering_results[0]["centroids"]
+    # Bring back
+    scales = np.e ** clustering_results[0]["centroids"]
     ratios = np.e ** clustering_results[1]["centroids"]
 
     anchor_generator = AnchorGenerator(
-        strides=strides, ratios=ratios, scales=scales, base_sizes=anchor_base_sizes
+        strides=strides, ratios=ratios, scales=scales, base_sizes=anchor_base_sizes,
     )
     logger.info(f"Anchor configuration: \n{anchor_generator}")
 
     # Plot results
     plot_clustering_results(
-        df_annotations, anchor_generator, show=show, output=output,
+        df_annotations,
+        anchor_generator,
+        show=show,
+        output=output,
+        title="COCO_anchor_generation",
     )
 
     anchor_config = dict(
