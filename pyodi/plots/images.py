@@ -4,6 +4,8 @@ import plotly.graph_objects as go
 from loguru import logger
 from pandas import DataFrame
 
+from .utils import plot_scatter_with_histograms
+
 
 def plot_image_shape_distribution(
     df_images,
@@ -13,6 +15,7 @@ def plot_image_shape_distribution(
     histogram=True,
     show=True,
     output=None,
+    output_size=(1600, 900),
 ):
     """Image Shape Distribution
 
@@ -21,59 +24,16 @@ def plot_image_shape_distribution(
     It can serve as an indicator for setting the optimal **input size** and **aspect ratio** of your model.
 
     """
-    logger.info("Plotting Image Shape Distribution")
-    fig = go.Figure(
-        data=[
-            go.Scattergl(
-                x=df_images[x],
-                y=df_images[y],
-                mode="markers",
-                name="Image Shapes",
-                text=df_images["file_name"],
-            )
-        ]
+    return plot_scatter_with_histograms(
+        df_images,
+        x=x,
+        y=y,
+        title=title,
+        histogram=histogram,
+        show=show,
+        output=output,
+        output_size=output_size,
     )
-    if histogram:
-        fig.add_histogram(
-            x=df_images[x],
-            name=f"{x} distribution",
-            yaxis="y2",
-            marker=dict(color="rgb(246, 207, 113)"),
-            histnorm="percent",
-        )
-        fig.add_histogram(
-            y=df_images[y],
-            name=f"{y} distribution",
-            xaxis="x2",
-            marker=dict(color="rgb(102, 197, 204)"),
-            histnorm="percent",
-        )
-
-        fig.layout = dict(
-            xaxis=dict(domain=[0, 0.84], showgrid=False, zeroline=False,),
-            yaxis=dict(domain=[0, 0.83], showgrid=False, zeroline=False),
-            xaxis2=dict(
-                domain=[0.85, 1], showgrid=False, zeroline=False, range=(0, 100)
-            ),
-            yaxis2=dict(
-                domain=[0.85, 1], showgrid=False, zeroline=False, range=(0, 100)
-            ),
-        )
-
-    fig.update_layout(
-        title_text=title,
-        title_font_size=20,
-        showlegend=False,
-        xaxis_title=f"{x}",
-        yaxis_title=f"{y}",
-    )
-
-    if show:
-        fig.show()
-    if output:
-        fig.write_image(f"{output}/Image_Shape_Distribution.png")
-
-    return fig
 
 
 def plot_histogram(

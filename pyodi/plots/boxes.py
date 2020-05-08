@@ -1,9 +1,7 @@
-import plotly.graph_objects as go
-from loguru import logger
-from plotly.subplots import make_subplots
+from .utils import plot_scatter_with_histograms
 
 
-def plot_scatter_with_histograms(
+def plot_boxes_distribution(
     df_annotations,
     x="width",
     y="height",
@@ -56,69 +54,20 @@ def plot_scatter_with_histograms(
     -------
     plotly figure
     """
-
-    logger.info("Plotting Bounding Box Distribution")
-
-    if not fig:
-        fig = make_subplots(rows=1, cols=1)
-
-    for i, c in enumerate(sorted(df_annotations[label].unique())):
-        scatter = go.Scattergl(
-            x=df_annotations[df_annotations[label] == c][x],
-            y=df_annotations[df_annotations[label] == c][y],
-            mode="markers",
-            name=str(c),
-            text=df_annotations[df_annotations[label] == c]["file_name"],
-            marker=dict(color=colors[i % len(colors)] if colors else None),
-            legendgroup=f"legendgroup_{i}" if legendgroup else None,
-            **kwargs,
-        )
-        fig.add_trace(scatter, row=row, col=col)
-
-    if histogram:
-        fig.add_histogram(
-            x=df_annotations[x],
-            name=f"{x} distribution",
-            yaxis="y2",
-            marker=dict(color="rgb(246, 207, 113)"),
-            histnorm="percent",
-            xbins=dict(size=10),
-        )
-        fig.add_histogram(
-            y=df_annotations[y],
-            name=f"{y} distribution",
-            xaxis="x2",
-            marker=dict(color="rgb(102, 197, 204)"),
-            histnorm="percent",
-            ybins=dict(size=10),
-        )
-
-        fig.layout = dict(
-            xaxis=dict(domain=[0, 0.84], showgrid=False, zeroline=False),
-            yaxis=dict(domain=[0, 0.83], showgrid=False, zeroline=False),
-            xaxis2=dict(
-                domain=[0.85, 1], showgrid=False, zeroline=False, range=(0, 100)
-            ),
-            yaxis2=dict(
-                domain=[0.85, 1], showgrid=False, zeroline=False, range=(0, 100)
-            ),
-        )
-
-    if max_values:
-        fig.update_xaxes(title=x, range=[0, max_values[0]])
-        fig.update_yaxes(title=y, range=[0, max_values[1]])
-
-    if title is None:
-        title = f"{x} vs {y}"
-    fig.update_layout(
-        title_text=title, xaxis_title=f"{x}", yaxis_title=f"{y}", title_font_size=20
+    return plot_scatter_with_histograms(
+        df_annotations,
+        x=x,
+        y=y,
+        title=title,
+        show=show,
+        output=output,
+        max_values=max_values,
+        histogram=histogram,
+        label=label,
+        colors=colors,
+        legendgroup=legendgroup,
+        fig=fig,
+        row=row,
+        col=col,
+        **kwargs,
     )
-
-    if show:
-        fig.show()
-
-    if output:
-        title = title.replace(" ", "_")
-        fig.write_image(f"{output}/{title}.png")
-
-    return fig

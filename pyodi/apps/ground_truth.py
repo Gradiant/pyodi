@@ -42,7 +42,7 @@ import typer
 from loguru import logger
 
 from pyodi.coco.utils import coco_ground_truth_to_dfs, load_ground_truth_file
-from pyodi.plots.boxes import plot_scatter_with_histograms
+from pyodi.plots.boxes import plot_boxes_distribution
 from pyodi.plots.images import plot_histogram, plot_image_shape_distribution
 
 app = typer.Typer()
@@ -91,7 +91,7 @@ def ground_truth(
         output=output,
     )
 
-    plot_scatter_with_histograms(
+    plot_boxes_distribution(
         df_annotations,
         title=f"{Path(ground_truth_file).stem}: Bounding Box Distribution",
         show=show,
