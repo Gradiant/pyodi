@@ -15,6 +15,7 @@ dependencies:
   - plotly-orca
   - pip:
       - typer
+      - requests
       - loguru
       - plotly
       - psutil
