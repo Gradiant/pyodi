@@ -174,6 +174,6 @@ def plot_histogram(
 def save_figure(
     figure: go.Figure, output_name: str, output_dir: str, output_size: Tuple[int, int]
 ):
-    output = Path(output_dir) / (output_name.replace(" ", "_") + ".png")
+    output = str(Path(output_dir) / (output_name.replace(" ", "_") + ".png"))
     figure.update_layout(width=output_size[0], height=output_size[1])
     figure.write_image(output)
