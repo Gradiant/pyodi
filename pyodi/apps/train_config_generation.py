@@ -126,7 +126,7 @@ def train_config_generation(
     if output:
         output_file = Path(output) / "result.json"
         with open(output_file, "w") as f:
-            json.dump(anchor_generator.as_json(), f, indent=2)
+            f.write(anchor_generator.as_config())
 
     return anchor_generator
 

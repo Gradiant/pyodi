@@ -288,12 +288,17 @@ class AnchorGenerator(object):
         repr_str += "{}center_offset={})".format(indent_str, self.center_offset)
         return repr_str
 
-    def as_json(self):
+    def as_config(self):
         anchor_config = dict(
-            type="AnchorGenerator",
+            type="'AnchorGenerator'",
             scales=sorted(list(self.scales.ravel())),
             ratios=sorted(list(self.ratios.ravel())),
             strides=list(self.strides),
-            base_sizes=self.base_sizes,
+            base_sizes=list(self.base_sizes),
         )
-        return anchor_config
+        string = "anchor_config=dict(\n"
+        for k, v in anchor_config.items():
+            string += f"{' '* 4}{k}={v},\n"
+        string += ")"
+
+        return string
