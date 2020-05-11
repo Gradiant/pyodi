@@ -1,4 +1,4 @@
-from typing import Dict, Union
+from typing import Dict, List, Union
 
 import numpy as np
 from loguru import logger
@@ -196,3 +196,23 @@ def kmeans_euclidean(
         result["silhouette"] = silhouette_score(values, labels=kmeans.labels_)
 
     return result
+
+
+def find_pyramid_level(bboxes: ndarray, anchor_base_sizes: List[int]) -> ndarray:
+    """Matches bboxes with pyramid levels given their stride
+
+    Parameters
+    ----------
+    bboxes : ndarray
+        Bbox array with dimension [n, 2] in widht, height order
+    anchor_base_sizes : List[int]
+        List with anchor base sizes
+    Returns
+    -------
+    ndarray
+        Best match per bbox correponding with index of stride
+    """
+    anchor_base_sizes = sorted(anchor_base_sizes)
+    levels = np.tile(anchor_base_sizes, (2, 1)).T
+    ious = origin_iou(bboxes, levels)
+    return np.argmax(ious, axis=1)
