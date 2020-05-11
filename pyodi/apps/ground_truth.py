@@ -47,7 +47,7 @@ from pyodi.coco.utils import (
     load_ground_truth_file,
 )
 from pyodi.plots.boxes import get_centroids_heatmap, plot_heatmap
-from pyodi.plots.utils import plot_scatter_with_histograms
+from pyodi.plots.common import plot_scatter_with_histograms
 
 app = typer.Typer()
 
@@ -115,7 +115,6 @@ def ground_truth(
         df_annotations,
         x="absolute_width",
         y="absolute_height",
-        max_values=(1.01, 1.01),
         title=f"{Path(ground_truth_file).stem}: Bounding Box Shapes",
         show=show,
         output=output,

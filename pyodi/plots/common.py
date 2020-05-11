@@ -1,5 +1,8 @@
+from typing import Any, Dict, Optional, Tuple
+
 import plotly.graph_objects as go
 from loguru import logger
+from pandas import DataFrame
 from plotly.subplots import make_subplots
 
 
@@ -11,7 +14,6 @@ def plot_scatter_with_histograms(
     show=True,
     output=None,
     output_size=(1600, 900),
-    max_values=None,
     histogram=True,
     label="category",
     colors=None,
@@ -38,8 +40,6 @@ def plot_scatter_with_histograms(
         output path folder, by default None
     output_size : tuple
         size of saved images, by default (1600, 900)
-    max_values : tuple, optional
-        x,y max allowed values in representation, by default None
     histogram: bool, optional
         when histogram is true a marginal histogram distribution of each axis is drawn, by default False
     label: str, optional
@@ -113,15 +113,55 @@ def plot_scatter_with_histograms(
             ),
         )
 
-    if max_values:
-        fig.update_xaxes(title=x, range=[-0.01, max_values[0]])
-        fig.update_yaxes(title=y, range=[-0.01, max_values[1]])
-
     if title is None:
         title = f"{x} vs {y}"
     fig.update_layout(
         title_text=title, xaxis_title=f"{x}", yaxis_title=f"{y}", title_font_size=20
     )
+
+    if show:
+        fig.show()
+
+    if output:
+        title = title.replace(" ", "_")
+        fig.update_layout(width=output_size[0], height=output_size[1])
+        fig.write_image(f"{output}/{title}.png")
+
+    return fig
+
+
+def plot_histogram(
+    df: DataFrame,
+    column: str,
+    title: Optional[str] = None,
+    xrange: Optional[Tuple[int, int]] = None,
+    yrange: Optional[Tuple[int, int]] = None,
+    xbins: Optional[Dict[str, Any]] = None,
+    histnorm: Optional[str] = "percent",
+    show: bool = False,
+    output: Optional[str] = None,
+    output_size: Tuple[int, int] = (1600, 900),
+):
+
+    logger.info(f"Plotting {column} Histogram")
+    fig = go.Figure(
+        data=[
+            go.Histogram(
+                x=df[column], histnorm=histnorm, hovertext=df["file_name"], xbins=xbins
+            )
+        ]
+    )
+
+    if xrange is not None:
+        fig.update_xaxes(range=xrange)
+
+    if yrange is not None:
+        fig.update_yaxes(range=yrange)
+
+    if title is None:
+        title = f"{column} histogram"
+
+    fig.update_layout(title_text=title, title_font_size=20)
 
     if show:
         fig.show()

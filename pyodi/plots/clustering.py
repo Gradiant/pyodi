@@ -7,7 +7,7 @@ from pandas.core.frame import DataFrame
 from plotly.colors import DEFAULT_PLOTLY_COLORS as COLORS
 from plotly.subplots import make_subplots
 
-from pyodi.plots.utils import plot_scatter_with_histograms
+from pyodi.plots.common import plot_scatter_with_histograms
 
 
 def plot_clustering_results(
