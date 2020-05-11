@@ -1,14 +1,15 @@
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Optional, Tuple
 
 import numpy as np
 import plotly.graph_objects as go
+from numpy import float64, ndarray
 from pandas.core.frame import DataFrame
 from plotly.colors import DEFAULT_PLOTLY_COLORS as COLORS
 from plotly.subplots import make_subplots
 
 from pyodi.coco.utils import get_df_from_bboxes
 from pyodi.core.anchor_generator import AnchorGenerator
-from pyodi.plots.boxes import plot_scatter_with_histograms
+from pyodi.plots.common import plot_scatter_with_histograms
 
 
 def plot_clustering_results(
@@ -32,6 +33,8 @@ def plot_clustering_results(
         If true plotly figure will be shown, by default True
     output : str, optional
         Output image folder, by default None
+    output_size : tuple
+        Size of saved images, by default (1600, 900)
     centroid_color: tuple, optional
         Plotly rgb color format for painting centroids, by default None
     title: str, optional
