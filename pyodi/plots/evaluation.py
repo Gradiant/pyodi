@@ -4,6 +4,8 @@ import plotly.graph_objects as go
 from pandas.core.frame import DataFrame
 from plotly.subplots import make_subplots
 
+from pyodi.plots.common import save_figure
+
 
 def plot_overlap_result(
     df: DataFrame,
@@ -101,5 +103,4 @@ def plot_overlap_result(
         fig.show()
 
     if output:
-        fig.update_layout(width=output_size[0], height=output_size[1])
-        fig.write_image(f"{output}/overlap.png")
+        save_figure(fig, "overlap", output, output_size)

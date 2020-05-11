@@ -4,6 +4,8 @@ import numpy as np
 import plotly.graph_objects as go
 from pandas import DataFrame
 
+from pyodi.plots.common import save_figure
+
 
 def get_centroids_heatmap(
     df: DataFrame, n_rows: int = 9, n_cols: int = 9
@@ -35,8 +37,6 @@ def plot_heatmap(
         fig.show()
 
     if output:
-        title = title.replace(" ", "_")
-        fig.update_layout(width=output_size[0], height=output_size[1])
-        fig.write_image(f"{output}/{title}.png")
+        save_figure(fig, title, output, output_size)
 
     return fig

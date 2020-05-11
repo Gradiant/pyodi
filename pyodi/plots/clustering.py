@@ -9,7 +9,7 @@ from plotly.subplots import make_subplots
 
 from pyodi.coco.utils import get_df_from_bboxes
 from pyodi.core.anchor_generator import AnchorGenerator
-from pyodi.plots.common import plot_scatter_with_histograms
+from pyodi.plots.common import plot_scatter_with_histograms, save_figure
 
 
 def plot_clustering_results(
@@ -126,7 +126,5 @@ def plot_clustering_results(
     if show:
         fig.show()
 
-    if output and title:
-        title = title.replace(" ", "_")
-        fig.update_layout(width=output_size[0], height=output_size[1])
-        fig.write_image(f"{output}/{title}.png")
+    if output:
+        save_figure(fig, "clusters", output, output_size)
