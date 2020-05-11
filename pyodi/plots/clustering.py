@@ -7,7 +7,7 @@ from pandas.core.frame import DataFrame
 from plotly.colors import DEFAULT_PLOTLY_COLORS as COLORS
 from plotly.subplots import make_subplots
 
-from pyodi.plots.common import plot_scatter_with_histograms
+from pyodi.plots.common import plot_scatter_with_histograms, save_figure
 
 
 def plot_clustering_results(
@@ -122,5 +122,4 @@ def plot_clustering_results(
         fig.show()
 
     if output:
-        fig.update_layout(width=output_size[0], height=output_size[1])
-        fig.write_image(f"{output}/clusters.png")
+        save_figure(fig, "clusters", output, output_size)
