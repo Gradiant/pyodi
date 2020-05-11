@@ -287,3 +287,13 @@ class AnchorGenerator(object):
         repr_str += "{}centers={},\n".format(indent_str, self.centers)
         repr_str += "{}center_offset={})".format(indent_str, self.center_offset)
         return repr_str
+
+    def as_json(self):
+        anchor_config = dict(
+            type="AnchorGenerator",
+            scales=sorted(list(self.scales.ravel())),
+            ratios=sorted(list(self.ratios.ravel())),
+            strides=list(self.strides),
+            base_sizes=self.base_sizes,
+        )
+        return anchor_config
