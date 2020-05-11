@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
 
 import plotly.graph_objects as go
@@ -123,9 +124,7 @@ def plot_scatter_with_histograms(
         fig.show()
 
     if output:
-        title = title.replace(" ", "_")
-        fig.update_layout(width=output_size[0], height=output_size[1])
-        fig.write_image(f"{output}/{title}.png")
+        save_figure(fig, title, output, output_size)
 
     return fig
 
@@ -167,8 +166,14 @@ def plot_histogram(
         fig.show()
 
     if output:
-        title = title.replace(" ", "_")
-        fig.update_layout(width=output_size[0], height=output_size[1])
-        fig.write_image(f"{output}/{title}.png")
+        save_figure(fig, title, output, output_size)
 
     return fig
+
+
+def save_figure(
+    figure: go.Figure, output_name: str, output_dir: str, output_size: Tuple[int, int]
+):
+    output = Path(output_dir) / (output_name.replace(" ", "_") + ".png")
+    figure.update_layout(width=output_size[0], height=output_size[1])
+    figure.write_image(output)
