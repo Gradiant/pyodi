@@ -25,8 +25,7 @@ def get_random_predictions(image_id):
                 "score": box[-1],
                 "iscrowd": 0,
                 "category_id": 1,
-                "original_image_width": 100,
-                "original_image_height": 100,
+                "original_image_shape": (100, 100),
             }
         )
     return predictions

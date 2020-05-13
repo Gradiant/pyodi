@@ -71,7 +71,6 @@ def crops_merge(
 
         stem = "_".join(parts[:-2])
         original_id = stem_to_original_id[stem]
-        width, height = stem_to_original_shape[stem]
         crop["image_id"] = original_id
 
         # Corners are encoded in crop's filename
@@ -80,8 +79,7 @@ def crops_merge(
         crop_col = int(parts[-2])
         crop["bbox"][0] += crop_col
         crop["bbox"][1] += crop_row
-        crop["original_image_width"] = width
-        crop["original_image_height"] = height
+        crop["original_image_shape"] = stem_to_original_shape[stem]
 
     with open(output_file, "w") as f:
         json.dump(predictions, f, indent=2)

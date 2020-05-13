@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 import ensemble_boxes
 import numpy as np
@@ -39,28 +39,23 @@ def nms_predictions(
     nms = getattr(ensemble_boxes, nms_mode)
     new_predictions = []
     image_id_to_all_boxes: Dict[str, List[List[float]]] = defaultdict(list)
-    image_id_to_width: Dict[str, int] = dict()
-    image_id_to_height: Dict[str, int] = dict()
+    image_id_to_shape: Dict[str, Tuple[int, int]] = dict()
 
     for prediction in predictions:
         image_id_to_all_boxes[prediction["image_id"]].append(
             [*prediction["bbox"], prediction["score"], prediction["category_id"]]
         )
-        if prediction["image_id"] not in image_id_to_width:
-            image_id_to_width[prediction["image_id"]] = int(
-                prediction["original_image_width"]
-            )
-            image_id_to_height[prediction["image_id"]] = int(
-                prediction["original_image_height"]
-            )
+        if prediction["image_id"] not in image_id_to_shape:
+            image_id_to_shape[prediction["image_id"]] = prediction[
+                "original_image_shape"
+            ]
 
     for image_id, all_boxes in image_id_to_all_boxes.items():
         categories = np.array([box[-1] for box in all_boxes])
         scores = np.array([box[-2] for box in all_boxes])
         boxes = np.vstack([box[:-2] for box in all_boxes])
 
-        image_width = image_id_to_width[image_id]
-        image_height = image_id_to_height[image_id]
+        image_width, image_height = image_id_to_shape[image_id]
 
         boxes = normalize(coco_to_corners(boxes), image_width, image_height)
 
