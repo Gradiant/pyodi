@@ -17,6 +17,7 @@ def crops_merge(
     predictions_file: str,
     output_file: str,
     apply_nms: bool = True,
+    nms_mode: str = "nms",
     score_thr: float = 0.0,
     iou_thr: float = 0.5,
 ):
@@ -55,6 +56,10 @@ def crops_merge(
     stem_to_original_id = {
         Path(x["file_name"]).stem: x["id"] for x in ground_truth["old_images"]
     }
+    stem_to_original_shape = {
+        Path(x["file_name"]).stem: (x["width"], x["height"])
+        for x in ground_truth["old_images"]
+    }
 
     predictions = json.load(open(predictions_file))
 
@@ -66,6 +71,7 @@ def crops_merge(
 
         stem = "_".join(parts[:-2])
         original_id = stem_to_original_id[stem]
+        width, height = stem_to_original_shape[stem]
         crop["image_id"] = original_id
 
         # Corners are encoded in crop's filename
@@ -74,14 +80,20 @@ def crops_merge(
         crop_col = int(parts[-2])
         crop["bbox"][0] += crop_col
         crop["bbox"][1] += crop_row
+        crop["original_image_width"] = width
+        crop["original_image_height"] = height
 
     with open(output_file, "w") as f:
         json.dump(predictions, f, indent=2)
 
     if apply_nms:
-        new_predictions = nms_predictions(predictions)
+        new_predictions = nms_predictions(
+            predictions, score_thr=score_thr, nms_mode=nms_mode, iou_thr=iou_thr
+        )
 
-        with open(f"{Path(output_file).stem}_{score_thr}_{iou_thr}.json", "w") as f:
+        with open(
+            f"{Path(output_file).stem}_{nms_mode}_{score_thr}_{iou_thr}.json", "w"
+        ) as f:
             json.dump(new_predictions, f, indent=2)
 
 

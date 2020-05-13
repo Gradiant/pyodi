@@ -1,6 +1,6 @@
 import numpy as np
 
-from pyodi.core.nms import nms, nms_predictions
+from pyodi.core.nms import nms_predictions
 
 
 def get_random_boxes(score_low=0.0, score_hight=1.0):
@@ -25,11 +25,14 @@ def get_random_predictions(image_id):
                 "score": box[-1],
                 "iscrowd": 0,
                 "category_id": 1,
+                "original_image_width": 100,
+                "original_image_height": 100,
             }
         )
     return predictions
 
 
+"""
 def test_nms_iou_thr():
     boxes = get_random_boxes()
     keep = []
@@ -42,6 +45,7 @@ def test_nms_iou_thr():
 
     # At iou_thr=1.0 no box is filtered
     assert len(keep[-1]) == len(boxes)
+"""
 
 
 def test_nms_predictions_score_thr():
@@ -59,3 +63,20 @@ def test_nms_predictions_score_thr():
 
     # At score_thr=0.0 no box is filtered
     assert len(filtered[0]) == len(predictions)
+
+
+def test_nms_predictions_iou_thr():
+    predictions = []
+    for image_id in range(2):
+        predictions.extend(get_random_predictions(image_id))
+
+    filtered = []
+    for iou_thr in np.arange(0, 1.1, 0.1):
+        filtered.append(nms_predictions(predictions, iou_thr=iou_thr))
+
+    for n in range(1, len(filtered)):
+        # As iou_thr increases, more boxes pass the filter
+        assert len(filtered[n - 1]) <= len(filtered[n])
+
+    # At iou_thr=1.0 no box is filtered
+    assert len(filtered[-1]) == len(predictions)

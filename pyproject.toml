@@ -16,7 +16,7 @@ exclude = '''
 )/
 '''
 [tool.isort]
-known_third_party = ["loguru", "numba", "numpy", "pandas", "plotly", "pycocotools", "pytest", "setuptools", "sklearn", "streamlit", "typer"]
+known_third_party = ["ensemble_boxes", "loguru", "numba", "numpy", "pandas", "plotly", "pycocotools", "pytest", "setuptools", "sklearn", "streamlit", "typer"]
 multi_line_output=3
 include_trailing_comma=true
 force_grid_wrap=0

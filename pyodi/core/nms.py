@@ -1,60 +1,45 @@
 from collections import defaultdict
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
+import ensemble_boxes
 import numpy as np
 from loguru import logger
 
 
-def nms(boxes: np.ndarray, iou_thr: float = 0.5) -> List[bool]:
-    """Apply Non Maximum Supression to `boxes`.
+def coco_to_normalized_corners(boxes, image_width, image_height):
+    left = boxes[:, 0]
+    top = boxes[:, 1]
+    width = boxes[:, 2]
+    height = boxes[:, 3]
+    right = left + width
+    bottom = top + height
 
-    Parameters
-    ----------
-    boxes: np.ndarray
-        Shape (N, 5).
-        In format: (left, top, width, height, score)
+    left /= image_width
+    right /= image_width
 
-    iou_thr: float, optional
-        Default 0.5
-        None of the boxes to keep ill have an iou above `iou_thr` to any other.
+    top /= image_height
+    bottom /= image_height
 
-    Returns
-    -------
-    List[bool]
-        Indices to keep.
-    """
-    x1 = boxes[:, 0]
-    y1 = boxes[:, 1]
-    x2 = x1 + boxes[:, 2]
-    y2 = y1 + boxes[:, 3]
-    scores = boxes[:, 4]
+    return np.c_[left, top, right, bottom]
 
-    areas = (x2 - x1 + 1) * (y2 - y1 + 1)
-    sorted_idx = scores.argsort()[::-1]
 
-    keep = []
-    while sorted_idx.size > 0:
-        i = sorted_idx[0]
-        keep.append(i)
+def normalized_corners_to_coco(boxes, image_width, image_height):
+    left = boxes[:, 0] * image_width
+    top = boxes[:, 1] * image_height
+    right = boxes[:, 2] * image_width
+    bottom = boxes[:, 3] * image_height
 
-        xx1 = np.maximum(x1[i], x1[sorted_idx[1:]])
-        yy1 = np.maximum(y1[i], y1[sorted_idx[1:]])
-        xx2 = np.minimum(x2[i], x2[sorted_idx[1:]])
-        yy2 = np.minimum(y2[i], y2[sorted_idx[1:]])
+    width = right - left
+    height = bottom - top
 
-        w = np.maximum(xx2 - xx1 + 1, 0.0)
-        h = np.maximum(yy2 - yy1 + 1, 0.0)
-        inter = w * h
-        iou = inter / (areas[i] + areas[sorted_idx[1:]] - inter)
-
-        retained_idx = np.where(iou <= iou_thr)[0]
-        sorted_idx = sorted_idx[retained_idx + 1]
-
-    return keep
+    return np.c_[left, top, width, height]
 
 
 def nms_predictions(
-    predictions: List[Dict[Any, Any]], score_thr: float = 0.0, iou_thr: float = 0.5
+    predictions: List[Dict[Any, Any]],
+    nms_mode: str = "nms",
+    score_thr: float = 0.0,
+    iou_thr: float = 0.5,
 ) -> List[Dict[Any, Any]]:
     """Apply Non Maximum supression to all the images in a COCO `predictions` list.
 
@@ -78,35 +63,56 @@ def nms_predictions(
     List[Dict[Any, Any]]
         List of filtered predictions in COCO format.
     """
+    nms = getattr(ensemble_boxes, nms_mode)
     new_predictions = []
     image_id_to_all_boxes: Dict[str, List[List[float]]] = defaultdict(list)
+    image_id_to_width: Dict[str, float] = dict()
+    image_id_to_height: Dict[str, float] = dict()
+
     for prediction in predictions:
         image_id_to_all_boxes[prediction["image_id"]].append(
             [*prediction["bbox"], prediction["score"], prediction["category_id"]]
         )
+        if prediction["image_id"] not in image_id_to_width:
+            image_id_to_width[prediction["image_id"]] = prediction[
+                "original_image_width"
+            ]
+            image_id_to_height[prediction["image_id"]] = prediction[
+                "original_image_height"
+            ]
 
     for image_id, all_boxes in image_id_to_all_boxes.items():
         categories = np.array([box[-1] for box in all_boxes])
-        boxes = np.vstack([box[:-1] for box in all_boxes])
+        scores = np.array([box[-2] for box in all_boxes])
+        boxes = np.vstack([box[:-2] for box in all_boxes])
 
-        above_score = boxes[:, -1] > score_thr
+        image_width = image_id_to_width[image_id]
+        image_height = image_id_to_height[image_id]
 
-        boxes = boxes[above_score]
-        categories = categories[above_score]
-
-        indices_to_keep = nms(boxes, iou_thr=iou_thr)
+        boxes = coco_to_normalized_corners(boxes, image_width, image_height)
 
         logger.info(f"Before nms: {boxes.shape}")
-        categories = categories[indices_to_keep]
-        boxes = boxes[indices_to_keep]
+        boxes, scores, categories = nms(
+            [boxes], [scores], [categories], iou_thr=iou_thr
+        )
         logger.info(f"After nms: {boxes.shape}")
-        for box, category in zip(boxes, categories):
+
+        logger.info(f"Before score threshold: {boxes.shape}")
+        above_thr = scores > score_thr
+        boxes = boxes[above_thr]
+        scores = scores[above_thr]
+        categories = categories[above_thr]
+        logger.info(f"After score threshold: {boxes.shape}")
+
+        boxes = normalized_corners_to_coco(boxes, image_width, image_height)
+
+        for box, score, category in zip(boxes, scores, categories):
             new_predictions.append(
                 {
                     "image_id": image_id,
-                    "bbox": list(box[:-1]),
+                    "bbox": list(box),
+                    "score": float(score),
                     "category_id": int(category),
-                    "score": box[-1],
                 }
             )
 

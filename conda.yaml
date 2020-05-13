@@ -12,6 +12,7 @@ dependencies:
   - scikit-learn
   - numba
   - pip:
+      - ensemble_boxes
       - typer
       - loguru
       - plotly
