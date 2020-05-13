@@ -246,10 +246,10 @@ def get_bbox_array(
     Examples:
 
         `coco`:
-        >>>[x_min, y_min, x_max, y_max]
+        >>>[x_center, y_center, width, height]
 
         `corners`:
-        >>>[x_center, y_center, width, height]
+        >>>[x_min, y_min, x_max, y_max]
 
     """
     check_bbox_formats(input_bbox_format, output_bbox_format)
