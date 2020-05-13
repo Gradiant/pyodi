@@ -1,7 +1,8 @@
 """
 # Evaluation App
 
-The [`pyodi evaluation`][pyodi.apps.evaluation.evaluation] app can be used to evaluate the predictions of an object detection dataset.
+The [`pyodi evaluation`][pyodi.apps.evaluation.evaluation] app can be used to evaluate
+the predictions of an object detection dataset.
 
 Example usage:
 
@@ -9,7 +10,9 @@ Example usage:
 pyodi evaluation "data/COCO/COCO_val2017.json" "data/COCO/COCO_val2017_predictions.json"
 ```
 
-This app shows the Average Precision for different IoU values and different areas, the Average Recall for different IoU values and differents maximum detections, and the Average F1 Score.
+This app shows the Average Precision for different IoU values and different areas, the
+Average Recall for different IoU values and differents maximum detections, and the
+Average F1 Score.
 
 An example of the result of executing this app:
 ```
