@@ -32,22 +32,6 @@ def get_random_predictions(image_id):
     return predictions
 
 
-"""
-def test_nms_iou_thr():
-    boxes = get_random_boxes()
-    keep = []
-    for iou_thr in np.arange(0, 1.1, 0.1):
-        keep.append(nms(boxes, iou_thr=iou_thr))
-
-    for n in range(1, len(keep)):
-        # As iou_thr increases, more boxes pass the filter
-        assert len(keep[n - 1]) <= len(keep[n])
-
-    # At iou_thr=1.0 no box is filtered
-    assert len(keep[-1]) == len(boxes)
-"""
-
-
 def test_nms_predictions_score_thr():
     predictions = []
     for image_id in range(2):
