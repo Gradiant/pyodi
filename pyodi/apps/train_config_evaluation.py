@@ -104,6 +104,8 @@ def train_config_evaluation(
 
     df_annotations = get_scale_and_ratio(df_annotations, prefix="scaled")
 
+    df_annotations["log_scaled_ratio"] = np.log(df_annotations["scaled_ratio"])
+
     train_config = load_train_config_file(train_config_file)
 
     del train_config["anchor_generator"]["type"]
