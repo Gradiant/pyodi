@@ -78,10 +78,10 @@ def train_config_evaluation(
         `faster_rcnn_r50_fpn_gn_ws_config.py`:
 
         train_pipeline = [
-                dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
-                dict(type='RandomFlip', flip_ratio=0.5),
-                dict(type='Pad', size_divisor=32)
-            ]
+            dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
+            dict(type='RandomFlip', flip_ratio=0.5),
+            dict(type='Pad', size_divisor=32)
+        ]
         anchor_generator=dict(
             type='AnchorGenerator',
             scales=[8],
