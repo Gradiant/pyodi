@@ -1,38 +1,11 @@
 from collections import defaultdict
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 import ensemble_boxes
 import numpy as np
 from loguru import logger
 
-
-def coco_to_normalized_corners(boxes, image_width, image_height):
-    left = boxes[:, 0]
-    top = boxes[:, 1]
-    width = boxes[:, 2]
-    height = boxes[:, 3]
-    right = left + width
-    bottom = top + height
-
-    left /= image_width
-    right /= image_width
-
-    top /= image_height
-    bottom /= image_height
-
-    return np.c_[left, top, right, bottom]
-
-
-def normalized_corners_to_coco(boxes, image_width, image_height):
-    left = boxes[:, 0] * image_width
-    top = boxes[:, 1] * image_height
-    right = boxes[:, 2] * image_width
-    bottom = boxes[:, 3] * image_height
-
-    width = right - left
-    height = bottom - top
-
-    return np.c_[left, top, width, height]
+from pyodi.coco.utils import coco_to_corners, corners_to_coco, denormalize, normalize
 
 
 def nms_predictions(
@@ -66,20 +39,20 @@ def nms_predictions(
     nms = getattr(ensemble_boxes, nms_mode)
     new_predictions = []
     image_id_to_all_boxes: Dict[str, List[List[float]]] = defaultdict(list)
-    image_id_to_width: Dict[str, float] = dict()
-    image_id_to_height: Dict[str, float] = dict()
+    image_id_to_width: Dict[str, int] = dict()
+    image_id_to_height: Dict[str, int] = dict()
 
     for prediction in predictions:
         image_id_to_all_boxes[prediction["image_id"]].append(
             [*prediction["bbox"], prediction["score"], prediction["category_id"]]
         )
         if prediction["image_id"] not in image_id_to_width:
-            image_id_to_width[prediction["image_id"]] = prediction[
-                "original_image_width"
-            ]
-            image_id_to_height[prediction["image_id"]] = prediction[
-                "original_image_height"
-            ]
+            image_id_to_width[prediction["image_id"]] = int(
+                prediction["original_image_width"]
+            )
+            image_id_to_height[prediction["image_id"]] = int(
+                prediction["original_image_height"]
+            )
 
     for image_id, all_boxes in image_id_to_all_boxes.items():
         categories = np.array([box[-1] for box in all_boxes])
@@ -89,7 +62,7 @@ def nms_predictions(
         image_width = image_id_to_width[image_id]
         image_height = image_id_to_height[image_id]
 
-        boxes = coco_to_normalized_corners(boxes, image_width, image_height)
+        boxes = normalize(coco_to_corners(boxes), image_width, image_height)
 
         logger.info(f"Before nms: {boxes.shape}")
         boxes, scores, categories = nms(
@@ -104,7 +77,7 @@ def nms_predictions(
         categories = categories[above_thr]
         logger.info(f"After score threshold: {boxes.shape}")
 
-        boxes = normalized_corners_to_coco(boxes, image_width, image_height)
+        boxes = denormalize(corners_to_coco(boxes), image_width, image_height)
 
         for box, score, category in zip(boxes, scores, categories):
             new_predictions.append(
