@@ -116,7 +116,7 @@ class AnchorGenerator(object):
         self.base_anchors = self.gen_base_anchors()
 
     @property
-    def num_base_anchors(self):
+    def num_base_anchors(self) -> List[int]:
         return [base_anchors.size(0) for base_anchors in self.base_anchors]
 
     @property
@@ -183,16 +183,13 @@ class AnchorGenerator(object):
         """Generate grid anchors in multiple feature levels
 
         Args:
-            featmap_sizes (list[tuple]): List of feature map sizes in
-                multiple feature levels.
-            device (str): Device where the anchors will be put on.
+            featmap_sizes: List of feature map sizes in multiple feature levels.
 
-        Return:
-            list[torch.Tensor]: Anchors in multiple feature levels.
-                The sizes of each tensor should be [N, 4], where
-                N = width * height * num_base_anchors, width and height
-                are the sizes of the corresponding feature lavel,
-                num_base_anchors is the number of anchors for that level.
+        Returns:
+            Anchors in multiple feature levels. The sizes of each tensor should be
+             [N, 4], where N = width * height * num_base_anchors, width and height are
+             the sizes of the corresponding feature level, num_base_anchors is the
+             number of anchors for that level.
         """
         assert self.num_levels == len(featmap_sizes)
         multi_level_anchors = []
@@ -222,34 +219,39 @@ class AnchorGenerator(object):
         # then (0, 1), (0, 2), ...
         return all_anchors
 
-    def valid_flags(self, featmap_sizes, pad_shape, device="cuda"):
-        """Generate valid flags of anchors in multiple feature levels
-
-        Args:
-            featmap_sizes (list(tuple)): List of feature map sizes in
-                multiple feature levels.
-            pad_shape (tuple): The padded shape of the image.
-            device (str): Device where the anchors will be put on.
-
-        Return:
-            list(torch.Tensor): Valid flags of anchors in multiple levels.
-        """
-        assert self.num_levels == len(featmap_sizes)
-        multi_level_flags = []
-        for i in range(self.num_levels):
-            anchor_stride = self.strides[i]
-            feat_h, feat_w = featmap_sizes[i]
-            h, w = pad_shape[:2]
-            valid_feat_h = min(int(np.ceil(h / anchor_stride)), feat_h)
-            valid_feat_w = min(int(np.ceil(w / anchor_stride)), feat_w)
-            flags = self.single_level_valid_flags(
-                (feat_h, feat_w),
-                (valid_feat_h, valid_feat_w),
-                self.num_base_anchors[i],
-                device=device,
-            )
-            multi_level_flags.append(flags)
-        return multi_level_flags
+    # todo: this function depends on the following commented function
+    # def valid_flags(
+    #     self,
+    #     featmap_sizes: List[Tuple[int, int]],
+    #     pad_shape: Tuple[int, int],
+    #     device: str = "cuda",
+    # ) -> List:
+    #     """Generate valid flags of anchors in multiple feature levels
+    #
+    #     Args:
+    #         featmap_sizes: List of feature map sizes in multiple feature levels.
+    #         pad_shape: The padded shape of the image.
+    #         device: Device where the anchors will be put on. Defaults to "cuda".
+    #
+    #     Returns:
+    #         Valid flags of anchors in multiple levels (List[torch.Tensor]).
+    #     """
+    #     assert self.num_levels == len(featmap_sizes)
+    #     multi_level_flags = []
+    #     for i in range(self.num_levels):
+    #         anchor_stride = self.strides[i]
+    #         feat_h, feat_w = featmap_sizes[i]
+    #         h, w = pad_shape[:2]
+    #         valid_feat_h = min(int(np.ceil(h / anchor_stride)), feat_h)
+    #         valid_feat_w = min(int(np.ceil(w / anchor_stride)), feat_w)
+    #         flags = self.single_level_valid_flags(
+    #             (feat_h, feat_w),
+    #             (valid_feat_h, valid_feat_w),
+    #             self.num_base_anchors[i],
+    #             device=device,
+    #         )
+    #         multi_level_flags.append(flags)
+    #     return multi_level_flags
 
     # todo: update with numpy if necessary
     # def single_level_valid_flags(

@@ -25,28 +25,22 @@ def train_config_generation(
     input_size: Tuple[int, int] = (1280, 720),
     n_ratios: int = 3,
     n_scales: int = 3,
-    strides: List[int] = [8, 16, 32, 64, 128],
     show: bool = True,
     output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),
     keep_ratio: bool = False,
-):
+) -> None:
     """Computes optimal anchors for a given COCO dataset based on iou clustering.
 
-    Parameters
-    ----------
-    ground_truth_file : str
-        Path to COCO ground truth file
-    show : bool, optional
-        Show results or not, by default True
-    output : str, optional
-        Output file where results are saved, by default None
-    output_size : tuple
-        Size of saved images, by default (1600, 900)
-    input_size : tuple, optional
-        Model image input size, by default (1280, 720)
-    keep_ratio: bool, optional
-        Whether to keep the aspect ratio, by default False
+    Args:
+        ground_truth_file: Path to COCO ground truth file.
+        input_size: Model image input size. Defaults to (1280, 720).
+        n_ratios: Number of ratios. Defaults to 3.
+        n_scales: Number of scales. Defaults to 3.
+        show: Show results or not. Defaults to True.
+        output: Output file where results are saved. Defaults to None.
+        output_size: Size of saved images. Defaults to (1600, 900).
+        keep_ratio: Whether to keep the aspect ratio or not. Defaults to False.
     """
 
     if output is not None:

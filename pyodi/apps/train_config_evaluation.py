@@ -4,7 +4,7 @@ from importlib import import_module
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
-from typing import List, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
 import typer
@@ -26,7 +26,16 @@ from pyodi.plots.evaluation import plot_overlap_result
 app = typer.Typer()
 
 
-def load_train_config_file(train_config_file: str) -> dict:
+def load_train_config_file(train_config_file: str) -> Dict[str, Any]:
+    """Loads the `train_config_file`.
+
+    Args:
+        train_config_file: File with the training configuration.
+
+    Returns:
+        Dictionary with the training configuration.
+
+    """
     logger.info("Loading Train Config File")
     with TemporaryDirectory() as temp_config_dir:
         copyfile(train_config_file, osp.join(temp_config_dir, "_tempconfig.py"))
@@ -52,42 +61,35 @@ def train_config_evaluation(
     show: bool = True,
     output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),
-):
+) -> None:
     """Evaluates the fitness between `ground_truth_file` and `train_config_file`.
 
-    Parameters
-    ----------
-    ground_truth_file : str
-        Path to COCO ground truth file
-    train_config_file: str
-        Path to MMDetection-like configuration file.
-        Must contain `train_pipeline` and `anchor_generator` sections.
-        Example content:
+    Args:
+        ground_truth_file: Path to COCO ground truth file.
+        train_config_file: Path to MMDetection-like configuration file. Must contain
+            `train_pipeline` and `anchor_generator` sections.
+        input_size: Model image input size. Defaults to (1280, 720).
+        show: Show results or not. Defaults to True.
+        output: Output file where results are saved. Defaults to None.
+        output_size: Size of saved images. Defaults to (1600, 900).
 
-        # faster_rcnn_r50_fpn_gn_ws_config.py
+    Examples:
+
+        `faster_rcnn_r50_fpn_gn_ws_config.py`:
 
         train_pipeline = [
-            dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
-            dict(type='RandomFlip', flip_ratio=0.5),
-            dict(type='Pad', size_divisor=32)
-        ]
-
+                dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
+                dict(type='RandomFlip', flip_ratio=0.5),
+                dict(type='Pad', size_divisor=32)
+            ]
         anchor_generator=dict(
             type='AnchorGenerator',
             scales=[8],
             ratios=[0.5, 1.0, 2.0],
             strides=[4, 8, 16, 32, 64]
         )
-    input_size : Tuple[int, int],
-        Model image input size, by default (1280, 720)
-    show : bool, optional
-        Show results or not, by default True
-    output : str, optional
-        Output file where results are saved, by default None
-    output_size : tuple
-        Size of saved images, by default (1600, 900)
-    """
 
+    """
     if output is not None:
         output = str(Path(output) / Path(ground_truth_file).stem)
         Path(output).mkdir(parents=True, exist_ok=True)

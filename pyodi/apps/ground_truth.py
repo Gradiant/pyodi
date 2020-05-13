@@ -62,22 +62,13 @@ def ground_truth(
 ) -> None:
     """Explore the images and bounding boxes of a dataset.
 
-    Parameters
-    ----------
-    ground_truth_file : str
-        Path to COCO ground truth file
+    Args:
+        ground_truth_file: Path to COCO ground truth file.
+        show: Whether to show results or not.
+        output: Results will be saved under `output` dir. Defaults to None.
+        output_size: Size of the saved images when output is defined. Defaults to
+            (1600, 900).
 
-    show : bool, optional
-        Default: True.
-        Whether to show results or not.
-
-    output : str, optional
-        Default: None
-        If not None, results will be saved under `output` dir.
-
-    output_size : tuple
-        Default: (1600, 900)
-        Size of the saved images when output is defined.
     """
     if output is not None:
         output = str(Path(output) / Path(ground_truth_file).stem)
