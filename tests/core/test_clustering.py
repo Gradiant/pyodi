@@ -64,5 +64,5 @@ def test_origin_iou(get_bboxes_matrices):
 
 def test_kmeans_scale_ratio():
     X = np.array([[1, 2], [1, 4], [1, 0], [10, 2], [10, 4], [10, 0]])
-    result = kmeans_euclidean(X, n_clusters=2, silhouette_metric=True)
+    result = kmeans_euclidean(X, n_clusters=2, random_state=0, silhouette_metric=True)
     np.testing.assert_almost_equal(result["silhouette"], 0.713, 3)
