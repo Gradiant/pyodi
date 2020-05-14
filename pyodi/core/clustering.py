@@ -166,10 +166,7 @@ def kmeans_iou(
 
 
 def kmeans_euclidean(
-    values: ndarray,
-    n_clusters: int = 3,
-    random_state: int = 0,
-    silhouette_metric: bool = False,
+    values: ndarray, n_clusters: int = 3, silhouette_metric: bool = False,
 ) -> Dict[str, Union[ndarray, float64]]:
     if len(values.shape) == 1:
         values = values[:, None]
