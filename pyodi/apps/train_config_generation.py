@@ -195,15 +195,12 @@ def train_config_generation(
         title="COCO_anchor_generation",
     )
 
-    anchor_config = dict(
-        type="AnchorGenerator",
-        scales=list(scales),
-        ratios=list(ratios),
-        strides=list(strides),
-        base_sizes=anchor_base_sizes,
-    )
+    if output:
+        output_file = Path(output) / "result.json"
+        with open(output_file, "w") as f:
+            f.write(anchor_generator.as_config())
 
-    return anchor_config
+    return anchor_generator
 
 
 if __name__ == "__main__":
