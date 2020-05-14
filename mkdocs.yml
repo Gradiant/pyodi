@@ -9,6 +9,7 @@ nav:
   - Home: index.md
   - Reference:
       - apps:
+          - evaluation: reference/apps/evaluation.md
           - ground-truth: reference/apps/ground-truth.md
           - train-config:
               - evaluation: reference/apps/train-config-evaluation.md
