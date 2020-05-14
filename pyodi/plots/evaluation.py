@@ -4,6 +4,8 @@ import plotly.graph_objects as go
 from pandas.core.frame import DataFrame
 from plotly.subplots import make_subplots
 
+from pyodi.plots.common import save_figure
+
 
 def plot_overlap_result(
     df: DataFrame,
@@ -35,7 +37,7 @@ def plot_overlap_result(
             "Cumulative overlap distribution",
             "Bounding Box Distribution",
             "Scale and mean overlap",
-            "Ratio and mean overlap",
+            "Log Ratio and mean overlap",
         ),
     )
 
@@ -71,7 +73,7 @@ def plot_overlap_result(
         col=2,
     )
 
-    for i, column in enumerate(["scaled_scale", "scaled_ratio"], 1):
+    for i, column in enumerate(["scaled_scale", "log_scaled_ratio"], 1):
         fig.append_trace(
             go.Histogram(
                 x=df[column],
@@ -89,7 +91,7 @@ def plot_overlap_result(
         xaxis=dict(title="Overlap values"),
         xaxis2=dict(title="Scaled width"),
         xaxis3=dict(title="Scale"),
-        xaxis4=dict(title="Ratio"),
+        xaxis4=dict(title="Log Ratio"),
         yaxis=dict(title="Accumulated percentage"),
         yaxis2=dict(title="Scaled heigh"),
         yaxis3=dict(title="Mean overlap"),
@@ -101,5 +103,4 @@ def plot_overlap_result(
         fig.show()
 
     if output:
-        fig.update_layout(width=output_size[0], height=output_size[1])
-        fig.write_image(f"{output}/overlap.png")
+        save_figure(fig, "overlap", output, output_size)

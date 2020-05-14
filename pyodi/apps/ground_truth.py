@@ -36,7 +36,7 @@ The app is divided in two sections:
 # API REFERENCE
 """
 from pathlib import Path
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple
 
 import typer
 from loguru import logger
@@ -46,12 +46,8 @@ from pyodi.coco.utils import (
     join_annotations_with_image_sizes,
     load_ground_truth_file,
 )
-from pyodi.plots.boxes import (
-    get_centroids_heatmap,
-    plot_heatmap,
-    plot_scatter_with_histograms,
-)
-from pyodi.plots.images import plot_histogram, plot_image_shape_distribution
+from pyodi.plots.boxes import get_centroids_heatmap, plot_heatmap
+from pyodi.plots.common import plot_scatter_with_histograms
 
 app = typer.Typer()
 
@@ -91,7 +87,7 @@ def ground_truth(
 
     df_images, df_annotations = coco_ground_truth_to_dfs(coco_ground_truth)
 
-    plot_image_shape_distribution(
+    plot_scatter_with_histograms(
         df_images,
         title=f"{Path(ground_truth_file).stem}: Image Shapes",
         show=show,
@@ -119,7 +115,6 @@ def ground_truth(
         df_annotations,
         x="absolute_width",
         y="absolute_height",
-        max_values=(1.01, 1.01),
         title=f"{Path(ground_truth_file).stem}: Bounding Box Shapes",
         show=show,
         output=output,
