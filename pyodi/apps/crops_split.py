@@ -1,7 +1,7 @@
 import json
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import typer
 from loguru import logger
@@ -10,7 +10,32 @@ from PIL import Image
 app = typer.Typer()
 
 
-def get_crops_corners(image_pil, crop_height, crop_width, row_overlap, col_overlap):
+def get_crops_corners(
+    image_pil: Image,
+    crop_height: int,
+    crop_width: int,
+    row_overlap: int = 0,
+    col_overlap: int = 0,
+) -> List[List[int]]:
+    """Divide `image_pil` in crops and return a list of corner coordinates for each crop.
+
+    The crops corners will be generated using the `crop_height`, `crop_width`, `row_overlap` and `col_overlap` arguments.
+
+    Args:
+        image_pil (PIL.Image): Instance of PIL.Image
+        crop_height (int)
+        crop_width (int)
+        row_overlap (int, optional): Default 0.
+        col_overlap (int, optional): Default 0.
+
+    Returns:
+        List[List[int]]: List of 4 corner coordinates for each crop of the N crops.
+            [
+                [crop_0_left, crop_0_top, crop_0_right, crop_0_bottom],
+                ...
+                [crop_N_left, crop_N_top, crop_N_right, crop_N_bottom]
+            ]
+    """
     crops_corners = []
     row_max = row_min = 0
     width, height = image_pil.size
@@ -30,11 +55,40 @@ def get_crops_corners(image_pil, crop_height, crop_width, row_overlap, col_overl
     return crops_corners
 
 
-def annotation_in_crop(annotation, crop_corners):
+def annotation_inside_crop(annotation: Dict, crop_corners: List[int]) -> bool:
+    """Check whether annotation coordinates lie inside crop coordinates.
+
+    Args:
+        annotation (Dict): Single annotation entry in COCO format.
+        crop_corners (List[int]): Generated from `get_crop_corners`.
+
+    Returns:
+        bool: True if any annotation coordinate lies inside crop.
+    """
     left, top, width, height = annotation["bbox"]
 
-    if left > crop_corners[0] and top > crop_corners[1]:
-        return None
+    if (
+        left < crop_corners[2]
+        or top < crop_corners[3]
+        or left + width > crop_corners[0]
+        or top + height > crop_corners[1]
+    ):
+        return True
+
+    return False
+
+
+def get_annotation_in_crop(annotation: Dict, crop_corners: List[int]) -> Dict:
+    """Translate annotation coordinates to crop coordinates.
+
+    Args:
+        annotation (Dict): Single annotation entry in COCO format.
+        crop_corners (List[int]): Generated from `get_crop_corners`.
+
+    Returns:
+        Dict: Annotation entry with coordinates translated to crop coordinates.
+    """
+    left, top, width, height = annotation["bbox"]
 
     new_left = min(left - crop_corners[0], 0)
     new_top = min(top - crop_corners[1], 0)
@@ -81,7 +135,20 @@ def crops_split(
     crop_width: int,
     row_overlap: int = 0,
     col_overlap: int = 0,
-):
+) -> None:
+    """Generate a new dataset by splitting the images into crops and adapting the annotations.
+
+    Args:
+        ground_truth_file (str): Path to a COCO ground_truth_file.
+        image_folder (str): Path where the images of the ground_truth_file are stored.
+        output_file (str): Path where the `new_ground_truth_file` will be saved.
+        output_image_folder (str): Path where the crops will be saved.
+        crop_height (int)
+        crop_width (int)
+        row_overlap (int, optional): Default 0.
+        col_overlap (int, optional): Default 0.
+
+    """
     ground_truth = json.load(open(ground_truth_file))
 
     image_id_to_annotations: Dict = defaultdict(list)
@@ -121,11 +188,12 @@ def crops_split(
                 }
             )
             for annotation in image_id_to_annotations[image["id"]]:
-                new_annotation = annotation_in_crop(annotation, crop_corners)
-                if new_annotation is not None:
-                    new_annotation["id"] = len(new_annotations)
-                    new_annotation["image_id"] = crop_id
-                    new_annotations.append(new_annotation)
+                if not annotation_inside_crop(annotation, crop_corners):
+                    continue
+                new_annotation = get_annotation_in_crop(annotation, crop_corners)
+                new_annotation["id"] = len(new_annotations)
+                new_annotation["image_id"] = crop_id
+                new_annotations.append(new_annotation)
 
     new_ground_truth = {
         "images": new_images,
