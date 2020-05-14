@@ -12,6 +12,7 @@ dependencies:
   - pytest
   - scikit-learn
   - numba
+  - pillow
   - plotly-orca
   - pip:
       - ensemble_boxes
