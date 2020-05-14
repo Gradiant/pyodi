@@ -338,7 +338,7 @@ def get_df_from_bboxes(
     check_bbox_formats(input_bbox_format, output_bbox_format)
 
     if input_bbox_format != output_bbox_format:
-        convert = locals()[f"{input_bbox_format}_{output_bbox_format}"]
+        convert = globals()[f"{input_bbox_format}_to_{output_bbox_format}"]
         bboxes = convert(bboxes)
 
     return pd.DataFrame(bboxes, columns=get_bbox_column_names(output_bbox_format))
