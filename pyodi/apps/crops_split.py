@@ -94,8 +94,8 @@ def crops_split(
         "old_images": ground_truth["images"],
         "annotations": new_annotations,
         "categories": ground_truth["categories"],
-        "licenses": ground_truth["licenses"],
-        "info": ground_truth["info"],
+        "licenses": ground_truth.get("licenses", []),
+        "info": ground_truth.get("info"),
     }
 
     with open(output_file, "w") as f:
