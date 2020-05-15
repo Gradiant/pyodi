@@ -37,7 +37,7 @@ def get_crops_corners(
         row_max = row_min + crop_height
         while col_max < width:
             col_max = col_min + crop_width
-            if row_max > crop_height or col_max > crop_width:
+            if row_max > height or col_max > width:
                 rmax = min(crop_height, row_max)
                 cmax = min(crop_width, col_max)
                 crops_corners.append([cmax - width, rmax - height, cmax, rmax])
