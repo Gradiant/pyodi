@@ -75,10 +75,10 @@ def crops_split(
             crop_id = len(new_images)
             new_images.append(
                 {
-                    "file_name": crop_file_name,
-                    "height": crop_height,
-                    "width": crop_width,
-                    "id": crop_id,
+                    "file_name": str(crop_file_name),
+                    "height": int(crop_height),
+                    "width": int(crop_width),
+                    "id": int(crop_id),
                 }
             )
             for annotation in image_id_to_annotations[image["id"]]:
