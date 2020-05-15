@@ -93,8 +93,8 @@ def get_annotation_in_crop(annotation: Dict, crop_corners: List[int]) -> Dict:
 
     new_left = max(left - crop_corners[0], 0)
     new_top = max(top - crop_corners[1], 0)
-    new_right = min(right - crop_corners[0], crop_corners[2])
-    new_bottom = min(bottom - crop_corners[1], crop_corners[3])
+    new_right = min(right - crop_corners[0], crop_corners[2] - crop_corners[0])
+    new_bottom = min(bottom - crop_corners[1], crop_corners[3] - crop_corners[1])
 
     new_width = new_right - new_left
     new_height = new_bottom - new_top
