@@ -47,6 +47,17 @@ def test_get_crop_corners_coordinates():
     assert tuple(no_overlap[3]) == (5, 5, 10, 10)
 
 
+def test_get_crop_corners_bounds():
+    image_pil = Image.fromarray(np.zeros((10, 10, 3), dtype=np.uint8))
+    no_overlap = get_crops_corners(image_pil, crop_height=6, crop_width=6)
+
+    assert len(no_overlap) == 4
+    assert tuple(no_overlap[0]) == (0, 0, 6, 6)
+    assert tuple(no_overlap[1]) == (4, 0, 10, 6)
+    assert tuple(no_overlap[2]) == (0, 4, 6, 10)
+    assert tuple(no_overlap[3]) == (4, 4, 10, 10)
+
+
 def test_annotation_inside_crop():
     annotation = {"bbox": [5, 5, 5, 5]}
 
