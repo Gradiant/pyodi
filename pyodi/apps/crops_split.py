@@ -66,7 +66,7 @@ def crops_split(
 
             crop_file_name = (
                 output_image_folder_path
-                / f"{file_name}_{crop_corners[0]}_{crop_corners[1]}{file_name.suffix}"
+                / f"{Path(file_name).stem}_{crop_corners[0]}_{crop_corners[1]}{Path(file_name).suffix}"
             )
             crop.save(crop_file_name)
 
