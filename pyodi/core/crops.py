@@ -88,18 +88,16 @@ def get_annotation_in_crop(annotation: Dict, crop_corners: List[int]) -> Dict:
         Dict: Annotation entry with coordinates translated to crop coordinates.
     """
     left, top, width, height = annotation["bbox"]
+    right = left + width
+    bottom = top + height
 
-    new_left = max(left - crop_corners[0], crop_corners[0])
-    new_top = max(top - crop_corners[1], crop_corners[1])
-    if new_left + width > crop_corners[2]:
-        new_width = crop_corners[2] - new_left
-    else:
-        new_width = width
+    new_left = max(left - crop_corners[0], 0)
+    new_top = max(top - crop_corners[1], 0)
+    new_right = min(right - crop_corners[0], crop_corners[2])
+    new_bottom = min(bottom - crop_corners[1], crop_corners[3])
 
-    if new_top + height > crop_corners[3]:
-        new_height = crop_corners[3] - new_top
-    else:
-        new_height = height
+    new_width = new_right - new_left
+    new_height = new_bottom - new_top
 
     new_bbox = [new_left, new_top, new_width, new_height]
     new_area = new_width * new_height

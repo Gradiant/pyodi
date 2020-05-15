@@ -97,31 +97,19 @@ def test_annotation_outside_crop():
     assert annotation_inside_crop(annotation, [5, 5, 10, 10])
 
 
-"""
 def test_get_annotation_in_crop():
-    annotation = {"bbox": [5, 5, 5, 5], "iscrowd": 0, "category_id": 0, "score": 1.0}
+    annotation = {"bbox": [2, 2, 2, 2], "iscrowd": 0, "category_id": 0, "score": 1.0}
 
-    # Annotation is fully inside crop
-    new_annotation = get_annotation_in_crop(annotation, [0, 0, 10, 10])
-    assert tuple(annotation["bbox"]) == tuple(new_annotation["bbox"])
+    new_annotation = get_annotation_in_crop(annotation, [0, 0, 5, 5])
+    assert tuple(new_annotation["bbox"]) == (2, 2, 2, 2)
 
-    # Right coordinate is outside
-    new_annotation = get_annotation_in_crop(annotation, [0, 0, 9, 10])
-    assert tuple(annotation["bbox"]) != tuple(new_annotation["bbox"])
-    assert new_annotation["bbox"][2] < annotation["bbox"][2]
+    annotation = {"bbox": [4, 4, 2, 2], "iscrowd": 0, "category_id": 0, "score": 1.0}
 
-    # Bottom coordinate is outside
-    new_annotation = get_annotation_in_crop(annotation, [0, 0, 10, 9])
-    assert tuple(annotation["bbox"]) != tuple(new_annotation["bbox"])
-    assert new_annotation["bbox"][3] < annotation["bbox"][3]
-
-    # Left coordinate is outside
-    new_annotation = get_annotation_in_crop(annotation, [6, 0, 10, 10])
-    assert tuple(annotation["bbox"]) != tuple(new_annotation["bbox"])
-    assert new_annotation["bbox"][0] == 0
-
-    # Top coordinate is outside
-    new_annotation = get_annotation_in_crop(annotation, [0, 6, 10, 10])
-    assert tuple(annotation["bbox"]) != tuple(new_annotation["bbox"])
-    assert new_annotation["bbox"][1] == 0
-"""
+    new_annotation = get_annotation_in_crop(annotation, [0, 0, 5, 5])
+    assert tuple(new_annotation["bbox"]) == (4, 4, 1, 1)
+    new_annotation = get_annotation_in_crop(annotation, [5, 0, 10, 5])
+    assert tuple(new_annotation["bbox"]) == (0, 4, 1, 1)
+    new_annotation = get_annotation_in_crop(annotation, [0, 5, 5, 10])
+    assert tuple(new_annotation["bbox"]) == (4, 0, 1, 1)
+    new_annotation = get_annotation_in_crop(annotation, [5, 5, 10, 10])
+    assert tuple(new_annotation["bbox"]) == (0, 0, 1, 1)
