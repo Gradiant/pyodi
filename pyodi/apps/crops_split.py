@@ -55,6 +55,7 @@ def crops_split(
     for image in ground_truth["images"]:
 
         file_name = image["file_name"]
+        logger.info(file_name)
         image_pil = Image.open(Path(image_folder) / file_name)
 
         crops_corners = get_crops_corners(
@@ -62,6 +63,7 @@ def crops_split(
         )
 
         for crop_corners in crops_corners:
+            logger.info(crop_corners)
             crop = image_pil.crop(crop_corners)
 
             crop_file_name = (
