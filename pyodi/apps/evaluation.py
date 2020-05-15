@@ -16,8 +16,7 @@ app = typer.Typer()
 def evaluation(
     ground_truth_file: str, predictions_file: str, string_to_match: Optional[str] = None
 ) -> None:
-    """
-    Evaluate the predictions of a dataset.
+    """Evaluate the predictions of a dataset.
 
     Args:
         ground_truth_file: Path to COCO ground truth file.

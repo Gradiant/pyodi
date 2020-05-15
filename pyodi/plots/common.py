@@ -22,7 +22,7 @@ def plot_scatter_with_histograms(
     fig: Optional[go.Figure] = None,
     row: int = 1,
     col: int = 1,
-    **kwargs,
+    **kwargs: Any,
 ) -> go.Figure:
     """Allows to compare the relation between two variables of your COCO dataset.
 
@@ -132,7 +132,24 @@ def plot_histogram(
     output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),
 ) -> go.Figure:
+    """Plot histogram figure.
 
+    Args:
+        df: Data to plot.
+        column: DataFrame column to plot.
+        title: Title of figure. Defaults to None.
+        xrange: Range in axis X. Defaults to None.
+        yrange: Range in axis Y. Defaults to None.
+        xbins: Width of X bins. Defaults to None.
+        histnorm: Histnorm. Defaults to "percent".
+        show: Whether to show the figure or not. Defaults to False.
+        output: Output path folder. Defaults to None.
+        output_size: Size of saved images. Defaults to (1600, 900).
+
+    Returns:
+        Histogram figure.
+
+    """
     logger.info(f"Plotting {column} Histogram")
     fig = go.Figure(
         data=[
@@ -164,7 +181,16 @@ def plot_histogram(
 
 def save_figure(
     figure: go.Figure, output_name: str, output_dir: str, output_size: Tuple[int, int]
-):
+) -> None:
+    """Saves figure into png image file.
+
+    Args:
+        figure: Figure to save.
+        output_name: Output filename.
+        output_dir: Output directory.
+        output_size: Size of saved image.
+
+    """
     output = str(Path(output_dir) / (output_name.replace(" ", "_") + ".png"))
     figure.update_layout(width=output_size[0], height=output_size[1])
     figure.write_image(output)

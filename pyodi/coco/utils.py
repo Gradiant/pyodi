@@ -11,6 +11,15 @@ from pycocotools.coco import COCO
 
 
 def load_coco_ground_truth_from_StringIO(string_io: TextIO) -> COCO:
+    """Returns COCO object from StringIO.
+
+    Args:
+        string_io: IO stream in text mode.
+
+    Returns:
+        COCO object.
+
+    """
     coco_ground_truth = COCO()
     coco_ground_truth.dataset = json.load(string_io)
     coco_ground_truth.createIndex()
@@ -18,6 +27,15 @@ def load_coco_ground_truth_from_StringIO(string_io: TextIO) -> COCO:
 
 
 def load_ground_truth_file(ground_truth_file: str) -> Dict:
+    """Loads ground truth file.
+
+    Args:
+        ground_truth_file: Path of ground truth file.
+
+    Returns:
+        Dictionary with the ground truth data.
+
+    """
     logger.info("Loading Ground Truth File")
     coco_ground_truth = json.load(open(ground_truth_file))
     return coco_ground_truth
@@ -26,14 +44,24 @@ def load_ground_truth_file(ground_truth_file: str) -> Dict:
 def coco_ground_truth_to_dfs(
     coco_ground_truth: Dict, max_images: int = 200000
 ) -> Tuple[DataFrame, DataFrame]:
+    """Transforms COCO ground truth data to DataFrame objects.
+
+    Args:
+        coco_ground_truth: COCO ground truth data.
+        max_images: Maximum number of images to process.
+
+    Returns:
+        Images and annotations DataFrames.
+
+    """
     logger.info("Converting COCO Ground Truth to DataFrame")
     dict_images: Dict[str, Any] = defaultdict(list)
     categories = {x["id"]: x["name"] for x in coco_ground_truth["categories"]}
     image_id_to_name = {}
     if len(coco_ground_truth["images"]) > max_images:
         logger.warning(
-            f"Number of images {len(coco_ground_truth['images'])} exceeds maximum: {max_images}.\n"
-            "All the exceeding images will be ignored"
+            f"Number of images {len(coco_ground_truth['images'])} exceeds maximum: "
+            f"{max_images}.\nAll the exceeding images will be ignored."
         )
     for image in coco_ground_truth["images"][:max_images]:
         for k, v in image.items():
@@ -74,8 +102,9 @@ def coco_ground_truth_to_dfs(
 def join_annotations_with_image_sizes(
     df_annotations: DataFrame, df_images: DataFrame
 ) -> DataFrame:
-    """Left join between annotations dataframe and images keeping only df_annotations
-    keys and image sizes.
+    """Left join between annotations dataframe and images.
+
+    It only keeps df_annotations keys and image sizes.
 
     Args:
         df_annotations: DataFrame with COCO annotations.
@@ -92,7 +121,8 @@ def join_annotations_with_image_sizes(
     ]
 
 
-def check_bbox_formats(*args) -> None:
+def check_bbox_formats(*args: Any) -> None:
+    """Check if bounding boxes are in a valid format."""
     for arg in args:
         if not (arg in ["coco", "corners"]):
             raise ValueError(
@@ -137,7 +167,7 @@ def scale_bbox_dimensions(
 
 
 def get_scale_and_ratio(df: DataFrame, prefix: str = None) -> DataFrame:
-    """Returns df with area and ratio per bbox measurements
+    """Returns df with area and ratio per bbox measurements.
 
     Args:
         df: DataFrame with COCO annotations.
@@ -159,7 +189,7 @@ def get_scale_and_ratio(df: DataFrame, prefix: str = None) -> DataFrame:
 
 
 def corners_to_coco(bboxes: ndarray) -> ndarray:
-    """Transforms bboxes array from corners format to coco
+    """Transforms bboxes array from corners format to coco.
 
     Args:
         bboxes: Array with dimension N x 4 with bbox coordinates in corner format
@@ -177,7 +207,7 @@ def corners_to_coco(bboxes: ndarray) -> ndarray:
 
 
 def coco_to_corners(bboxes: ndarray) -> ndarray:
-    """Transforms bboxes array from coco format to corners
+    """Transforms bboxes array from coco format to corners.
 
     Args:
         bboxes: Array with dimension N x 4 with bbox coordinates in corner format
@@ -199,9 +229,11 @@ def coco_to_corners(bboxes: ndarray) -> ndarray:
 
 
 def get_bbox_column_names(bbox_format: str, prefix: Optional[str] = None) -> List[str]:
-    """Returns predefined column names for each format. When bbox_format is 'coco'
-    column names are ["col_centroid", "row_centroid", "width", "height"], when
-    'corners' ["col_left", "row_left", "col_right", "row_right"]
+    """Returns predefined column names for each format.
+
+    When bbox_format is 'coco' column names are
+    ["col_centroid", "row_centroid", "width", "height"], when 'corners'
+    ["col_left", "row_left", "col_right", "row_right"].
 
     Args:
         bbox_format: Bounding box format. Can be "coco" or "corners".
@@ -244,7 +276,6 @@ def get_bbox_array(
         Array with dimension N x 4 with bbox coordinates.
 
     Examples:
-
         `coco`:
         >>>[x_center, y_center, width, height]
 
@@ -310,7 +341,8 @@ def filter_zero_area_bboxes(df: DataFrame) -> DataFrame:
 
     if n_filtered:
         logger.warning(
-            f"A total of {n_filtered} bboxes have been filtered from your data for having area equal to zero."
+            f"A total of {n_filtered} bboxes have been filtered from your data "
+            "for having area equal to zero."
         )
 
     return df

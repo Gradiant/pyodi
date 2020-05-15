@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 import typer
 from loguru import logger
@@ -41,8 +41,8 @@ def train_config_generation(
         output: Output file where results are saved. Defaults to None.
         output_size: Size of saved images. Defaults to (1600, 900).
         keep_ratio: Whether to keep the aspect ratio or not. Defaults to False.
-    """
 
+    """
     if output is not None:
         output = str(Path(output) / Path(ground_truth_file).stem)
         Path(output).mkdir(parents=True, exist_ok=True)

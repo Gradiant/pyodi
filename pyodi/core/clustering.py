@@ -9,8 +9,9 @@ from sklearn.metrics import silhouette_score
 
 
 def origin_iou(bboxes: ndarray, clusters: ndarray) -> ndarray:
-    """Calculates the Intersection over Union (IoU) between a box and k clusters in coco
-    format shifted to origin.
+    """Calculates the Intersection over Union (IoU) between a box and k clusters.
+
+    Note: COCO format shifted to origin.
 
     Args:
         bboxes: Bboxes array with dimension [n, 2] in width-height order.
@@ -18,6 +19,7 @@ def origin_iou(bboxes: ndarray, clusters: ndarray) -> ndarray:
 
     Returns:
         BBox array with centroids with dimensions [k, 2].
+
     """
     col = np.minimum(bboxes[:, None, 0], clusters[:, 0])
     row = np.minimum(bboxes[:, None, 1], clusters[:, 1])
@@ -98,10 +100,10 @@ def kmeans_iou(
     k: List[int],
     silhouette_metric: bool = False,
     distance_metric: Callable = np.median,
-):
-    """Calculates k-means clustering with the Intersection over Union (IoU) metric for
-    different number of clusters. Silhouette average metric is returned for each
-    different k value.
+) -> List[Dict[str, ndarray]]:
+    """Computes k-means clustering with the IoU metric for different number of clusters.
+
+    Silhouette average metric is returned for each different k value.
 
     Args:
         bboxes: Shape (n, 2), where r is the number of rows.
@@ -168,6 +170,18 @@ def kmeans_iou(
 def kmeans_euclidean(
     values: ndarray, n_clusters: int = 3, silhouette_metric: bool = False,
 ) -> Dict[str, Union[ndarray, float64]]:
+    """Computes k-means clustering with euclidean distance.
+
+    Args:
+        values: Data for the k-means algorithm.
+        n_clusters: Number of clusters.
+        silhouette_metric: Whether to compute the silhouette metric or not. Defaults
+            to False.
+
+    Returns:
+        Clustering results.
+
+    """
     if len(values.shape) == 1:
         values = values[:, None]
 

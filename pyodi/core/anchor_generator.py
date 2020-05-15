@@ -5,7 +5,7 @@ from numpy import ndarray
 
 
 class AnchorGenerator(object):
-    """Standard anchor generator for 2D anchor-based detectors
+    """Standard anchor generator for 2D anchor-based detectors.
 
     Args:
         strides (list[int]): Strides of anchors in multiple feture levels.
@@ -117,13 +117,30 @@ class AnchorGenerator(object):
 
     @property
     def num_base_anchors(self) -> List[int]:
+        """Returns the number of anchors per level.
+
+        Returns:
+            List with number of anchors per level.
+
+        """
         return [base_anchors.size(0) for base_anchors in self.base_anchors]
 
     @property
     def num_levels(self) -> int:
+        """Returns the number of levels.
+
+        Returns:
+            Number of levels.
+
+        """
         return len(self.strides)
 
     def gen_base_anchors(self) -> List[ndarray]:
+        """Computes the anchors.
+
+        Returns:
+            List of arrays with the anchors.
+        """
         multi_level_base_anchors = []
         for i, base_size in enumerate(self.base_sizes):
             center = None
@@ -137,8 +154,25 @@ class AnchorGenerator(object):
         return multi_level_base_anchors
 
     def gen_single_level_base_anchors(
-        self, base_size: int, scales: ndarray, ratios: ndarray, center: None = None
+        self,
+        base_size: int,
+        scales: ndarray,
+        ratios: ndarray,
+        center: Optional[Tuple[float, float]] = None,
     ) -> ndarray:
+        """Computes the anchors of a single level.
+
+        Args:
+            base_size: Basic size of the anchors in a single level.
+            scales: Anchor scales for anchors in a single level
+            ratios: Ratios between height and width of anchors in a single level.
+            center: Center of the anchor relative to the feature grid center in single
+                level.
+
+        Returns:
+            Array with the anchors.
+
+        """
         w = base_size
         h = base_size
         if center is None:
@@ -180,7 +214,7 @@ class AnchorGenerator(object):
             return yy, xx
 
     def grid_anchors(self, featmap_sizes: List[Tuple[int, int]]) -> List[ndarray]:
-        """Generate grid anchors in multiple feature levels
+        """Generate grid anchors in multiple feature levels.
 
         Args:
             featmap_sizes: List of feature map sizes in multiple feature levels.
@@ -203,6 +237,17 @@ class AnchorGenerator(object):
     def single_level_grid_anchors(
         self, base_anchors: ndarray, featmap_size: Tuple[int, int], stride: int = 16
     ) -> ndarray:
+        """Generate grid anchors in a single feature level.
+
+        Args:
+            base_anchors: Anchors in a single level.
+            featmap_size: Feature map size in a single level.
+            stride: Number of stride. Defaults to 16.
+
+        Returns:
+              Grid of anchors in a single feature level.
+
+        """
         feat_h, feat_w = featmap_size
         shift_x = np.arange(0, feat_w) * stride
         shift_y = np.arange(0, feat_h) * stride
@@ -267,11 +312,12 @@ class AnchorGenerator(object):
     #     valid_xx, valid_yy = self._meshgrid(valid_x, valid_y)
     #     valid = valid_xx & valid_yy
     #     valid = (
-    #         valid[:, None].expand(valid.size(0), num_base_anchors).contiguous().view(-1)
+    #         valid[:, None]
+    #         .expand(valid.size(0), num_base_anchors).contiguous().view(-1)
     #     )
     #     return valid
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         indent_str = "    "
         repr_str = self.__class__.__name__ + "(\n"
         repr_str += "{}strides={},\n".format(indent_str, self.strides)

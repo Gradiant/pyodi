@@ -74,7 +74,6 @@ def train_config_evaluation(
         output_size: Size of saved images. Defaults to (1600, 900).
 
     Examples:
-
         `faster_rcnn_r50_fpn_gn_ws_config.py`:
 
         train_pipeline = [

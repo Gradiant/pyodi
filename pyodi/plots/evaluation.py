@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Optional, Tuple
 
 import plotly.graph_objects as go
 from pandas.core.frame import DataFrame
@@ -14,7 +14,7 @@ def plot_overlap_result(
     output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),
 ) -> None:
-    """Generates plot for train config evaluation based on overlap
+    """Generates plot for train config evaluation based on overlap.
 
     Args:
         df: COCO annotations generated DataFrame with overlap.
