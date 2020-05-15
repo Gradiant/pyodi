@@ -228,6 +228,58 @@ def coco_to_corners(bboxes: ndarray) -> ndarray:
     return bboxes
 
 
+def normalize(bboxes: ndarray, image_width: int, image_height: int) -> ndarray:
+    """Transforms bboxes array from pixels to (0, 1) range.
+
+    Parameters
+    ----------
+    bboxes: ndarray (N, 4)
+        Can be in both formats:
+        "coco" ["col_centroid", "row_centroid", "width", "height"]
+        "corners" ["col_left", "row_left", "col_right", "row_right"]
+    image_width: int
+        In pixels.
+    image_height: int
+        In pixels.
+
+    Returns
+    -------
+    ndarray (N, 4)
+        With bbox coordinates in (0, 1) range.
+    """
+    bboxes[:, 0] /= image_width
+    bboxes[:, 1] /= image_height
+    bboxes[:, 2] /= image_width
+    bboxes[:, 3] /= image_height
+    return bboxes
+
+
+def denormalize(bboxes: ndarray, image_width: int, image_height: int) -> ndarray:
+    """Transforms bboxes array from (0, 1) range to pixels.
+
+    Parameters
+    ----------
+    bboxes: ndarray (N, 4)
+        Can be in both formats:
+        "coco" ["col_centroid", "row_centroid", "width", "height"]
+        "corners" ["col_left", "row_left", "col_right", "row_right"]
+    image_width: int
+        In pixels.
+    image_height: int
+        In pixels.
+
+    Returns
+    -------
+    ndarray (N, 4)
+        With bbox coordinates in pixels.
+    """
+    bboxes[:, 0] *= image_width
+    bboxes[:, 1] *= image_height
+    bboxes[:, 2] *= image_width
+    bboxes[:, 3] *= image_height
+    return bboxes
+
+
 def get_bbox_column_names(bbox_format: str, prefix: Optional[str] = None) -> List[str]:
     """Returns predefined column names for each format.
 
@@ -316,7 +368,7 @@ def get_df_from_bboxes(
     check_bbox_formats(input_bbox_format, output_bbox_format)
 
     if input_bbox_format != output_bbox_format:
-        convert = locals()[f"{input_bbox_format}_{output_bbox_format}"]
+        convert = globals()[f"{input_bbox_format}_to_{output_bbox_format}"]
         bboxes = convert(bboxes)
 
     return pd.DataFrame(bboxes, columns=get_bbox_column_names(output_bbox_format))

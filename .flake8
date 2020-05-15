@@ -1,5 +1,10 @@
 [flake8]
-    ignore = E203, W503, F403, E714, E722
     max-line-length = 88
     max-complexity = 18
-    select = B,C,E,F,W,T4,B9
+    docstring-convention = google
+    ignore =
+        # Exclude some missing docstrings errors
+        D100, D101, D104, D105, D106, D107
+        # Exclude errors conflicting with black
+        W503
+    per-file-ignores = tests/*: D1

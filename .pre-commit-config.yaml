@@ -28,10 +28,3 @@ repos:
     rev: 19.10b0
     hooks:
       - id: black
-  - repo: https://github.com/pycqa/pydocstyle
-    rev: 5.0.1
-    hooks:
-      - id: pydocstyle
-        args:
-          - --convention=google
-          - --add-ignore=D100,D101,D104,D105,D106,D107

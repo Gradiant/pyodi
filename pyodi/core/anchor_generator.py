@@ -335,3 +335,24 @@ class AnchorGenerator(object):
         repr_str += "{}centers={},\n".format(indent_str, self.centers)
         repr_str += "{}center_offset={})".format(indent_str, self.center_offset)
         return repr_str
+
+    def as_config(self) -> str:
+        """Transforms configuration into string.
+
+        Returns:
+            String with config.
+
+        """
+        anchor_config = dict(
+            type="'AnchorGenerator'",
+            scales=sorted(list(self.scales.ravel())),
+            ratios=sorted(list(self.ratios.ravel())),
+            strides=list(self.strides),
+            base_sizes=list(self.base_sizes),
+        )
+        string = "anchor_config=dict(\n"
+        for k, v in anchor_config.items():
+            string += f"{' '* 4}{k}={v},\n"
+        string += ")"
+
+        return string
