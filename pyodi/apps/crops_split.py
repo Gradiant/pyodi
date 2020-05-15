@@ -75,7 +75,7 @@ def crops_split(
             crop_id = len(new_images)
             new_images.append(
                 {
-                    "file_name": str(crop_file_name),
+                    "file_name": str(crop_file_name.name),
                     "height": int(crop_height),
                     "width": int(crop_width),
                     "id": int(crop_id),
