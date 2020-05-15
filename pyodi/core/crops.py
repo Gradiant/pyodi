@@ -62,12 +62,19 @@ def annotation_inside_crop(annotation: Dict, crop_corners: List[int]) -> bool:
     """
     left, top, width, height = annotation["bbox"]
 
-    if (left + width > crop_corners[0] and left < crop_corners[2]) or (
-        top + height > crop_corners[1] and top < crop_corners[3]
-    ):
-        return True
+    right = left + width
+    bottom = top + height
 
-    return False
+    if left > crop_corners[2]:
+        return False
+    if top > crop_corners[3]:
+        return False
+    if right < crop_corners[0]:
+        return False
+    if bottom < crop_corners[1]:
+        return False
+
+    return True
 
 
 def get_annotation_in_crop(annotation: Dict, crop_corners: List[int]) -> Dict:
@@ -82,8 +89,8 @@ def get_annotation_in_crop(annotation: Dict, crop_corners: List[int]) -> Dict:
     """
     left, top, width, height = annotation["bbox"]
 
-    new_left = max(left - crop_corners[0], 0)
-    new_top = max(top - crop_corners[1], 0)
+    new_left = max(left - crop_corners[0], crop_corners[0])
+    new_top = max(top - crop_corners[1], crop_corners[1])
     if new_left + width > crop_corners[2]:
         new_width = crop_corners[2] - new_left
     else:
