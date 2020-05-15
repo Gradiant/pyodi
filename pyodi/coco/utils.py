@@ -231,21 +231,17 @@ def coco_to_corners(bboxes: ndarray) -> ndarray:
 def normalize(bboxes: ndarray, image_width: int, image_height: int) -> ndarray:
     """Transforms bboxes array from pixels to (0, 1) range.
 
-    Parameters
-    ----------
-    bboxes: ndarray (N, 4)
-        Can be in both formats:
+    Bboxes can be in both formats:
         "coco" ["col_centroid", "row_centroid", "width", "height"]
         "corners" ["col_left", "row_left", "col_right", "row_right"]
-    image_width: int
-        In pixels.
-    image_height: int
-        In pixels.
 
-    Returns
-    -------
-    ndarray (N, 4)
-        With bbox coordinates in (0, 1) range.
+    Args:
+        bboxes: Bounding boxes.
+        image_width: Image width in pixels.
+        image_height: Image height in pixels.
+
+    Returns:
+        Bounding boxes with coordinates in (0, 1) range.
     """
     bboxes[:, 0] /= image_width
     bboxes[:, 1] /= image_height
@@ -257,21 +253,18 @@ def normalize(bboxes: ndarray, image_width: int, image_height: int) -> ndarray:
 def denormalize(bboxes: ndarray, image_width: int, image_height: int) -> ndarray:
     """Transforms bboxes array from (0, 1) range to pixels.
 
-    Parameters
-    ----------
-    bboxes: ndarray (N, 4)
-        Can be in both formats:
+    Bboxes can be in both formats:
         "coco" ["col_centroid", "row_centroid", "width", "height"]
         "corners" ["col_left", "row_left", "col_right", "row_right"]
-    image_width: int
-        In pixels.
-    image_height: int
-        In pixels.
 
-    Returns
-    -------
-    ndarray (N, 4)
-        With bbox coordinates in pixels.
+    Args:
+        bboxes: Bounding boxes.
+        image_width: Image width in pixels.
+        image_height: Image height in pixels.
+
+    Returns:
+        Bounding boxes with coordinates in pixels.
+
     """
     bboxes[:, 0] *= image_width
     bboxes[:, 1] *= image_height
