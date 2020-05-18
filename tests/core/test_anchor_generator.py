@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 from pyodi.core.anchor_generator import AnchorGenerator
-from pyodi.core.clustering import pairwise_iou
+from pyodi.core.clustering import get_max_overlap
 
 
 @pytest.mark.parametrize("base_sizes", [[1], [9], [16]])
@@ -54,5 +54,8 @@ def test_iou_with_different_size_anchors():
     multi_level_anchors = anchor_generator.grid_anchors(feature_maps)
     assert len(multi_level_anchors) == 2
 
-    iou = pairwise_iou(multi_level_anchors[0], multi_level_anchors[1])
-    np.testing.assert_equal(np.diag(iou), np.ones(len(iou)) * 0.25)
+    iou = get_max_overlap(
+        multi_level_anchors[0].astype(np.float32),
+        multi_level_anchors[1].astype(np.float32),
+    )
+    np.testing.assert_equal(iou, np.ones(len(iou)) * 0.25)

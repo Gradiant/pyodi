@@ -39,38 +39,6 @@ def origin_iou(bboxes: ndarray, clusters: ndarray) -> ndarray:
     return iou_
 
 
-def pairwise_iou(bboxes1: ndarray, bboxes2: ndarray) -> ndarray:
-    """Calculates the pairwise Intersection over Union (IoU) between two sets of bboxes
-
-    Parameters
-    ----------
-    boxes1 : np.array
-        Array of bboxes with shape [n, 4].
-        In corner format
-    boxes2 : np.array
-        Array of bboxes with shape [m, 4]
-        In corner format
-
-    Returns
-    -------
-    np.array
-        Pairwise iou array with shape [n, m]
-    """
-
-    area1 = (bboxes1[:, 2] - bboxes1[:, 0]) * (bboxes1[:, 3] - bboxes1[:, 1])
-    area2 = (bboxes2[:, 2] - bboxes2[:, 0]) * (bboxes2[:, 3] - bboxes2[:, 1])
-
-    left_corner = np.maximum(bboxes1[:, None, :2], bboxes2[:, :2])  # [rows, cols, 2]
-    right_corner = np.minimum(bboxes1[:, None, 2:], bboxes2[:, 2:])  # [rows, cols, 2]
-
-    intersection = np.clip(right_corner - left_corner, a_min=0, a_max=None)
-    intersection_area = intersection[..., 0] * intersection[..., 1]
-
-    ious = intersection_area / (area1[:, None] + area2 - intersection_area)
-
-    return ious
-
-
 @njit(float32[:](float32[:, :], float32[:, :]), parallel=True)
 def get_max_overlap(boxes: np.array, anchors: np.array):
     """Computes max intersection-over-union between box and anchors.
