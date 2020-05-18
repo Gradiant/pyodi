@@ -55,6 +55,7 @@ def crops_split(
     for image in ground_truth["images"]:
 
         file_name = image["file_name"]
+        logger.info(file_name)
         image_pil = Image.open(Path(image_folder) / file_name)
 
         crops_corners = get_crops_corners(
@@ -62,21 +63,22 @@ def crops_split(
         )
 
         for crop_corners in crops_corners:
+            logger.info(crop_corners)
             crop = image_pil.crop(crop_corners)
 
             crop_file_name = (
                 output_image_folder_path
-                / f"{file_name}_{crop_corners[0]}_{crop_corners[1]}{file_name.suffix}"
+                / f"{Path(file_name).stem}_{crop_corners[0]}_{crop_corners[1]}{Path(file_name).suffix}"
             )
             crop.save(crop_file_name)
 
             crop_id = len(new_images)
             new_images.append(
                 {
-                    "file_name": crop_file_name,
-                    "height": crop_height,
-                    "width": crop_width,
-                    "id": crop_id,
+                    "file_name": str(crop_file_name.name),
+                    "height": int(crop_height),
+                    "width": int(crop_width),
+                    "id": int(crop_id),
                 }
             )
             for annotation in image_id_to_annotations[image["id"]]:
@@ -92,8 +94,8 @@ def crops_split(
         "old_images": ground_truth["images"],
         "annotations": new_annotations,
         "categories": ground_truth["categories"],
-        "licenses": ground_truth["licenses"],
-        "info": ground_truth["info"],
+        "licenses": ground_truth.get("licenses", []),
+        "info": ground_truth.get("info"),
     }
 
     with open(output_file, "w") as f:

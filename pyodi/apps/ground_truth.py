@@ -94,19 +94,19 @@ def ground_truth(
         df_annotations["width"] / df_annotations["img_width"]
     )
 
-    plot_heatmap(
-        get_centroids_heatmap(df_annotations),
-        title=f"{Path(ground_truth_file).stem}: Bounding Box Centers",
-        show=show,
-        output=output,
-        output_size=output_size,
-    )
-
     plot_scatter_with_histograms(
         df_annotations,
         x="absolute_width",
         y="absolute_height",
         title=f"{Path(ground_truth_file).stem}: Bounding Box Shapes",
+        show=show,
+        output=output,
+        output_size=output_size,
+    )
+
+    plot_heatmap(
+        get_centroids_heatmap(df_annotations),
+        title=f"{Path(ground_truth_file).stem}: Bounding Box Centers",
         show=show,
         output=output,
         output_size=output_size,
