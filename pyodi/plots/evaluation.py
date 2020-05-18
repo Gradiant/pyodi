@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Optional, Tuple
 
 import plotly.graph_objects as go
 from pandas.core.frame import DataFrame
@@ -10,26 +10,20 @@ from pyodi.plots.common import save_figure
 def plot_overlap_result(
     df: DataFrame,
     max_bins: int = 30,
-    show: Optional[bool] = True,
+    show: bool = True,
     output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),
-):
-    """Generates plot for train config evaluation based on overlap
+) -> None:
+    """Generates plot for train config evaluation based on overlap.
 
-    Parameters
-    ----------
-    df : DataFrame
-        COCO annotations generated dataframe with overlap
-    max_bins : int, optional
-        Max bins to use in histograms, by default 30
-    show : Optional[bool], optional
-        If true plotly figure will be shown, by default True
-    output : str, optional
-        Output image folder, by default None
-    output_size : tuple
-        Size of the saved images, by default (1600, 900)
+    Args:
+        df: COCO annotations generated DataFrame with overlap.
+        max_bins: Max bins to use in histograms. Defaults to 30.
+        show: Whether to show the figure or not. Defaults to True.
+        output: Output path folder. Defaults to None.
+        output_size: Size of saved images. Defaults to (1600, 900).
+
     """
-
     fig = make_subplots(
         rows=2,
         cols=2,

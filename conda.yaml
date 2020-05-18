@@ -29,3 +29,5 @@ dependencies:
       - mkdocs
       - mkdocs-material
       - mkdocstrings
+      - pydocstyle
+      - flake8-docstrings

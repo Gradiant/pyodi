@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 
-import numpy as np
 import typer
 from loguru import logger
 
@@ -20,34 +19,22 @@ def crops_merge(
     nms_mode: str = "nms",
     score_thr: float = 0.0,
     iou_thr: float = 0.5,
-):
+) -> None:
     """Merge and translate `predictions` to `ground_truth`'s `old_images` coordinates.
 
-    Parameters
-    ----------
-    ground_truth_file : str
-        Path to COCO ground truth file of crops.
-        Generated with `crops_split`.
+    Args:
+        ground_truth_file : Path to COCO ground truth file of crops. Generated with
+            `crops_split`.
+        predictions_file:Path to COCO predictions file over `ground_truth_file`.
+        output_file: Path where the merged predictions will be saved.
+        apply_nms: Whether to apply Non Maximum Supression to the merged predictions of
+            each image. Defaults to True.
+        nms_mode: Non Maximum Supression mode. Defaults to "nms".
+        score_thr: Predictions bellow `score_thr` will be filtered. Only used if
+            `apply_nms`. Defaults to 0.0.
+        iou_thr: None of the filtered predictions will have an iou above `iou_thr` to
+            any other. Only used if `apply_nms`. Defaults to 0.5.
 
-    predictions_file: str
-        Path to COCO predictions file over `ground_truth_file`.
-
-    output_file: str
-        Path where the merged predictions will be saved.
-
-    apply_nms: bool, optional
-        Default: True.
-        Whether to apply Non Maximum Supression to the merged predictions of each image.
-
-    score_thr: float, optional
-        Default: 0.0.
-        Only used if `apply_nms`.
-        Predictions bellow `score_thr` will be filtered.
-
-    iou_thr: float, optional
-        Default 0.5.
-        Only used if `apply_nms`.
-        None of the filtered predictions will have an iou above `iou_thr` to any other.
     """
     ground_truth = json.load(open(ground_truth_file))
 

@@ -5,7 +5,7 @@ from numpy import ndarray
 
 
 class AnchorGenerator(object):
-    """Standard anchor generator for 2D anchor-based detectors
+    """Standard anchor generator for 2D anchor-based detectors.
 
     Args:
         strides (list[int]): Strides of anchors in multiple feture levels.
@@ -116,14 +116,31 @@ class AnchorGenerator(object):
         self.base_anchors = self.gen_base_anchors()
 
     @property
-    def num_base_anchors(self):
+    def num_base_anchors(self) -> List[int]:
+        """Returns the number of anchors per level.
+
+        Returns:
+            List with number of anchors per level.
+
+        """
         return [base_anchors.size(0) for base_anchors in self.base_anchors]
 
     @property
     def num_levels(self) -> int:
+        """Returns the number of levels.
+
+        Returns:
+            Number of levels.
+
+        """
         return len(self.strides)
 
     def gen_base_anchors(self) -> List[ndarray]:
+        """Computes the anchors.
+
+        Returns:
+            List of arrays with the anchors.
+        """
         multi_level_base_anchors = []
         for i, base_size in enumerate(self.base_sizes):
             center = None
@@ -137,8 +154,25 @@ class AnchorGenerator(object):
         return multi_level_base_anchors
 
     def gen_single_level_base_anchors(
-        self, base_size: int, scales: ndarray, ratios: ndarray, center: None = None
+        self,
+        base_size: int,
+        scales: ndarray,
+        ratios: ndarray,
+        center: Optional[Tuple[float, float]] = None,
     ) -> ndarray:
+        """Computes the anchors of a single level.
+
+        Args:
+            base_size: Basic size of the anchors in a single level.
+            scales: Anchor scales for anchors in a single level
+            ratios: Ratios between height and width of anchors in a single level.
+            center: Center of the anchor relative to the feature grid center in single
+                level.
+
+        Returns:
+            Array with the anchors.
+
+        """
         w = base_size
         h = base_size
         if center is None:
@@ -180,19 +214,16 @@ class AnchorGenerator(object):
             return yy, xx
 
     def grid_anchors(self, featmap_sizes: List[Tuple[int, int]]) -> List[ndarray]:
-        """Generate grid anchors in multiple feature levels
+        """Generate grid anchors in multiple feature levels.
 
         Args:
-            featmap_sizes (list[tuple]): List of feature map sizes in
-                multiple feature levels.
-            device (str): Device where the anchors will be put on.
+            featmap_sizes: List of feature map sizes in multiple feature levels.
 
-        Return:
-            list[torch.Tensor]: Anchors in multiple feature levels.
-                The sizes of each tensor should be [N, 4], where
-                N = width * height * num_base_anchors, width and height
-                are the sizes of the corresponding feature lavel,
-                num_base_anchors is the number of anchors for that level.
+        Returns:
+            Anchors in multiple feature levels. The sizes of each tensor should be
+            [N, 4], where N = width * height * num_base_anchors, width and height are
+            the sizes of the corresponding feature level, num_base_anchors is the
+            number of anchors for that level.
         """
         assert self.num_levels == len(featmap_sizes)
         multi_level_anchors = []
@@ -206,6 +237,17 @@ class AnchorGenerator(object):
     def single_level_grid_anchors(
         self, base_anchors: ndarray, featmap_size: Tuple[int, int], stride: int = 16
     ) -> ndarray:
+        """Generate grid anchors in a single feature level.
+
+        Args:
+            base_anchors: Anchors in a single level.
+            featmap_size: Feature map size in a single level.
+            stride: Number of stride. Defaults to 16.
+
+        Returns:
+              Grid of anchors in a single feature level.
+
+        """
         feat_h, feat_w = featmap_size
         shift_x = np.arange(0, feat_w) * stride
         shift_y = np.arange(0, feat_h) * stride
@@ -222,34 +264,39 @@ class AnchorGenerator(object):
         # then (0, 1), (0, 2), ...
         return all_anchors
 
-    def valid_flags(self, featmap_sizes, pad_shape, device="cuda"):
-        """Generate valid flags of anchors in multiple feature levels
-
-        Args:
-            featmap_sizes (list(tuple)): List of feature map sizes in
-                multiple feature levels.
-            pad_shape (tuple): The padded shape of the image.
-            device (str): Device where the anchors will be put on.
-
-        Return:
-            list(torch.Tensor): Valid flags of anchors in multiple levels.
-        """
-        assert self.num_levels == len(featmap_sizes)
-        multi_level_flags = []
-        for i in range(self.num_levels):
-            anchor_stride = self.strides[i]
-            feat_h, feat_w = featmap_sizes[i]
-            h, w = pad_shape[:2]
-            valid_feat_h = min(int(np.ceil(h / anchor_stride)), feat_h)
-            valid_feat_w = min(int(np.ceil(w / anchor_stride)), feat_w)
-            flags = self.single_level_valid_flags(
-                (feat_h, feat_w),
-                (valid_feat_h, valid_feat_w),
-                self.num_base_anchors[i],
-                device=device,
-            )
-            multi_level_flags.append(flags)
-        return multi_level_flags
+    # todo: this function depends on the following commented function
+    # def valid_flags(
+    #     self,
+    #     featmap_sizes: List[Tuple[int, int]],
+    #     pad_shape: Tuple[int, int],
+    #     device: str = "cuda",
+    # ) -> List:
+    #     """Generate valid flags of anchors in multiple feature levels
+    #
+    #     Args:
+    #         featmap_sizes: List of feature map sizes in multiple feature levels.
+    #         pad_shape: The padded shape of the image.
+    #         device: Device where the anchors will be put on. Defaults to "cuda".
+    #
+    #     Returns:
+    #         Valid flags of anchors in multiple levels (List[torch.Tensor]).
+    #     """
+    #     assert self.num_levels == len(featmap_sizes)
+    #     multi_level_flags = []
+    #     for i in range(self.num_levels):
+    #         anchor_stride = self.strides[i]
+    #         feat_h, feat_w = featmap_sizes[i]
+    #         h, w = pad_shape[:2]
+    #         valid_feat_h = min(int(np.ceil(h / anchor_stride)), feat_h)
+    #         valid_feat_w = min(int(np.ceil(w / anchor_stride)), feat_w)
+    #         flags = self.single_level_valid_flags(
+    #             (feat_h, feat_w),
+    #             (valid_feat_h, valid_feat_w),
+    #             self.num_base_anchors[i],
+    #             device=device,
+    #         )
+    #         multi_level_flags.append(flags)
+    #     return multi_level_flags
 
     # todo: update with numpy if necessary
     # def single_level_valid_flags(
@@ -265,11 +312,12 @@ class AnchorGenerator(object):
     #     valid_xx, valid_yy = self._meshgrid(valid_x, valid_y)
     #     valid = valid_xx & valid_yy
     #     valid = (
-    #         valid[:, None].expand(valid.size(0), num_base_anchors).contiguous().view(-1)
+    #         valid[:, None]
+    #         .expand(valid.size(0), num_base_anchors).contiguous().view(-1)
     #     )
     #     return valid
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         indent_str = "    "
         repr_str = self.__class__.__name__ + "(\n"
         repr_str += "{}strides={},\n".format(indent_str, self.strides)
@@ -288,7 +336,13 @@ class AnchorGenerator(object):
         repr_str += "{}center_offset={})".format(indent_str, self.center_offset)
         return repr_str
 
-    def as_config(self):
+    def as_config(self) -> str:
+        """Transforms configuration into string.
+
+        Returns:
+            String with config.
+
+        """
         anchor_config = dict(
             type="'AnchorGenerator'",
             scales=sorted(list(self.scales.ravel())),

@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import plotly.graph_objects as go
 from loguru import logger
@@ -8,65 +8,56 @@ from plotly.subplots import make_subplots
 
 
 def plot_scatter_with_histograms(
-    df,
-    x="width",
-    y="height",
-    title=None,
-    show=True,
-    output=None,
-    output_size=(1600, 900),
-    histogram=True,
-    label="category",
-    colors=None,
-    legendgroup=None,
-    fig=None,
-    row=1,
-    col=1,
-    **kwargs,
-):
-    """This plot allows to compare the relation between two variables of your coco dataset
-    Parameters
-    ----------
-    df : pd.DataFrame
-        COCO annotations generated dataframe
-    x : str, optional
-        name of column that will be represented in x axis, by default "width"
-    y : str, optional
-        name of column that will be represented in y axis, by default "height"
-    title : [type], optional
-        plot name, by default None
-    show : bool, optional
-        if activated figure is shown, by default True
-    output : str, optional
-        output path folder, by default None
-    output_size : tuple
-        size of saved images, by default (1600, 900)
-    histogram: bool, optional
-        when histogram is true a marginal histogram distribution of each axis is drawn, by default False
-    label: str, optional
-        name of the column with class information in df_annotations, by default 'category'
-    colors: list, optional
-        list of rgb colors to use, if none default plotly colors are used
-    legendgroup: str, optional
-        when present legend is grouped by different categories (see https://plotly.com/python/legend/)
-    fig: plotly.Figure, optional
-        when figure is provided, trace is automatically added on it
-    row: int, optional
-        subplot row to use when fig is provided, default 1
-    col: int, optional
-        subplot col to use when fig is provided, default 1
-    Returns
-    -------
-    plotly figure
-    """
+    df: DataFrame,
+    x: str = "width",
+    y: str = "height",
+    title: Optional[str] = None,
+    show: bool = True,
+    output: Optional[str] = None,
+    output_size: Tuple[int, int] = (1600, 900),
+    histogram: bool = True,
+    label: str = "category",
+    colors: Optional[List] = None,
+    legendgroup: Optional[str] = None,
+    fig: Optional[go.Figure] = None,
+    row: int = 1,
+    col: int = 1,
+    **kwargs: Any,
+) -> go.Figure:
+    """Allows to compare the relation between two variables of your COCO dataset.
 
+    Args:
+        df: COCO annotations generated DataFrame.
+        x: Name of column that will be represented in x axis. Defaults to "width".
+        y: Name of column that will be represented in y axis. Defaults to "height".
+        title: Plot name. Defaults to None.
+        show: Whether to show the figure or not. Defaults to True.
+        output: Output path folder. Defaults to None.
+        output_size: Size of saved images. Defaults to (1600, 900).
+        histogram: Whether to draw a marginal histogram distribution of each axis or
+            not. Defaults to True.
+        label: Name of the column with class information in df_annotations. Defaults
+            to 'category'.
+        colors: List of rgb colors to use. If None default plotly colors are used.
+            Defaults to None.
+        legendgroup: When present legend is grouped by different categories
+            (see https://plotly.com/python/legend/).
+        fig: When figure is provided, trace is automatically added on it. Defaults to
+            None.
+        row: Subplot row to use when fig is provided. Defaults to 1.
+        col: Subplot col to use when fig is provided. Defaults to 1.
+
+    Returns:
+        Plotly figure.
+
+    """
     logger.info("Plotting Scatter with Histograms")
     if not fig:
         fig = make_subplots(rows=1, cols=1)
 
     classes = [(0, None)]
     if label in df:
-        classes = enumerate(sorted(df[label].unique()))
+        classes = list(enumerate(sorted(df[label].unique())))
 
     for i, c in classes:
         if c:
@@ -140,8 +131,25 @@ def plot_histogram(
     show: bool = False,
     output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),
-):
+) -> go.Figure:
+    """Plot histogram figure.
 
+    Args:
+        df: Data to plot.
+        column: DataFrame column to plot.
+        title: Title of figure. Defaults to None.
+        xrange: Range in axis X. Defaults to None.
+        yrange: Range in axis Y. Defaults to None.
+        xbins: Width of X bins. Defaults to None.
+        histnorm: Histnorm. Defaults to "percent".
+        show: Whether to show the figure or not. Defaults to False.
+        output: Output path folder. Defaults to None.
+        output_size: Size of saved images. Defaults to (1600, 900).
+
+    Returns:
+        Histogram figure.
+
+    """
     logger.info(f"Plotting {column} Histogram")
     fig = go.Figure(
         data=[
@@ -173,7 +181,16 @@ def plot_histogram(
 
 def save_figure(
     figure: go.Figure, output_name: str, output_dir: str, output_size: Tuple[int, int]
-):
+) -> None:
+    """Saves figure into png image file.
+
+    Args:
+        figure: Figure to save.
+        output_name: Output filename.
+        output_dir: Output directory.
+        output_size: Size of saved image.
+
+    """
     output = str(Path(output_dir) / (output_name.replace(" ", "_") + ".png"))
     figure.update_layout(width=output_size[0], height=output_size[1])
     figure.write_image(output)

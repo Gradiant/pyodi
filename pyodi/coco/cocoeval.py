@@ -1,11 +1,11 @@
-import copy
+# flake8: noqa
+
 import datetime
 import time
 from collections import defaultdict
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
-from loguru import logger
 from pycocotools import mask as maskUtils
 from pycocotools.coco import COCO
 
@@ -110,10 +110,7 @@ class COCOeval:
         self.maxDets = [1, 10, 100]
 
     def _prepare(self):
-        """
-        Prepare ._gts and ._dts for evaluation based on params
-        :return: None
-        """
+        """Prepare ._gts and ._dts for evaluation based on params."""
         gts = self.ground_truth.loadAnns(
             self.ground_truth.getAnnIds(imgIds=self.image_ids, catIds=self.category_ids)
         )
@@ -131,9 +128,10 @@ class COCOeval:
             self._dts[dt["image_id"], dt["category_id"]].append(dt)
 
     def evaluate(self):
-        """
-        Run per image evaluation on given images and store results (a list of dict) in self.evalImgs
-        :return: None
+        """Run per image evaluation on given images and store results.
+
+        The results are saved in self.evalImgs (list of dict).
+
         """
         tic = time.time()
         print("Running per image evaluation...")
@@ -154,7 +152,17 @@ class COCOeval:
         toc = time.time()
         print("DONE (t={:0.2f}s).".format(toc - tic))
 
-    def compute_iou(self, image_id, category_id):
+    def compute_iou(self, image_id: int, category_id: int):
+        """Computes the IoU value between ground truth and predictions.
+
+        Args:
+            image_id: Image Id.
+            category_id: Category Id.
+
+        Returns:
+            IoU values between ground truth and predictions.
+
+        """
         gt = self._gts[image_id, category_id]
         dt = self._dts[image_id, category_id]
 
@@ -176,9 +184,17 @@ class COCOeval:
         return ious
 
     def evaluateImg(self, image_id, category_id, area_range, maxDet):
-        """
-        perform evaluation for single category and image
-        :return: dict (single image results)
+        """Perform evaluation for single category and image.
+
+        Args:
+            image_id: Image Id.
+            category_id: Category Id.
+            area_range: Area range.
+            maxDet: Maximum number of detections.
+
+        Returns:
+            Dict with single image results.
+
         """
         ground_truth = self._gts[image_id, category_id]
         predictions = self._dts[image_id, category_id]
@@ -280,12 +296,8 @@ class COCOeval:
             "dtIoUs": predictions_iou,
         }
 
-    def accumulate(self, p=None):
-        """
-        Accumulate per image evaluation results and store the result in self.eval
-        :param p: input params for evaluation
-        :return: None
-        """
+    def accumulate(self):
+        """Accumulate per image evaluation results and store the result in self.eval."""
         print("Accumulating evaluation results...")
         tic = time.time()
 
@@ -414,12 +426,8 @@ class COCOeval:
                                 IoUoverlap[i] = 1 - IoUoverlap[i]
 
                         # Only use tps for lrp_iou_threshold threshold
-                        tps = tps[
-                          self.iou_thresholds == self.lrp_iou_threshold
-                        ]
-                        fps = fps[
-                           self.iou_thresholds == self.lrp_iou_threshold
-                        ]
+                        tps = tps[self.iou_thresholds == self.lrp_iou_threshold]
+                        fps = fps[self.iou_thresholds == self.lrp_iou_threshold]
                         IoUoverlap = np.multiply(IoUoverlap, tps)
 
                         for s, s0 in enumerate(self.score_thresholds):
@@ -460,12 +468,10 @@ class COCOeval:
         moLRPFN = np.nanmean(OptFNError)
         moLRP = np.mean(OptLRPError)
 
-        precision_for_f1 = precision[
-           self.iou_thresholds == self.f1_iou_threshold
-        ].mean(0)
-        recall_for_f1 = recall[
-            self.iou_thresholds == self.f1_iou_threshold
-        ]
+        precision_for_f1 = precision[self.iou_thresholds == self.f1_iou_threshold].mean(
+            0
+        )
+        recall_for_f1 = recall[self.iou_thresholds == self.f1_iou_threshold]
         f1 = 2 * (
             (precision_for_f1 * recall_for_f1) / (precision_for_f1 + recall_for_f1)
         )
@@ -501,9 +507,10 @@ class COCOeval:
         print("DONE (t={:0.2f}s).".format(toc - tic))
 
     def summarize(self):
-        """
-        Compute and display summary metrics for evaluation results.
-        Note this functin can *only* be applied on the default parameter setting
+        """Compute and display summary metrics for evaluation results.
+
+        Note this function can *only* be applied on the default parameter setting.
+
         """
 
         def _summarize(

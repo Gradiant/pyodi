@@ -1,5 +1,4 @@
-"""
-# Evaluation App
+"""# Evaluation App.
 
 The [`pyodi evaluation`][pyodi.apps.evaluation.evaluation] app can be used to evaluate
 the predictions of an object detection dataset.
@@ -32,7 +31,7 @@ An example of the result of executing this app:
 ```
 
 # API REFERENCE
-"""
+"""  # noqa: E501
 import json
 import re
 from typing import Optional
@@ -50,16 +49,16 @@ app = typer.Typer()
 @app.command()
 def evaluation(
     ground_truth_file: str, predictions_file: str, string_to_match: Optional[str] = None
-):
-    """
-    Evaluate the predictions of a dataset.
+) -> None:
+    """Evaluate the predictions of a dataset.
 
     Args:
         ground_truth_file: Path to COCO ground truth file.
         predictions_file: Path to COCO predictions file.
-        string_to_match: If not None, only images whose file_name match this parameter will be evaluated.
-    """
+        string_to_match: If not None, only images whose file_name match this parameter
+            will be evaluated.
 
+    """
     coco_ground_truth = load_coco_ground_truth_from_StringIO(open(ground_truth_file))
     coco_predictions = coco_ground_truth.loadRes(json.load(open(predictions_file)))
 
