@@ -1,10 +1,10 @@
-"""
-# Ground Truth App
+"""# Ground Truth App.
 
-The [`pyodi ground-truth`][pyodi.apps.ground_truth.ground_truth] app can be used to explore the images and bounding boxes that compose an object detection dataset.
+The [`pyodi ground-truth`][pyodi.apps.ground_truth.ground_truth] app can be used to
+explore the images and bounding boxes that compose an object detection dataset.
 
-The shape distribution of the images and bounding boxes is one of the key aspects to take in account when setting your training
-configuration.
+The shape distribution of the images and bounding boxes is one of the key aspects to
+take in account when setting your training configuration.
 
 Example usage:
 
@@ -62,22 +62,13 @@ def ground_truth(
 ) -> None:
     """Explore the images and bounding boxes of a dataset.
 
-    Parameters
-    ----------
-    ground_truth_file : str
-        Path to COCO ground truth file
+    Args:
+        ground_truth_file: Path to COCO ground truth file.
+        show: Whether to show results or not. Defaults to True.
+        output: Results will be saved under `output` dir. Defaults to None.
+        output_size: Size of the saved images when output is defined. Defaults to
+            (1600, 900).
 
-    show : bool, optional
-        Default: True.
-        Whether to show results or not.
-
-    output : str, optional
-        Default: None
-        If not None, results will be saved under `output` dir.
-
-    output_size : tuple
-        Default: (1600, 900)
-        Size of the saved images when output is defined.
     """
     if output is not None:
         output = str(Path(output) / Path(ground_truth_file).stem)

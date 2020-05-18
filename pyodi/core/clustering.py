@@ -1,7 +1,6 @@
 from typing import Dict, List, Union
 
 import numpy as np
-from loguru import logger
 from numba import float32, njit, prange
 from numpy import float64, ndarray
 from sklearn.cluster import KMeans
@@ -9,20 +8,17 @@ from sklearn.metrics import silhouette_score
 
 
 def origin_iou(bboxes: ndarray, clusters: ndarray) -> ndarray:
-    """Calculates the Intersection over Union (IoU) between a box and k clusters in coco format
-     shifted to origin.
+    """Calculates the Intersection over Union (IoU) between a box and k clusters.
 
-    Parameters
-    ----------
-    box : np.array
-        Bbox array with dimension [n, 2] in widht, height order
-    clusters : np.array
-        Bbox array with dimension [n, 2] in widht, height order
+    Note: COCO format shifted to origin.
 
-    Returns
-    -------
-    np.array
-        BBox array with centroids with dimensions [k, 2]
+    Args:
+        bboxes: Bboxes array with dimension [n, 2] in width-height order.
+        clusters: Bbox array with dimension [n, 2] in width-height order.
+
+    Returns:
+        BBox array with centroids with dimensions [k, 2].
+
     """
     col = np.minimum(bboxes[:, None, 0], clusters[:, 0])
     row = np.minimum(bboxes[:, None, 1], clusters[:, 1])
@@ -40,22 +36,16 @@ def origin_iou(bboxes: ndarray, clusters: ndarray) -> ndarray:
 
 
 @njit(float32[:](float32[:, :], float32[:, :]), parallel=True)
-def get_max_overlap(boxes: np.array, anchors: np.array):
+def get_max_overlap(boxes: ndarray, anchors: ndarray) -> ndarray:
     """Computes max intersection-over-union between box and anchors.
 
-    Parameters
-    ----------
-    boxes : np.array
-        Array of bboxes with shape [n, 4].
-        In corner format
-    anchors : np.array
-        Array of bboxes with shape [m, 4]
-        In corner format
+    Args:
+        boxes: Array of bboxes with shape [n, 4]. In corner format.
+        anchors: Array of bboxes with shape [m, 4]. In corner format.
 
-    Returns
-    -------
-    np.array
-        Max iou between box and anchors with shape [n, 1]
+    Returns:
+        Max iou between box and anchors with shape [n, 1].
+
     """
     rows = boxes.shape[0]
     cols = anchors.shape[0]
@@ -80,11 +70,20 @@ def get_max_overlap(boxes: np.array, anchors: np.array):
 
 
 def kmeans_euclidean(
-    values: ndarray,
-    n_clusters: int = 3,
-    silhouette_metric: bool = False,
-    random_state: int = 0,
+    values: ndarray, n_clusters: int = 3, silhouette_metric: bool = False,
 ) -> Dict[str, Union[ndarray, float64]]:
+    """Computes k-means clustering with euclidean distance.
+
+    Args:
+        values: Data for the k-means algorithm.
+        n_clusters: Number of clusters.
+        silhouette_metric: Whether to compute the silhouette metric or not. Defaults
+            to False.
+
+    Returns:
+        Clustering results.
+
+    """
     if len(values.shape) == 1:
         values = values[:, None]
 
@@ -99,18 +98,15 @@ def kmeans_euclidean(
 
 
 def find_pyramid_level(bboxes: ndarray, anchor_base_sizes: List[int]) -> ndarray:
-    """Matches bboxes with pyramid levels given their stride
+    """Matches bboxes with pyramid levels given their stride.
 
-    Parameters
-    ----------
-    bboxes : ndarray
-        Bbox array with dimension [n, 2] in widht, height order
-    anchor_base_sizes : List[int]
-        List with anchor base sizes
-    Returns
-    -------
-    ndarray
-        Best match per bbox correponding with index of stride
+    Args:
+        bboxes: Bbox array with dimension [n, 2] in width-height order.
+        anchor_base_sizes: List with anchor base sizes.
+
+    Returns:
+        Best match per bbox corresponding with index of stride.
+
     """
     anchor_base_sizes = sorted(anchor_base_sizes)
     levels = np.tile(anchor_base_sizes, (2, 1)).T

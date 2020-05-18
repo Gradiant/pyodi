@@ -16,25 +16,16 @@ def nms_predictions(
 ) -> List[Dict[Any, Any]]:
     """Apply Non Maximum supression to all the images in a COCO `predictions` list.
 
-    Parameters
-    ----------
-    predictions: List[Dict[Any, Any]]
-        List of predictions in COCO format.
+    Args:
+        predictions: List of predictions in COCO format.
+        nms_mode: Non Maximum Supression mode. Defaults to "nms".
+        score_thr: Predictions below `score_thr` will be filtered. Defaults to 0.0.
+        iou_thr: None of the filtered predictions will have an iou above `iou_thr`
+            to any other. Defaults to 0.5.
 
-    score_thr: float, optional
-        Default: 0.0.
-        Only used if `apply_nms`.
-        Predictions bellow `score_thr` will be filtered.
-
-    iou_thr: float, optional
-        Default 0.5.
-        Only used if `apply_nms`.
-        None of the filtered predictions will have an iou above `iou_thr` to any other.
-
-    Returns
-    -------
-    List[Dict[Any, Any]]
+    Returns:
         List of filtered predictions in COCO format.
+
     """
     nms = getattr(ensemble_boxes, nms_mode)
     new_predictions = []

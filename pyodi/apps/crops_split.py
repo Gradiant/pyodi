@@ -28,17 +28,17 @@ def crops_split(
     row_overlap: int = 0,
     col_overlap: int = 0,
 ) -> None:
-    """Generate a new dataset by splitting the images into crops and adapting the annotations.
+    """Creates new dataset by splitting images into crops and adapting the annotations.
 
     Args:
-        ground_truth_file (str): Path to a COCO ground_truth_file.
-        image_folder (str): Path where the images of the ground_truth_file are stored.
-        output_file (str): Path where the `new_ground_truth_file` will be saved.
-        output_image_folder (str): Path where the crops will be saved.
-        crop_height (int)
-        crop_width (int)
-        row_overlap (int, optional): Default 0.
-        col_overlap (int, optional): Default 0.
+        ground_truth_file: Path to a COCO ground_truth_file.
+        image_folder: Path where the images of the ground_truth_file are stored.
+        output_file: Path where the `new_ground_truth_file` will be saved.
+        output_image_folder: Path where the crops will be saved.
+        crop_height: Crop height.
+        crop_width: Crop width
+        row_overlap: Row overlap. Defaults to 0.
+        col_overlap: Column overlap. Defaults to 0.
 
     """
     ground_truth = json.load(open(ground_truth_file))

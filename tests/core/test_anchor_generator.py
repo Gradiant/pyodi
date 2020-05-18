@@ -16,9 +16,13 @@ def test_anchor_base_generation(base_sizes):
 
 @pytest.mark.parametrize("feature_maps", [[(4, 4)], [(9, 9)]])
 def test_anchor_grid_for_different_feature_maps(feature_maps):
-    """Creates anchors of size 2 over a feature map with size 'feature_maps' computed with stride 4
-    Each pixel from the feature map comes from applying a stride 4 to the original size
-    One anchor computed for each pixel"""
+    """Test anchor grid for different feature maps.
+
+    Creates anchors of size 2 over a feature map with size 'feature_maps' computed
+    with stride 4. Each pixel from the feature map comes from applying a stride 4 to the
+    original size. One anchor computed for each pixel.
+
+    """
     anchor_sizes = [2]
     strides = [4]
     anchor_generator = AnchorGenerator(
@@ -44,8 +48,7 @@ def test_anchor_grid_for_different_feature_maps(feature_maps):
 
 
 def test_iou_with_different_size_anchors():
-    """Create two grids of anchors of different sizes but same stride and check overlap
-    """
+    """Create two grids of anchors (different sizes, same stride) and check overlap."""
     strides = [2, 2]
     feature_maps = [(2, 2), (2, 2)]
     anchor_generator = AnchorGenerator(

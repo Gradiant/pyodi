@@ -10,9 +10,10 @@ def get_crops_corners(
     row_overlap: int = 0,
     col_overlap: int = 0,
 ) -> List[List[int]]:
-    """Divide `image_pil` in crops and return a list of corner coordinates for each crop.
+    """Divides `image_pil` in crops.
 
-    The crops corners will be generated using the `crop_height`, `crop_width`, `row_overlap` and `col_overlap` arguments.
+    The crops corners will be generated using the `crop_height`, `crop_width`,
+    `row_overlap` and `col_overlap` arguments.
 
     Args:
         image_pil (PIL.Image): Instance of PIL.Image

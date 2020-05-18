@@ -17,29 +17,22 @@ def plot_clustering_results(
     show: Optional[bool] = True,
     output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),
-    centroid_color: Optional[tuple] = None,
+    centroid_color: Optional[Tuple] = None,
     title: Optional[str] = None,
-):
-    """Plots cluster results in two different views, width vs heihgt and area vs ratio.
+) -> None:
+    """Plots cluster results in two different views, width vs height and area vs ratio.
 
-    Parameters
-    ----------
-    df_annotations : pd.DataFrame
-        COCO annotations generated dataframe
-    anchor_generator: core.AnchorGenerator
-        Anchor generator instance
-    show : bool, optional
-        If true plotly figure will be shown, by default True
-    output : str, optional
-        Output image folder, by default None
-    output_size : tuple
-        Size of saved images, by default (1600, 900)
-    centroid_color: tuple, optional
-        Plotly rgb color format for painting centroids, by default None
-    title: str, optional
-        Plot title and filename is output is not None, by default None
+    Args:
+        df_annotations: COCO annotations generated DataFrame.
+        anchor_generator: Anchor generator instance.
+        show: Whether to show the figure or not. Defaults to True.
+        output: Output path folder. Defaults to None.
+        output_size: Size of saved images. Defaults to (1600, 900).
+        centroid_color: Plotly rgb color format for painting centroids. Defaults to
+            None.
+        title: Plot title and filename if output is not None. Defaults to None.
+
     """
-
     if centroid_color is None:
         centroid_color = COLORS[len(df_annotations.category.unique()) % len(COLORS)]
 

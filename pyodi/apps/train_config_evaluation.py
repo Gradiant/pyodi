@@ -1,74 +1,84 @@
-"""
-# Train Config Evaluation App
+"""# Train Config Evaluation App.
 
-The [`pyodi train-config evaluation`][pyodi.apps.train_config_evaluation.train_config_evaluation] app can be used
-to evaluate a given [mmdetection](https://github.com/open-mmlab/mmdetection) Anchor Generator Configuration to train your model
-using a specific training pipeline.
+The [`pyodi train-config evaluation`][pyodi.apps.train_config_evaluation.train_config_evaluation]
+app can be used to evaluate a given [mmdetection](https://github.com/open-mmlab/mmdetection)
+Anchor Generator Configuration to train your model using a specific training pipeline.
 
 ## Procedure
-Training performance of object detection model depends on how well generated anchors match with ground truth bounding boxes.
-This simple application provides intuitions about this, by recreating train preprocessing conditions such as image resizing or padding,
-and computing different metrics based on the  largest Intersection over Union (IoU) between ground truth boxes and the provided anchors.
+Training performance of object detection model depends on how well generated anchors
+match with ground truth bounding boxes. This simple application provides intuitions
+about this, by recreating train preprocessing conditions such as image resizing or
+padding, and computing different metrics based on the  largest Intersection over Union
+(IoU) between ground truth boxes and the provided anchors.
 
-Each bounding box is assigned with the anchor that shares a largest IoU with it. We call overlap, to the maximum IoU each ground truth
-box has with the generated anchor set.
+Each bounding box is assigned with the anchor that shares a largest IoU with it. We call
+overlap, to the maximum IoU each ground truth box has with the generated anchor set.
 
 Example usage:
 ``` bash
 pyodi train-config evaluation "data/COCO/COCO_train2017.json" "example_config_file.py
 ```
 
-The next examples are based on default COCO input pipeline used in [mmdetection](https://github.com/open-mmlab/mmdetection) and with
-Faster R-CNN default anchors.
+The next examples are based on default COCO input pipeline used in
+[mmdetection](https://github.com/open-mmlab/mmdetection) and with Faster R-CNN default
+anchors.
 
 The app provides four different plots:
 
 ## Cumulative Overlap
 
-It shows a cumulative distribution function for the overlap distribution. This view helps to distinguish which percentage of bounding boxes have
-a very low overlap with generated anchors and viceversa.
+It shows a cumulative distribution function for the overlap distribution. This view
+helps to distinguish which percentage of bounding boxes have a very low overlap with
+generated anchors and viceversa.
 
-It can be very useful to determine positive and negative thresholds for your training, these
-are the values that determine is a ground truth bounding box will is going to be taken into account in the loss function or discarded and considered as background.
+It can be very useful to determine positive and negative thresholds for your training,
+these are the values that determine is a ground truth bounding box will is going to be
+taken into account in the loss function or discarded and considered as background.
 
 ![COCO scale_ratio](../../images/train-config-evaluation/cumulative_overlap.png#center)
 
-In this case, setting the positive threshold at 0.5 results in discarding almost the half of ground truth boxes. So we could consider
+In this case, setting the positive threshold at 0.5 results in discarding almost the
+half of ground truth boxes. So we could consider
 
 ## Bounding Box Distribution
 
-It shows a scatter plot of bounding box width vs height. The color of each point represent the overlap value assigned to that bounding box. Thanks to this
-plot it is really easy to observe patterns such as those boxes that have large width and height obtain very low overlaps. We could have this into account
-and generate larger anchors to improve this matching.
+It shows a scatter plot of bounding box width vs height. The color of each point
+represent the overlap value assigned to that bounding box. Thanks to this plot it is
+really easy to observe patterns such as those boxes that have large width and height
+obtain very low overlaps. We could have this into account and generate larger anchors
+to improve this matching.
 
 ![COCO scale_ratio](../../images/train-config-evaluation/bbox_distribution.png#center)
 
 ## Scale and Mean Overlap
 
-This plot contains a simple histogram with bins of similar scales and its mean overlap value. It help us to visualize how overlap decays when scale increases,
-as we said before. Furthermore, we can also distinguish that very small boxes, with scale below 50, have low overlap values. This might result in a bad performance
-of the model identifying small objects.
+This plot contains a simple histogram with bins of similar scales and its mean overlap
+value. It help us to visualize how overlap decays when scale increases, as we said
+before. Furthermore, we can also distinguish that very small boxes, with scale below 50,
+have low overlap values. This might result in a bad performance of the model identifying
+small objects.
 
 ![COCO scale_ratio](../../images/train-config-evaluation/scale_overlap.png#center)
 
 ## Log Ratio and Mean Overlap
 
-Similarly to previous plot, it shows an histogram of bounding box log ratios and its mean overlap values. It is useful to visualize this relation and
-see how certain box ratios might be having problems to match with generated anchors. In this example, boxes with negative log ratios, where width
-is much larger than height, overlaps are very small. See how this matches with patterns observed in bounding box distribution plot, where all boxes
-placed near to x axis, have low overlaps.
+Similarly to previous plot, it shows an histogram of bounding box log ratios and its
+mean overlap values. It is useful to visualize this relation and see how certain box
+ratios might be having problems to match with generated anchors. In this example, boxes
+with negative log ratios, where width is much larger than height, overlaps are very
+small. See how this matches with patterns observed in bounding box distribution plot,
+where all boxes placed near to x axis, have low overlaps.
 
 ![COCO scale_ratio](../../images/train-config-evaluation/log_ratio_overlap.png#center)
 
-
-"""
+"""  # noqa: E501
 import os.path as osp
 import sys
 from importlib import import_module
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
-from typing import Optional, Tuple
+from typing import Any, Dict, Tuple
 
 import numpy as np
 import typer
@@ -90,7 +100,16 @@ from pyodi.plots.evaluation import plot_overlap_result
 app = typer.Typer()
 
 
-def load_train_config_file(train_config_file: str) -> dict:
+def load_train_config_file(train_config_file: str) -> Dict[str, Any]:
+    """Loads the `train_config_file`.
+
+    Args:
+        train_config_file: File with the training configuration.
+
+    Returns:
+        Dictionary with the training configuration.
+
+    """
     logger.info("Loading Train Config File")
     with TemporaryDirectory() as temp_config_dir:
         copyfile(train_config_file, osp.join(temp_config_dir, "_tempconfig.py"))
@@ -114,20 +133,21 @@ def train_config_evaluation(
     train_config_file: str,
     input_size: Tuple[int, int] = (1333, 800),
     show: bool = True,
-    output: Optional[str] = ".",
+    output: str = ".",
     output_size: Tuple[int, int] = (1600, 900),
-):
+) -> None:
     """Evaluates the fitness between `ground_truth_file` and `train_config_file`.
 
-    Parameters
-    ----------
-    ground_truth_file : str
-        Path to COCO ground truth file
-    train_config_file: str
-        Path to MMDetection-like configuration file.
-        Must contain `train_pipeline` and `anchor_generator` sections.
-        Example content:
+    Args:
+        ground_truth_file: Path to COCO ground truth file.
+        train_config_file: Path to MMDetection-like configuration file. Must contain
+            `train_pipeline` and `anchor_generator` sections.
+        input_size: Model image input size. Defaults to (1333, 800).
+        show: Show results or not. Defaults to True.
+        output: Output file where results are saved. Defaults to ".".
+        output_size: Size of saved images. Defaults to (1600, 900).
 
+    Examples:
         # faster_rcnn_r50_fpn.py
 
         train_pipeline = [
@@ -135,23 +155,14 @@ def train_config_evaluation(
             dict(type='RandomFlip', flip_ratio=0.5),
             dict(type='Pad', size_divisor=32)
         ]
-
         anchor_generator=dict(
             type='AnchorGenerator',
             scales=[8],
             ratios=[0.5, 1.0, 2.0],
             strides=[4, 8, 16, 32, 64]
         )
-    input_size : Tuple[int, int],
-        Model image input size, by default (1280, 720)
-    show : bool, optional
-        Show results or not, by default True
-    output : str, optional
-        Output file where results are saved, by default None
-    output_size : tuple
-        Size of saved images, by default (1600, 900)
-    """
 
+    """
     if output is not None:
         output = str(Path(output) / Path(ground_truth_file).stem)
         Path(output).mkdir(parents=True, exist_ok=True)
