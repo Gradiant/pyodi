@@ -16,7 +16,6 @@ dependencies:
   - pip:
       - ensemble_boxes
       - typer
-      - requests
       - loguru
       - plotly
       - psutil
