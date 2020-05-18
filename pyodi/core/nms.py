@@ -19,10 +19,9 @@ def nms_predictions(
     Args:
         predictions: List of predictions in COCO format.
         nms_mode: Non Maximum Supression mode. Defaults to "nms".
-        score_thr: Predictions bellow `score_thr` will be filtered. Only used if
-            `apply_nms`. Defaults to 0.0.
+        score_thr: Predictions below `score_thr` will be filtered. Defaults to 0.0.
         iou_thr: None of the filtered predictions will have an iou above `iou_thr`
-            to any other. Only used if `apply_nms`. Defaults to 0.5.
+            to any other. Defaults to 0.5.
 
     Returns:
         List of filtered predictions in COCO format.

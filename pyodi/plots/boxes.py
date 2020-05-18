@@ -18,7 +18,7 @@ def get_centroids_heatmap(
         n_cols: Number of columns.
 
     Returns:
-        Centroids heatmap.
+        Centroids heatmap. With shape (`n_rows`, `n_cols`).
 
     """
     rows = df["row_centroid"] / df["img_height"]
@@ -40,7 +40,7 @@ def plot_heatmap(
     """Plots heatmap figure.
 
     Args:
-        heatmap: Heatmap data to plot.
+        heatmap: Heatmap (2D array) data to plot.
         title: Title of the figure. Defaults to "".
         show: Whether to show results or not. Defaults to True.
         output: Results will be saved under `output` dir. Defaults to None.
