@@ -32,7 +32,7 @@ def get_crops_corners(
     crops_corners = []
     row_max = row_min = 0
     width, height = image_pil.size
-    while row_max < height:
+    while row_max - row_overlap < height:
         col_min = col_max = 0
         row_max = row_min + crop_height
         while col_max - col_overlap < width:
