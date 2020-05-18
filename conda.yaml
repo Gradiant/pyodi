@@ -6,7 +6,6 @@ dependencies:
   - python=3.6
   - cython
   - numpy
-  - matplotlib
   - pandas
   - flake8
   - pytest
