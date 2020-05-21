@@ -1,7 +1,6 @@
-from typing import Callable, Dict, List, Union
+from typing import Dict, List, Union
 
 import numpy as np
-from loguru import logger
 from numba import float32, njit, prange
 from numpy import float64, ndarray
 from sklearn.cluster import KMeans
@@ -36,31 +35,6 @@ def origin_iou(bboxes: ndarray, clusters: ndarray) -> ndarray:
     return iou_
 
 
-def pairwise_iou(bboxes1: ndarray, bboxes2: ndarray) -> ndarray:
-    """Calculates the pairwise Intersection over Union (IoU) between two sets of bboxes.
-
-    Args:
-        bboxes1: Array of bboxes with shape [n, 4]. In corner format.
-        bboxes2: Array of bboxes with shape [m, 4]. In corner format.
-
-    Returns:
-        Pairwise IoU array with shape [n, m].
-
-    """
-    area1 = (bboxes1[:, 2] - bboxes1[:, 0]) * (bboxes1[:, 3] - bboxes1[:, 1])
-    area2 = (bboxes2[:, 2] - bboxes2[:, 0]) * (bboxes2[:, 3] - bboxes2[:, 1])
-
-    left_corner = np.maximum(bboxes1[:, None, :2], bboxes2[:, :2])  # [rows, cols, 2]
-    right_corner = np.minimum(bboxes1[:, None, 2:], bboxes2[:, 2:])  # [rows, cols, 2]
-
-    intersection = np.clip(right_corner - left_corner, a_min=0, a_max=None)
-    intersection_area = intersection[..., 0] * intersection[..., 1]
-
-    ious = intersection_area / (area1[:, None] + area2 - intersection_area)
-
-    return ious
-
-
 @njit(float32[:](float32[:, :], float32[:, :]), parallel=True)
 def get_max_overlap(boxes: ndarray, anchors: ndarray) -> ndarray:
     """Computes max intersection-over-union between box and anchors.
@@ -93,78 +67,6 @@ def get_max_overlap(boxes: ndarray, anchors: ndarray) -> ndarray:
             overlap[row] = max(intersection / union, overlap[row])
 
     return overlap
-
-
-def kmeans_iou(
-    bboxes: ndarray,
-    k: List[int],
-    silhouette_metric: bool = False,
-    distance_metric: Callable = np.median,
-) -> List[Dict[str, ndarray]]:
-    """Computes k-means clustering with the IoU metric for different number of clusters.
-
-    Silhouette average metric is returned for each different k value.
-
-    Args:
-        bboxes: Shape (n, 2), where r is the number of rows.
-        k: List with different number of clusters, different k-means will be computed
-            per each value.
-        silhouette_metric: Whether to compute the silhouette metric or not. Defaults
-            to False.
-        distance_metric: Average function used to compute cluster centroids. Defaults
-            to np.median.
-
-    Returns:
-        Clustering results.
-
-    """
-    n_bboxes = bboxes.shape[0]
-
-    clustering_results = []
-
-    for n_clusters in k:
-        logger.info(f"Computing cluster for k = {n_clusters}")
-        distances = np.ones((n_bboxes, n_clusters))
-        last_clusters = np.zeros((n_bboxes,))
-        clusters = bboxes[np.random.choice(n_bboxes, n_clusters, replace=False)]
-
-        while True:
-
-            distances = 1 - origin_iou(bboxes, clusters)
-
-            nearest_clusters = np.argmin(distances, axis=1)
-
-            if (last_clusters == nearest_clusters).all():
-                break
-
-            for cluster in range(n_clusters):
-                cluster_elements = nearest_clusters == cluster
-
-                if cluster_elements.any() > 0:
-                    clusters[cluster] = distance_metric(
-                        bboxes[cluster_elements], axis=0
-                    )
-
-            last_clusters = nearest_clusters
-
-        result = dict(centroids=clusters, labels=last_clusters)
-
-        if silhouette_metric:
-            # todo: improve and compute only upper triangular matrix
-            iou_bboxes_pairwise_distance = 1 - origin_iou(bboxes, bboxes)
-            silhouette = silhouette_score(
-                iou_bboxes_pairwise_distance,
-                labels=nearest_clusters,
-                metric="precomputed",
-            )
-            result["silhouette"] = np.mean(silhouette)
-            logger.info(
-                f"Mean silhouette coefficient for {n_clusters}: {result['silhouette']}"
-            )
-
-        clustering_results.append(result)
-
-    return clustering_results
 
 
 def kmeans_euclidean(

@@ -6,7 +6,6 @@ from pyodi.core.clustering import (
     get_max_overlap,
     kmeans_euclidean,
     origin_iou,
-    pairwise_iou,
 )
 
 
@@ -22,17 +21,6 @@ def get_bboxes_matrices():
     return _get_bboxes_matrices
 
 
-def test_pairwise_iou(get_bboxes_matrices):
-    bboxes1, bboxes2 = get_bboxes_matrices()
-
-    expected_result = np.array(
-        [[2.0 / 16.0, 0, 6.0 / 400.0], [1.0 / 16.0, 0.0, 5.0 / 400.0]]
-    )
-    iou_values = pairwise_iou(bboxes1, bboxes2)
-
-    np.testing.assert_equal(expected_result, iou_values)
-
-
 def test_max_overlap(get_bboxes_matrices):
     bboxes1, bboxes2 = get_bboxes_matrices()
 
@@ -42,25 +30,15 @@ def test_max_overlap(get_bboxes_matrices):
     np.testing.assert_equal(expected_result, iou_values)
 
 
-def test_iou_works_on_empty_inputs(get_bboxes_matrices):
-    bboxes1, bboxes2 = get_bboxes_matrices()
-    boxes_empty = np.zeros((0, 4))
-    iou_empty_1 = pairwise_iou(bboxes1, boxes_empty)
-    iou_empty_2 = pairwise_iou(boxes_empty, bboxes2)
-    iou_empty_3 = pairwise_iou(boxes_empty, boxes_empty)
-
-    np.testing.assert_equal(iou_empty_1.shape, (2, 0))
-    np.testing.assert_equal(iou_empty_2.shape, (0, 3))
-    np.testing.assert_equal(iou_empty_3.shape, (0, 0))
-
-
 def test_origin_iou(get_bboxes_matrices):
     bboxes1, bboxes2 = get_bboxes_matrices()
     orig_iou = origin_iou(bboxes1[:, 2:], bboxes2[:, 2:])
     bboxes1[:, :2] = 0
     bboxes2[:, :2] = 0
-    pair_iou = pairwise_iou(bboxes1, bboxes2)
-    np.testing.assert_equal(orig_iou, pair_iou)
+    max_overlap = get_max_overlap(
+        bboxes1.astype(np.float32), bboxes2.astype(np.float32)
+    )
+    np.testing.assert_almost_equal(orig_iou.max(1), max_overlap)
 
 
 def test_kmeans_scale_ratio():
