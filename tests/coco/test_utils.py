@@ -54,7 +54,7 @@ def test_get_area_and_ratio(get_simple_annotations_with_img_sizes):
 def test_get_bbox_matrix_corners(get_simple_annotations_with_img_sizes):
     df_annotations = get_simple_annotations_with_img_sizes()
     matrix = get_bbox_array(df_annotations, output_bbox_format="corners")
-    expected_result = np.array([[0, 0, 5, 5], [0, 0, 45, 40]])
+    expected_result = np.array([[20, 20, 10, 10], [0, 0, 70, 60]])
     np.testing.assert_equal(matrix, expected_result)
 
 
