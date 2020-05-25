@@ -197,12 +197,11 @@ def corners_to_coco(bboxes: ndarray) -> ndarray:
 
     Returns:
         Array with dimension N x 4 with bbox coordinates in coco format
-        [x_center, y_center, width, height].
+        [x_min, y_min, width, height].
 
     """
-    dimensions = bboxes[..., 2:] - bboxes[..., :2]
-    centers = bboxes[..., :2] + dimensions // 2
-    bboxes = np.concatenate([centers, dimensions], axis=-1)
+    bboxes = bboxes.copy()
+    bboxes[..., 2:] = bboxes[..., 2:] - bboxes[..., :2]
     return bboxes
 
 
@@ -215,12 +214,11 @@ def coco_to_corners(bboxes: ndarray) -> ndarray:
 
     Returns:
         Array with dimension N x 4 with bbox coordinates in coco format
-        [x_center, y_center, width, height].
+        [x_min, y_min, width, height].
 
     """
-    mins = bboxes[..., :2] - bboxes[..., 2:] // 2
-    maxs = mins + bboxes[..., 2:]
-    bboxes = np.concatenate([mins, maxs], axis=-1)
+    bboxes = bboxes.copy()
+    bboxes[..., 2:] = bboxes[..., :2] + bboxes[..., 2:]
 
     if (bboxes < 0).any():
         logger.warning("Clipping bboxes to min corner 0, found negative value")

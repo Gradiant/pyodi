@@ -9,6 +9,8 @@ from pyodi.coco.utils import (
     get_df_from_bboxes,
     get_scale_and_ratio,
     scale_bbox_dimensions,
+    corners_to_coco,
+    coco_to_corners,
 )
 
 
@@ -78,3 +80,10 @@ def test_filter_zero_area_bboxes(get_simple_annotations_with_img_sizes):
     df_annotations = get_simple_annotations_with_img_sizes(bboxes, bbox_format="coco")
     df_annotations = filter_zero_area_bboxes(df_annotations)
     assert len(df_annotations) == 1
+
+
+def test_bboxes_transforms():
+    bboxes_coco = np.array([[0, 0, 10, 10], [10, 10, 15, 15]])
+    bboxes_corners = np.array([[0, 0, 10, 10], [10, 10, 25, 25]])
+    np.testing.assert_equal(bboxes_coco, corners_to_coco(bboxes_corners))
+    np.testing.assert_equal(bboxes_corners, coco_to_corners(bboxes_coco))
