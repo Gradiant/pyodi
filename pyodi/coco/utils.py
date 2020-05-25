@@ -345,10 +345,10 @@ def get_bbox_array(
 
     Examples:
         `coco`:
-        >>>[x_center, y_center, width, height]
+        >>>[col_left, row_left, width, height]
 
         `corners`:
-        >>>[x_min, y_min, x_max, y_max]
+        >>>[col_left, row_left, col_right, row_right]
 
     """
     check_bbox_formats(input_bbox_format, output_bbox_format)
