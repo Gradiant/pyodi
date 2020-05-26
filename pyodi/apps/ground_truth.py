@@ -42,8 +42,8 @@ import typer
 from loguru import logger
 
 from pyodi.coco.utils import (
-    coco_ground_truth_to_dfs,
     add_centroids,
+    coco_ground_truth_to_dfs,
     join_annotations_with_image_sizes,
     load_ground_truth_file,
 )
