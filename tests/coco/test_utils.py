@@ -3,12 +3,12 @@ import pandas as pd
 import pytest
 
 from pyodi.coco.utils import (
+    add_centroids,
     coco_to_corners,
     corners_to_coco,
     filter_zero_area_bboxes,
     get_bbox_array,
     get_bbox_column_names,
-    get_centroids,
     get_df_from_bboxes,
     get_scale_and_ratio,
     scale_bbox_dimensions,
@@ -90,9 +90,9 @@ def test_bboxes_transforms():
     np.testing.assert_equal(bboxes_corners, coco_to_corners(bboxes_coco))
 
 
-def test_get_centroids(get_simple_annotations_with_img_sizes):
+def test_add_centroids(get_simple_annotations_with_img_sizes):
     df_annotations = get_simple_annotations_with_img_sizes()
-    centroids = get_centroids(df_annotations)[
+    centroids = add_centroids(df_annotations)[
         ["col_centroid", "row_centroid"]
     ].to_numpy()
     expected_result = np.array([[5, 5], [45, 40]])
