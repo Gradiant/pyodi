@@ -193,7 +193,7 @@ def get_centroids(
         df: DataFrame with COCO annotations.
         prefix: Prefix to apply to column names, use for scaled data. Defaults to None.
         input_bbox_format: Input bounding box format. Can be "coco" or "corners".
-            "coco" ["col_centroid", "row_centroid", "width", "height"]
+            "coco" ["col_left", "row_top", "width", "height"]
             "corners" ["col_left", "row_left", "col_right", "row_right"]
             Defaults to "coco".
 
