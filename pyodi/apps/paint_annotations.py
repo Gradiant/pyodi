@@ -40,7 +40,7 @@ def paint_annotations(
 
     ground_truth = json.load(open(ground_truth_file))
     image_name_to_id = {
-        Path(x["file_name"]).stem: x["id"] for x in ground_truth["old_images"]
+        Path(x["file_name"]).stem: x["id"] for x in ground_truth["images"]
     }
     image_id_to_annotations: Dict = defaultdict(list)
 
