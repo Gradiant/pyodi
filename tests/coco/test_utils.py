@@ -84,8 +84,8 @@ def test_filter_zero_area_bboxes(get_simple_annotations_with_img_sizes):
 
 
 def test_bboxes_transforms():
-    bboxes_coco = np.array([[0, 0, 10, 10], [10, 10, 15, 15]])
-    bboxes_corners = np.array([[0, 0, 10, 10], [10, 10, 25, 25]])
+    bboxes_coco = np.array([[0, 0, 10, 10], [0, 6, 3, 9]])
+    bboxes_corners = np.array([[0, 0, 10, 10], [0, 6, 3, 15]])
     np.testing.assert_equal(bboxes_coco, corners_to_coco(bboxes_corners))
     np.testing.assert_equal(bboxes_corners, coco_to_corners(bboxes_coco))
 
