@@ -184,7 +184,7 @@ def get_scale_and_ratio(df: DataFrame, prefix: str = None) -> DataFrame:
     return df
 
 
-def get_centroids(
+def add_centroids(
     df: DataFrame, prefix: str = None, input_bbox_format: str = "coco"
 ) -> DataFrame:
     """Computes bbox centroids.
