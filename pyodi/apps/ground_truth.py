@@ -89,7 +89,7 @@ def ground_truth(
 
     df_annotations = join_annotations_with_image_sizes(df_annotations, df_images)
 
-    df_annotations = get_centroids(df_annotations)
+    df_annotations = add_centroids(df_annotations)
 
     df_annotations["absolute_height"] = (
         df_annotations["height"] / df_annotations["img_height"]
