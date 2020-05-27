@@ -6,11 +6,13 @@ from pyodi.coco.utils import (
     add_centroids,
     coco_to_corners,
     corners_to_coco,
+    denormalize,
     filter_zero_area_bboxes,
     get_bbox_array,
     get_bbox_column_names,
     get_df_from_bboxes,
     get_scale_and_ratio,
+    normalize,
     scale_bbox_dimensions,
 )
 
@@ -97,3 +99,10 @@ def test_add_centroids(get_simple_annotations_with_img_sizes):
     ].to_numpy()
     expected_result = np.array([[5, 5], [45, 40]])
     np.testing.assert_equal(centroids, expected_result)
+
+
+def test_normalization():
+    bboxes = np.array([[0, 0, 10, 10], [0, 0, 5, 20]])
+    normalized = normalize(bboxes, 100, 100)
+    denormalized = denormalize(normalized, 100, 100)
+    np.testing.assert_equal(denormalized, bboxes)
