@@ -3,11 +3,13 @@ import pandas as pd
 import pytest
 
 from pyodi.coco.utils import (
+    denormalize,
     filter_zero_area_bboxes,
     get_bbox_array,
     get_bbox_column_names,
     get_df_from_bboxes,
     get_scale_and_ratio,
+    normalize,
     scale_bbox_dimensions,
 )
 
@@ -78,3 +80,10 @@ def test_filter_zero_area_bboxes(get_simple_annotations_with_img_sizes):
     df_annotations = get_simple_annotations_with_img_sizes(bboxes, bbox_format="coco")
     df_annotations = filter_zero_area_bboxes(df_annotations)
     assert len(df_annotations) == 1
+
+
+def test_normalization():
+    bboxes = np.array([[0, 0, 10, 10], [0, 0, 5, 20]])
+    normalized = normalize(bboxes, 100, 100)
+    denormalized = denormalize(normalized, 100, 100)
+    np.testing.assert_equal(denormalized, bboxes)

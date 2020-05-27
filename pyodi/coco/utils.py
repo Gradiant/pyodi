@@ -243,10 +243,9 @@ def normalize(bboxes: ndarray, image_width: int, image_height: int) -> ndarray:
     Returns:
         Bounding boxes with coordinates in (0, 1) range.
     """
-    bboxes[:, 0] /= image_width
-    bboxes[:, 1] /= image_height
-    bboxes[:, 2] /= image_width
-    bboxes[:, 3] /= image_height
+    norms = np.array([image_width, image_height, image_width, image_height])
+    bboxes = bboxes * 1 / norms
+
     return bboxes
 
 
@@ -266,10 +265,8 @@ def denormalize(bboxes: ndarray, image_width: int, image_height: int) -> ndarray
         Bounding boxes with coordinates in pixels.
 
     """
-    bboxes[:, 0] *= image_width
-    bboxes[:, 1] *= image_height
-    bboxes[:, 2] *= image_width
-    bboxes[:, 3] *= image_height
+    norms = np.array([image_width, image_height, image_width, image_height])
+    bboxes = bboxes * norms
     return bboxes
 
 
