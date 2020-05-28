@@ -1,11 +1,13 @@
 import json
 from pathlib import Path
 
+import numpy as np
+
 from pyodi.apps.crops_merge import crops_merge
 
 
 def test_crops_merge(tmpdir):
-    # Test box is dicarded since iou between preds boxes is >.39
+    # Test box is dicarded since iou between preds boxes is >.39 and final box coords are in original image coords
     tmpdir = Path(tmpdir)
     preds_path = tmpdir / "preds.json"
     gt_path = tmpdir / "gt.json"
@@ -34,4 +36,6 @@ def test_crops_merge(tmpdir):
     output_path = crops_merge(gt_path, preds_path, output_path, iou_thr=iou_thr)
 
     result = json.load(open(output_path))
+
     assert len(result) == 1
+    np.testing.assert_almost_equal(result[0]["bbox"], [10, 10, 8, 8])
