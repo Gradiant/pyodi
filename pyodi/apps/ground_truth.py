@@ -42,6 +42,7 @@ import typer
 from loguru import logger
 
 from pyodi.coco.utils import (
+    add_centroids,
     coco_ground_truth_to_dfs,
     join_annotations_with_image_sizes,
     load_ground_truth_file,
@@ -87,6 +88,9 @@ def ground_truth(
     )
 
     df_annotations = join_annotations_with_image_sizes(df_annotations, df_images)
+
+    df_annotations = add_centroids(df_annotations)
+
     df_annotations["absolute_height"] = (
         df_annotations["height"] / df_annotations["img_height"]
     )

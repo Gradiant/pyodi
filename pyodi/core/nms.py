@@ -69,7 +69,7 @@ def nms_predictions(
             new_predictions.append(
                 {
                     "image_id": image_id,
-                    "bbox": list(box),
+                    "bbox": box.tolist(),
                     "score": float(score),
                     "category_id": int(category),
                 }

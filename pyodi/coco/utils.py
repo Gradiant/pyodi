@@ -83,12 +83,8 @@ def coco_ground_truth_to_dfs(
         dict_annotations["file_name"].append(image_id_to_name[annotation["image_id"]])
         dict_annotations["category"].append(categories[annotation["category_id"]])
         dict_annotations["area"].append(annotation["area"])
-        dict_annotations["col_centroid"].append(
-            int(annotation["bbox"][0] + (annotation["bbox"][2] // 2))
-        )
-        dict_annotations["row_centroid"].append(
-            int(annotation["bbox"][1] + (annotation["bbox"][3] // 2))
-        )
+        dict_annotations["col_left"].append(int(annotation["bbox"][0]))
+        dict_annotations["row_top"].append(int(annotation["bbox"][1]))
         dict_annotations["width"].append(int(annotation["bbox"][2]))
         dict_annotations["height"].append(int(annotation["bbox"][3]))
 
@@ -158,8 +154,8 @@ def scale_bbox_dimensions(
         w_scale = input_size[0] / df["img_width"]
         h_scale = input_size[1] / df["img_height"]
 
-    df["scaled_col_centroid"] = np.ceil(df["col_centroid"] * w_scale)
-    df["scaled_row_centroid"] = np.ceil(df["row_centroid"] * h_scale)
+    df["scaled_col_left"] = np.ceil(df["col_left"] * w_scale)
+    df["scaled_row_top"] = np.ceil(df["row_top"] * h_scale)
     df["scaled_width"] = np.ceil(df["width"] * w_scale)
     df["scaled_height"] = np.ceil(df["height"] * h_scale)
 
@@ -188,21 +184,49 @@ def get_scale_and_ratio(df: DataFrame, prefix: str = None) -> DataFrame:
     return df
 
 
+def add_centroids(
+    df: DataFrame, prefix: str = None, input_bbox_format: str = "coco"
+) -> DataFrame:
+    """Computes bbox centroids.
+
+    Args:
+        df: DataFrame with COCO annotations.
+        prefix: Prefix to apply to column names, use for scaled data. Defaults to None.
+        input_bbox_format: Input bounding box format. Can be "coco" or "corners".
+            "coco" ["col_left", "row_top", "width", "height"]
+            "corners" ["col_left", "row_top", "col_right", "row_bottom"]
+            Defaults to "coco".
+
+    Returns:
+        DataFrame with new columns [prefix_]row_centroid/col_centroid
+
+    """
+    columns = ["col_centroid", "row_centroid"]
+    bboxes = get_bbox_array(df, prefix=prefix, input_bbox_format=input_bbox_format)
+
+    if prefix:
+        columns = [f"{prefix}_{col}" for col in columns]
+
+    df[columns[0]] = bboxes[:, 0] + bboxes[:, 2] // 2
+    df[columns[1]] = bboxes[:, 1] + bboxes[:, 3] // 2
+
+    return df
+
+
 def corners_to_coco(bboxes: ndarray) -> ndarray:
     """Transforms bboxes array from corners format to coco.
 
     Args:
         bboxes: Array with dimension N x 4 with bbox coordinates in corner format
-        [x_min, y_min, x_max, y_max].
+        ["col_left", "row_top", "col_right", "row_bottom"]
 
     Returns:
         Array with dimension N x 4 with bbox coordinates in coco format
-        [x_center, y_center, width, height].
+        [col_left, row_top, width, height].
 
     """
-    dimensions = bboxes[..., 2:] - bboxes[..., :2]
-    centers = bboxes[..., :2] + dimensions // 2
-    bboxes = np.concatenate([centers, dimensions], axis=-1)
+    bboxes = bboxes.copy()
+    bboxes[..., 2:] = bboxes[..., 2:] - bboxes[..., :2]
     return bboxes
 
 
@@ -211,16 +235,15 @@ def coco_to_corners(bboxes: ndarray) -> ndarray:
 
     Args:
         bboxes: Array with dimension N x 4 with bbox coordinates in corner format
-        [x_min, y_min, x_max, y_max].
+        [col_left, row_top, width, height].
 
     Returns:
         Array with dimension N x 4 with bbox coordinates in coco format
-        [x_center, y_center, width, height].
+        ["col_left", "row_top", "col_right", "row_bottom"]
 
     """
-    mins = bboxes[..., :2] - bboxes[..., 2:] // 2
-    maxs = mins + bboxes[..., 2:]
-    bboxes = np.concatenate([mins, maxs], axis=-1)
+    bboxes = bboxes.copy()
+    bboxes[..., 2:] = bboxes[..., :2] + bboxes[..., 2:]
 
     if (bboxes < 0).any():
         logger.warning("Clipping bboxes to min corner 0, found negative value")
@@ -232,8 +255,8 @@ def normalize(bboxes: ndarray, image_width: int, image_height: int) -> ndarray:
     """Transforms bboxes array from pixels to (0, 1) range.
 
     Bboxes can be in both formats:
-        "coco" ["col_centroid", "row_centroid", "width", "height"]
-        "corners" ["col_left", "row_left", "col_right", "row_right"]
+        "coco" ["col_left", "row_top", "width", "height"]
+        "corners" ["col_left", "row_top", "col_right", "row_bottom"]
 
     Args:
         bboxes: Bounding boxes.
@@ -253,8 +276,8 @@ def denormalize(bboxes: ndarray, image_width: int, image_height: int) -> ndarray
     """Transforms bboxes array from (0, 1) range to pixels.
 
     Bboxes can be in both formats:
-        "coco" ["col_centroid", "row_centroid", "width", "height"]
-        "corners" ["col_left", "row_left", "col_right", "row_right"]
+        "coco" ["col_left", "row_top", "width", "height"]
+        "corners" ["col_left", "row_top", "col_right", "row_bottom"]
 
     Args:
         bboxes: Bounding boxes.
@@ -274,8 +297,8 @@ def get_bbox_column_names(bbox_format: str, prefix: Optional[str] = None) -> Lis
     """Returns predefined column names for each format.
 
     When bbox_format is 'coco' column names are
-    ["col_centroid", "row_centroid", "width", "height"], when 'corners'
-    ["col_left", "row_left", "col_right", "row_right"].
+    ["col_left", "row_top", "width", "height"], when 'corners'
+    ["col_left", "row_top", "col_right", "row_bottom"].
 
     Args:
         bbox_format: Bounding box format. Can be "coco" or "corners".
@@ -286,9 +309,9 @@ def get_bbox_column_names(bbox_format: str, prefix: Optional[str] = None) -> Lis
 
     """
     if bbox_format == "coco":
-        columns = ["col_centroid", "row_centroid", "width", "height"]
+        columns = ["col_left", "row_top", "width", "height"]
     elif bbox_format == "corners":
-        columns = ["col_left", "row_left", "col_right", "row_right"]
+        columns = ["col_left", "row_top", "col_right", "row_bottom"]
     else:
         raise ValueError(f"Invalid bbox format, {bbox_format} does not exist")
 
@@ -319,10 +342,10 @@ def get_bbox_array(
 
     Examples:
         `coco`:
-        >>>[x_center, y_center, width, height]
+        >>>[col_left, row_top, width, height]
 
         `corners`:
-        >>>[x_min, y_min, x_max, y_max]
+        >>>[col_left, row_top, col_right, row_bottom]
 
     """
     check_bbox_formats(input_bbox_format, output_bbox_format)
