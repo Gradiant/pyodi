@@ -19,7 +19,7 @@ def crops_merge(
     nms_mode: str = "nms",
     score_thr: float = 0.0,
     iou_thr: float = 0.5,
-) -> None:
+) -> str:
     """Merge and translate `predictions` to `ground_truth`'s `old_images` coordinates.
 
     Args:
@@ -68,18 +68,19 @@ def crops_merge(
         crop["bbox"][1] += crop_row
         crop["original_image_shape"] = stem_to_original_shape[stem]
 
+    if apply_nms:
+        predictions = nms_predictions(
+            predictions, score_thr=score_thr, nms_mode=nms_mode, iou_thr=iou_thr
+        )
+        output_file = str(
+            Path(output_file).parent
+            / f"{Path(output_file).stem}_{nms_mode}_{score_thr}_{iou_thr}.json"
+        )
+
     with open(output_file, "w") as f:
         json.dump(predictions, f, indent=2)
 
-    if apply_nms:
-        new_predictions = nms_predictions(
-            predictions, score_thr=score_thr, nms_mode=nms_mode, iou_thr=iou_thr
-        )
-
-        with open(
-            f"{Path(output_file).stem}_{nms_mode}_{score_thr}_{iou_thr}.json", "w"
-        ) as f:
-            json.dump(new_predictions, f, indent=2)
+    return output_file
 
 
 if __name__ == "__main__":
