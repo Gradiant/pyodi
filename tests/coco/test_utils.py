@@ -3,6 +3,9 @@ import pandas as pd
 import pytest
 
 from pyodi.coco.utils import (
+    add_centroids,
+    coco_to_corners,
+    corners_to_coco,
     denormalize,
     filter_zero_area_bboxes,
     get_bbox_array,
@@ -54,7 +57,7 @@ def test_get_area_and_ratio(get_simple_annotations_with_img_sizes):
 def test_get_bbox_matrix_corners(get_simple_annotations_with_img_sizes):
     df_annotations = get_simple_annotations_with_img_sizes()
     matrix = get_bbox_array(df_annotations, output_bbox_format="corners")
-    expected_result = np.array([[0, 0, 5, 5], [0, 0, 45, 40]])
+    expected_result = np.array([[0, 0, 10, 10], [20, 20, 70, 60]])
     np.testing.assert_equal(matrix, expected_result)
 
 
@@ -80,6 +83,22 @@ def test_filter_zero_area_bboxes(get_simple_annotations_with_img_sizes):
     df_annotations = get_simple_annotations_with_img_sizes(bboxes, bbox_format="coco")
     df_annotations = filter_zero_area_bboxes(df_annotations)
     assert len(df_annotations) == 1
+
+
+def test_bboxes_transforms():
+    bboxes_coco = np.array([[0, 0, 10, 10], [0, 6, 3, 9]])
+    bboxes_corners = np.array([[0, 0, 10, 10], [0, 6, 3, 15]])
+    np.testing.assert_equal(bboxes_coco, corners_to_coco(bboxes_corners))
+    np.testing.assert_equal(bboxes_corners, coco_to_corners(bboxes_coco))
+
+
+def test_add_centroids(get_simple_annotations_with_img_sizes):
+    df_annotations = get_simple_annotations_with_img_sizes()
+    centroids = add_centroids(df_annotations)[
+        ["col_centroid", "row_centroid"]
+    ].to_numpy()
+    expected_result = np.array([[5, 5], [45, 40]])
+    np.testing.assert_equal(centroids, expected_result)
 
 
 def test_normalization():
