@@ -148,7 +148,8 @@ def train_config_evaluation(
         output_size: Size of saved images. Defaults to (1600, 900).
 
     Examples:
-        # faster_rcnn_r50_fpn.py
+        ```python
+        # faster_rcnn_r50_fpn.py:
 
         train_pipeline = [
             dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
@@ -161,7 +162,7 @@ def train_config_evaluation(
             ratios=[0.5, 1.0, 2.0],
             strides=[4, 8, 16, 32, 64]
         )
-
+        ```
     """
     if output is not None:
         output = str(Path(output) / Path(ground_truth_file).stem)

@@ -331,7 +331,7 @@ class AnchorGenerator(object):
         repr_str += "{}scales_per_octave={},\n".format(
             indent_str, self.scales_per_octave
         )
-        repr_str += "{}num_levels={}\n".format(indent_str, self.num_levels)
+        repr_str += "{}num_levels={},\n".format(indent_str, self.num_levels)
         repr_str += "{}centers={},\n".format(indent_str, self.centers)
         repr_str += "{}center_offset={})".format(indent_str, self.center_offset)
         return repr_str

@@ -42,8 +42,8 @@ def plot_clustering_results(
 
     plot_scatter_with_histograms(
         df_annotations,
-        x=f"log_level_scale",
-        y=f"log_ratio",
+        x="log_level_scale",
+        y="log_ratio",
         legendgroup="classes",
         show=False,
         colors=COLORS,
@@ -74,8 +74,8 @@ def plot_clustering_results(
 
     plot_scatter_with_histograms(
         df_annotations,
-        x=f"scaled_width",
-        y=f"scaled_height",
+        x="scaled_width",
+        y="scaled_height",
         show=False,
         colors=COLORS,
         legendgroup="classes",
