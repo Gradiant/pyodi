@@ -187,7 +187,7 @@ def train_config_generation(
     anchor_generator = AnchorGenerator(
         strides=strides, ratios=ratios, scales=scales, base_sizes=anchor_base_sizes,
     )
-    logger.info(f"Anchor configuration: \n{anchor_generator}")
+    logger.info(f"Anchor configuration: \n{anchor_generator.as_config()}")
 
     # Plot results
     plot_clustering_results(
