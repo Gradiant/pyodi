@@ -130,10 +130,10 @@ def load_train_config_file(train_config_file: str) -> Dict[str, Any]:
 @app.command()
 def train_config_evaluation(
     ground_truth_file: str,
-    train_config: str,
+    train_config: str,  # type: ignore
     input_size: Tuple[int, int] = (1333, 800),
     show: bool = True,
-    output: str = ".",
+    output: str = ".",  # type: ignore
     output_size: Tuple[int, int] = (1600, 900),
 ) -> None:
     """Evaluates the fitness between `ground_truth_file` and `train_config_file`.

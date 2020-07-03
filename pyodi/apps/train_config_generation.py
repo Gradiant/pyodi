@@ -217,7 +217,7 @@ def train_config_generation(
             train_config=train_config,  # type: ignore
             input_size=input_size,
             show=show,
-            output=output if not None else ".",
+            output=output if not None else ".",  # type: ignore
             output_size=output_size,
         )
 
