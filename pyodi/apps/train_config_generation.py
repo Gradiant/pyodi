@@ -78,8 +78,10 @@ anchors increase and adapts to the bounding box distribution.
 
 ![COCO width_height](../../images/train-config-generation/COCO_width_vs_height.png#center)
 
-You can use [`pyodi train-config evaluation`][pyodi.apps.train_config_evaluation.train_config_evaluation]
-to decide which generated anchor config suits better your data.
+By default, [`pyodi train-config evaluation`][pyodi.apps.train_config_evaluation.train_config_evaluation] is
+used after the generation of anchors in order to compare which generated anchor config suits better your data.
+You can disable this evaluation by setting to False the `evaluate` argument, but it is strongly advised to
+use the anchor evaluation module.
 
 """  # noqa: E501
 from pathlib import Path
@@ -118,6 +120,7 @@ def train_config_generation(
     output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),
     keep_ratio: bool = False,
+    evaluate: bool = True,
 ) -> AnchorGenerator:
     """Computes optimal anchors for a given COCO dataset based on iou clustering.
 
@@ -133,6 +136,7 @@ def train_config_generation(
         output: Output file where results are saved. Defaults to None.
         output_size: Size of saved images. Defaults to (1600, 900).
         keep_ratio: Whether to keep the aspect ratio or not. Defaults to False.
+        evaluate: Whether to evaluate or not the anchors.
 
     Returns:
         Anchor generator instance.
@@ -203,6 +207,19 @@ def train_config_generation(
         output_file = Path(output) / "result.json"
         with open(output_file, "w") as f:
             f.write(anchor_generator.as_config())
+
+    if evaluate:
+        from .train_config_evaluation import train_config_evaluation
+        train_config = dict(
+            anchor_generator=anchor_generator.as_dict()
+        )
+        train_config_evaluation(
+            ground_truth_file=ground_truth_file,
+            train_config=train_config,
+            input_size=input_size,
+            show=show,
+            output=output,
+            output_size=output_size)
 
     return anchor_generator
 

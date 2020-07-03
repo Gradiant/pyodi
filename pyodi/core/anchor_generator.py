@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Dict, Any
 
 import numpy as np
 from numpy import ndarray
@@ -356,3 +356,19 @@ class AnchorGenerator(object):
         string += ")"
 
         return string
+
+    def as_dict(self) -> Dict[str, Any]:
+        """Transforms configuration into dictionary.
+        
+        Returns:
+            Dictionary with config.
+        """
+        anchor_config = dict(
+            type="'AnchorGenerator'",
+            scales=sorted(list(self.scales.ravel())),
+            ratios=sorted(list(self.ratios.ravel())),
+            strides=list(self.strides),
+            base_sizes=list(self.base_sizes),
+        )
+
+        return anchor_config
