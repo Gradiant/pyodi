@@ -214,10 +214,10 @@ def train_config_generation(
         train_config = dict(anchor_generator=anchor_generator.as_dict())
         train_config_evaluation(
             ground_truth_file=ground_truth_file,
-            train_config=train_config,
+            train_config=train_config,  # type: ignore
             input_size=input_size,
             show=show,
-            output=output,
+            output=output if not None else ".",
             output_size=output_size,
         )
 
