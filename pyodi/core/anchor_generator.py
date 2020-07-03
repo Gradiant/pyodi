@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple, Dict, Any
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 from numpy import ndarray
@@ -359,7 +359,7 @@ class AnchorGenerator(object):
 
     def as_dict(self) -> Dict[str, Any]:
         """Transforms configuration into dictionary.
-        
+
         Returns:
             Dictionary with config.
         """

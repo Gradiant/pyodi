@@ -78,7 +78,7 @@ from importlib import import_module
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
-from typing import Any, Dict, Tuple, Union
+from typing import Any, Dict, Tuple
 
 import numpy as np
 import typer
@@ -184,7 +184,7 @@ def train_config_evaluation(
     df_annotations["log_scaled_ratio"] = np.log(df_annotations["scaled_ratio"])
 
     if isinstance(train_config, str):
-        train_config_data = load_train_config_file(train_config_file)
+        train_config_data = load_train_config_file(train_config)
     elif isinstance(train_config, dict):
         train_config_data = train_config
     else:

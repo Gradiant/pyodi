@@ -210,16 +210,16 @@ def train_config_generation(
 
     if evaluate:
         from .train_config_evaluation import train_config_evaluation
-        train_config = dict(
-            anchor_generator=anchor_generator.as_dict()
-        )
+
+        train_config = dict(anchor_generator=anchor_generator.as_dict())
         train_config_evaluation(
             ground_truth_file=ground_truth_file,
             train_config=train_config,
             input_size=input_size,
             show=show,
             output=output,
-            output_size=output_size)
+            output_size=output_size,
+        )
 
     return anchor_generator
 
