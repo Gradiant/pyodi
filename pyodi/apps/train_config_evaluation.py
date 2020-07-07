@@ -78,7 +78,7 @@ from importlib import import_module
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
 import typer
@@ -130,10 +130,10 @@ def load_train_config_file(train_config_file: str) -> Dict[str, Any]:
 @app.command()
 def train_config_evaluation(
     ground_truth_file: str,
-    train_config: str,  # type: ignore
+    train_config: str,
     input_size: Tuple[int, int] = (1333, 800),
     show: bool = True,
-    output: str = ".",  # type: ignore
+    output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),
 ) -> None:
     """Evaluates the fitness between `ground_truth_file` and `train_config_file`.
@@ -145,7 +145,7 @@ def train_config_evaluation(
             dictionary with the required data.
         input_size: Model image input size. Defaults to (1333, 800).
         show: Show results or not. Defaults to True.
-        output: Output file where results are saved. Defaults to ".".
+        output: Output file where results are saved. Defaults to None.
         output_size: Size of saved images. Defaults to (1600, 900).
 
     Examples:
@@ -192,7 +192,9 @@ def train_config_evaluation(
 
     del train_config_data["anchor_generator"]["type"]
     anchor_generator = AnchorGenerator(**train_config_data["anchor_generator"])
-    logger.info(anchor_generator)
+
+    if isinstance(train_config, str):
+        logger.info(anchor_generator.to_string())
 
     width, height = input_size
     featmap_sizes = [

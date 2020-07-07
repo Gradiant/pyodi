@@ -91,6 +91,7 @@ import numpy as np
 import typer
 from loguru import logger
 
+from pyodi.apps.train_config_evaluation import train_config_evaluation
 from pyodi.coco.utils import (
     coco_ground_truth_to_dfs,
     filter_zero_area_bboxes,
@@ -136,7 +137,9 @@ def train_config_generation(
         output: Output file where results are saved. Defaults to None.
         output_size: Size of saved images. Defaults to (1600, 900).
         keep_ratio: Whether to keep the aspect ratio or not. Defaults to False.
-        evaluate: Whether to evaluate or not the anchors.
+        evaluate: Whether to evaluate or not the anchors. Check
+            [`pyodi train-config evaluation`][pyodi.apps.train_config_evaluation.train_config_evaluation]
+            for more information.
 
     Returns:
         Anchor generator instance.
@@ -191,7 +194,7 @@ def train_config_generation(
     anchor_generator = AnchorGenerator(
         strides=strides, ratios=ratios, scales=scales, base_sizes=anchor_base_sizes,
     )
-    logger.info(f"Anchor configuration: \n{anchor_generator.as_config()}")
+    logger.info(f"Anchor configuration: \n{anchor_generator.to_string()}")
 
     # Plot results
     plot_clustering_results(
@@ -206,18 +209,17 @@ def train_config_generation(
     if output:
         output_file = Path(output) / "result.json"
         with open(output_file, "w") as f:
-            f.write(anchor_generator.as_config())
+            f.write(anchor_generator.to_string())
 
     if evaluate:
-        from .train_config_evaluation import train_config_evaluation
 
-        train_config = dict(anchor_generator=anchor_generator.as_dict())
+        train_config = dict(anchor_generator=anchor_generator.to_dict())
         train_config_evaluation(
             ground_truth_file=ground_truth_file,
             train_config=train_config,  # type: ignore
             input_size=input_size,
             show=show,
-            output=output if not None else ".",  # type: ignore
+            output=output,
             output_size=output_size,
         )
 
