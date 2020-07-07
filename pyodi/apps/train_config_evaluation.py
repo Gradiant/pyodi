@@ -72,9 +72,9 @@ where all boxes placed near to x axis, have low overlaps.
 ![COCO scale_ratio](../../images/train-config-evaluation/log_ratio_overlap.png#center)
 
 """  # noqa: E501
-import os.path as osp
 import sys
 from importlib import import_module
+from os import path as osp
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory

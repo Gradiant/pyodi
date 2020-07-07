@@ -1,7 +1,7 @@
 from typing import Optional, Tuple
 
-import plotly.graph_objects as go
 from pandas.core.frame import DataFrame
+from plotly import graph_objects as go
 from plotly.subplots import make_subplots
 
 from pyodi.plots.common import save_figure

@@ -1,8 +1,8 @@
 from typing import Optional, Tuple
 
 import numpy as np
-import plotly.graph_objects as go
 from pandas import DataFrame
+from plotly import graph_objects as go
 
 from pyodi.plots.common import save_figure
 
