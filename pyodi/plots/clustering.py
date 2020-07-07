@@ -1,8 +1,8 @@
 from typing import Optional, Tuple
 
 import numpy as np
-import plotly.graph_objects as go
 from pandas.core.frame import DataFrame
+from plotly import graph_objects as go
 from plotly.colors import DEFAULT_PLOTLY_COLORS as COLORS
 from plotly.subplots import make_subplots
 

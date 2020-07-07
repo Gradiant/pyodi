@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 from numpy import ndarray
@@ -336,12 +336,27 @@ class AnchorGenerator(object):
         repr_str += "{}center_offset={})".format(indent_str, self.center_offset)
         return repr_str
 
-    def as_config(self) -> str:
+    def to_string(self) -> str:
         """Transforms configuration into string.
 
         Returns:
             String with config.
 
+        """
+        anchor_config = self.to_dict()
+
+        string = "anchor_config=dict(\n"
+        for k, v in anchor_config.items():
+            string += f"{' '* 4}{k}={v},\n"
+        string += ")"
+
+        return string
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Transforms configuration into dictionary.
+
+        Returns:
+            Dictionary with config.
         """
         anchor_config = dict(
             type="'AnchorGenerator'",
@@ -350,9 +365,5 @@ class AnchorGenerator(object):
             strides=list(self.strides),
             base_sizes=list(self.base_sizes),
         )
-        string = "anchor_config=dict(\n"
-        for k, v in anchor_config.items():
-            string += f"{' '* 4}{k}={v},\n"
-        string += ")"
 
-        return string
+        return anchor_config

@@ -3,10 +3,10 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Dict, Optional
 
-import matplotlib.pyplot as plt
 import numpy as np
 import typer
 from loguru import logger
+from matplotlib import pyplot as plt
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Polygon
 from PIL import Image

@@ -72,13 +72,13 @@ where all boxes placed near to x axis, have low overlaps.
 ![COCO scale_ratio](../../images/train-config-evaluation/log_ratio_overlap.png#center)
 
 """  # noqa: E501
-import os.path as osp
 import sys
 from importlib import import_module
+from os import path as osp
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
 import typer
@@ -130,21 +130,22 @@ def load_train_config_file(train_config_file: str) -> Dict[str, Any]:
 @app.command()
 def train_config_evaluation(
     ground_truth_file: str,
-    train_config_file: str,
+    train_config: str,
     input_size: Tuple[int, int] = (1333, 800),
     show: bool = True,
-    output: str = ".",
+    output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),
 ) -> None:
     """Evaluates the fitness between `ground_truth_file` and `train_config_file`.
 
     Args:
         ground_truth_file: Path to COCO ground truth file.
-        train_config_file: Path to MMDetection-like configuration file. Must contain
-            `train_pipeline` and `anchor_generator` sections.
+        train_config: Path to MMDetection-like configuration file. Must contain
+            `train_pipeline` and `anchor_generator` sections. It can also be a
+            dictionary with the required data.
         input_size: Model image input size. Defaults to (1333, 800).
         show: Show results or not. Defaults to True.
-        output: Output file where results are saved. Defaults to ".".
+        output: Output file where results are saved. Defaults to None.
         output_size: Size of saved images. Defaults to (1600, 900).
 
     Examples:
@@ -182,11 +183,18 @@ def train_config_evaluation(
 
     df_annotations["log_scaled_ratio"] = np.log(df_annotations["scaled_ratio"])
 
-    train_config = load_train_config_file(train_config_file)
+    if isinstance(train_config, str):
+        train_config_data = load_train_config_file(train_config)
+    elif isinstance(train_config, dict):
+        train_config_data = train_config
+    else:
+        raise ValueError("train_config must be string or dictionary.")
 
-    del train_config["anchor_generator"]["type"]
-    anchor_generator = AnchorGenerator(**train_config["anchor_generator"])
-    logger.info(anchor_generator)
+    del train_config_data["anchor_generator"]["type"]
+    anchor_generator = AnchorGenerator(**train_config_data["anchor_generator"])
+
+    if isinstance(train_config, str):
+        logger.info(anchor_generator.to_string())
 
     width, height = input_size
     featmap_sizes = [

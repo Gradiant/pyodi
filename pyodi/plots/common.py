@@ -1,9 +1,9 @@
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-import plotly.graph_objects as go
 from loguru import logger
 from pandas import DataFrame
+from plotly import graph_objects as go
 from plotly.subplots import make_subplots
 
 
