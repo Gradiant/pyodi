@@ -21,7 +21,7 @@ jobs:
       - name: Lint code
         shell: bash -l {0}
         run: |
-          isort -rc --check-only --diff pyodi/ tests/
+          isort --check-only --diff pyodi/ tests/
           flake8 . --count --show-source --statistics
           mypy -p pyodi
           black .
