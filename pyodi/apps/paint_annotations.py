@@ -52,7 +52,7 @@ def paint_annotations(
     for annotation in annotations:
         image_id_to_annotations[annotation["image_id"]].append(annotation)
 
-    for image in Path(image_folder).iterdir():
+    for image in Path(image_folder).glob('**/*'):
         logger.info(f"Loading {image}")
 
         if image.stem not in image_name_to_id:
