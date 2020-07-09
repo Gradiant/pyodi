@@ -3,6 +3,7 @@ from PIL import Image
 
 from pyodi.core.crops import (
     annotation_inside_crop,
+    annotation_larger_than_threshold,
     get_annotation_in_crop,
     get_crops_corners,
 )
@@ -113,3 +114,49 @@ def test_get_annotation_in_crop():
     assert tuple(new_annotation["bbox"]) == (4, 0, 1, 1)
     new_annotation = get_annotation_in_crop(annotation, [5, 5, 10, 10])
     assert tuple(new_annotation["bbox"]) == (0, 0, 1, 1)
+
+
+def test_annotation_larger_than_threshold():
+    annotation = {"bbox": [2, 2, 4, 2]}
+
+    assert annotation_larger_than_threshold(annotation, [0, 0, 5, 5], 0.0)
+    assert annotation_larger_than_threshold(annotation, [5, 0, 10, 5], 0.0)
+    assert not annotation_larger_than_threshold(annotation, [0, 5, 5, 10], 0.0)
+    assert not annotation_larger_than_threshold(annotation, [5, 5, 10, 10], 0.0)
+
+    assert annotation_larger_than_threshold(annotation, [0, 0, 5, 5], 0.2)
+    assert annotation_larger_than_threshold(annotation, [5, 0, 10, 5], 0.2)
+    assert not annotation_larger_than_threshold(annotation, [0, 5, 5, 10], 0.2)
+    assert not annotation_larger_than_threshold(annotation, [5, 5, 10, 10], 0.2)
+
+    assert annotation_larger_than_threshold(annotation, [0, 0, 5, 5], 0.5)
+    assert not annotation_larger_than_threshold(annotation, [5, 0, 10, 5], 0.5)
+    assert not annotation_larger_than_threshold(annotation, [0, 5, 5, 10], 0.5)
+    assert not annotation_larger_than_threshold(annotation, [5, 5, 10, 10], 0.5)
+
+    annotation = {"bbox": [2, 2, 4, 5]}
+
+    assert annotation_larger_than_threshold(annotation, [0, 0, 5, 5], 0.0)
+    assert annotation_larger_than_threshold(annotation, [5, 0, 10, 5], 0.0)
+    assert annotation_larger_than_threshold(annotation, [0, 5, 5, 10], 0.0)
+    assert annotation_larger_than_threshold(annotation, [5, 5, 10, 10], 0.0)
+
+    assert annotation_larger_than_threshold(annotation, [0, 0, 5, 5], 0.1)
+    assert annotation_larger_than_threshold(annotation, [5, 0, 10, 5], 0.1)
+    assert annotation_larger_than_threshold(annotation, [0, 5, 5, 10], 0.1)
+    assert not annotation_larger_than_threshold(annotation, [5, 5, 10, 10], 0.1)
+
+    assert annotation_larger_than_threshold(annotation, [0, 0, 5, 5], 0.25)
+    assert not annotation_larger_than_threshold(annotation, [5, 0, 10, 5], 0.25)
+    assert annotation_larger_than_threshold(annotation, [0, 5, 5, 10], 0.25)
+    assert not annotation_larger_than_threshold(annotation, [5, 5, 10, 10], 0.25)
+
+    assert annotation_larger_than_threshold(annotation, [0, 0, 5, 5], 0.4)
+    assert not annotation_larger_than_threshold(annotation, [5, 0, 10, 5], 0.4)
+    assert not annotation_larger_than_threshold(annotation, [0, 5, 5, 10], 0.4)
+    assert not annotation_larger_than_threshold(annotation, [5, 5, 10, 10], 0.4)
+
+    assert not annotation_larger_than_threshold(annotation, [0, 0, 5, 5], 0.5)
+    assert not annotation_larger_than_threshold(annotation, [5, 0, 10, 5], 0.5)
+    assert not annotation_larger_than_threshold(annotation, [0, 5, 5, 10], 0.5)
+    assert not annotation_larger_than_threshold(annotation, [5, 5, 10, 10], 0.5)
