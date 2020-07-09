@@ -78,6 +78,41 @@ def annotation_inside_crop(annotation: Dict, crop_corners: List[int]) -> bool:
     return True
 
 
+def annotation_larger_than_threshold(
+    annotation: Dict, crop_corners: List[int], min_area_threshold: float
+) -> bool:
+    """Check whether cropped annotation area is larger than percentage of original annotation.
+
+    Args:
+        annotation: Single annotation entry in COCO format.
+        crop_corners: Generated from `get_crop_corners`.
+        min_area_threshold: Minimum area threshold ratio.
+
+    Returns:
+        True if annotation area exceeds the minimum area size.
+    """
+    left, top, width, height = annotation["bbox"]
+    right = left + width
+    bottom = top + height
+
+    area = width * height
+    min_area = area * min_area_threshold
+
+    new_left = max(left - crop_corners[0], 0)
+    new_top = max(top - crop_corners[1], 0)
+    new_right = min(right - crop_corners[0], crop_corners[2] - crop_corners[0])
+    new_bottom = min(bottom - crop_corners[1], crop_corners[3] - crop_corners[1])
+
+    new_width = new_right - new_left
+    new_height = new_bottom - new_top
+    new_area = new_width * new_height
+
+    if new_area > min_area:
+        return True
+
+    return False
+
+
 def get_annotation_in_crop(annotation: Dict, crop_corners: List[int]) -> Dict:
     """Translate annotation coordinates to crop coordinates.
 
