@@ -9,7 +9,7 @@ from PIL import Image
 
 from pyodi.core.crops import (
     annotation_inside_crop,
-    annotation_larger_than_threshold,
+    filter_annotation_by_area,
     get_annotation_in_crop,
     get_crops_corners,
 )
@@ -86,13 +86,13 @@ def crops_split(
                 }
             )
             for annotation in image_id_to_annotations[image["id"]]:
-                if not annotation_inside_crop(
-                    annotation, crop_corners
-                ) or not annotation_larger_than_threshold(
-                    annotation, crop_corners, min_area_threshold
-                ):
+                if not annotation_inside_crop(annotation, crop_corners):
                     continue
                 new_annotation = get_annotation_in_crop(annotation, crop_corners)
+                if filter_annotation_by_area(
+                    annotation, new_annotation, min_area_threshold
+                ):
+                    continue
                 new_annotation["id"] = len(new_annotations)
                 new_annotation["image_id"] = crop_id
                 new_annotations.append(new_annotation)

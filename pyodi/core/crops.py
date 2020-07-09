@@ -78,29 +78,27 @@ def annotation_inside_crop(annotation: Dict, crop_corners: List[int]) -> bool:
     return True
 
 
-def annotation_larger_than_threshold(
-    annotation: Dict, crop_corners: List[int], min_area_threshold: float
+def filter_annotation_by_area(
+    annotation: Dict, new_annotation: Dict, min_area_threshold: float
 ) -> bool:
-    """Check whether cropped annotation area is larger than percentage of original annotation.
+    """Check whether cropped annotation area is smaller than minimum area size.
 
     Args:
         annotation: Single annotation entry in COCO format.
-        crop_corners: Generated from `get_crop_corners`.
+        new_annotation: Single annotation entry in COCO format.
         min_area_threshold: Minimum area threshold ratio.
 
     Returns:
-        True if annotation area exceeds the minimum area size.
+        True if annotation area is smaller than the minimum area size.
     """
-    area = annotation["bbox"][2] * annotation["bbox"][3]
+    area = annotation["area"]
+    new_area = new_annotation["area"]
     min_area = area * min_area_threshold
 
-    new_annotation = get_annotation_in_crop(annotation, crop_corners)
-    new_area = new_annotation["area"]
-
     if new_area > min_area:
-        return True
+        return False
 
-    return False
+    return True
 
 
 def get_annotation_in_crop(annotation: Dict, crop_corners: List[int]) -> Dict:
