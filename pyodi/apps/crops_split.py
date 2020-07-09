@@ -9,6 +9,7 @@ from PIL import Image
 
 from pyodi.core.crops import (
     annotation_inside_crop,
+    filter_annotation_by_area,
     get_annotation_in_crop,
     get_crops_corners,
 )
@@ -27,6 +28,7 @@ def crops_split(
     crop_width: int,
     row_overlap: int = 0,
     col_overlap: int = 0,
+    min_area_threshold: float = 0.0,
 ) -> None:
     """Creates new dataset by splitting images into crops and adapting the annotations.
 
@@ -39,6 +41,8 @@ def crops_split(
         crop_width: Crop width
         row_overlap: Row overlap. Defaults to 0.
         col_overlap: Column overlap. Defaults to 0.
+        min_area_threshold: Minimum area threshold ratio. If the cropped annotation area
+            is smaller than the threshold, the annotation is filtered out. Defaults to 0.
 
     """
     ground_truth = json.load(open(ground_truth_file))
@@ -85,6 +89,10 @@ def crops_split(
                 if not annotation_inside_crop(annotation, crop_corners):
                     continue
                 new_annotation = get_annotation_in_crop(annotation, crop_corners)
+                if filter_annotation_by_area(
+                    annotation, new_annotation, min_area_threshold
+                ):
+                    continue
                 new_annotation["id"] = len(new_annotations)
                 new_annotation["image_id"] = crop_id
                 new_annotations.append(new_annotation)
