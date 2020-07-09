@@ -117,7 +117,15 @@ def test_get_annotation_in_crop():
 
 
 def test_annotation_larger_than_threshold():
-    annotation = {"bbox": [2, 2, 4, 2]}
+
+    annotation = {
+        "bbox": None,
+        "iscrowd": True,
+        "score": 1.0,
+        "category_id": 1,
+    }
+
+    annotation["bbox"] = [2, 2, 4, 2]
 
     assert annotation_larger_than_threshold(annotation, [0, 0, 5, 5], 0.0)
     assert annotation_larger_than_threshold(annotation, [5, 0, 10, 5], 0.0)
@@ -134,7 +142,7 @@ def test_annotation_larger_than_threshold():
     assert not annotation_larger_than_threshold(annotation, [0, 5, 5, 10], 0.5)
     assert not annotation_larger_than_threshold(annotation, [5, 5, 10, 10], 0.5)
 
-    annotation = {"bbox": [2, 2, 4, 5]}
+    annotation["bbox"] = [2, 2, 4, 5]
 
     assert annotation_larger_than_threshold(annotation, [0, 0, 5, 5], 0.0)
     assert annotation_larger_than_threshold(annotation, [5, 0, 10, 5], 0.0)

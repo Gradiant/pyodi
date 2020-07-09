@@ -91,21 +91,11 @@ def annotation_larger_than_threshold(
     Returns:
         True if annotation area exceeds the minimum area size.
     """
-    left, top, width, height = annotation["bbox"]
-    right = left + width
-    bottom = top + height
-
-    area = width * height
+    area = annotation["bbox"][2] * annotation["bbox"][3]
     min_area = area * min_area_threshold
 
-    new_left = max(left - crop_corners[0], 0)
-    new_top = max(top - crop_corners[1], 0)
-    new_right = min(right - crop_corners[0], crop_corners[2] - crop_corners[0])
-    new_bottom = min(bottom - crop_corners[1], crop_corners[3] - crop_corners[1])
-
-    new_width = new_right - new_left
-    new_height = new_bottom - new_top
-    new_area = new_width * new_height
+    new_annotation = get_annotation_in_crop(annotation, crop_corners)
+    new_area = new_annotation["area"]
 
     if new_area > min_area:
         return True
