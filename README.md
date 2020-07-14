@@ -3,11 +3,4 @@ Object Detection Insights
 
 ![](https://github.com/pyodi/pyodi/workflows/Continuous%20Integration/badge.svg?branch=master)
 
-
-```bash
-streamlit run pyodi/ground_truth.py
-# or
-streamlit run pyodi/evaluation.py
-```
-
 See [Contributing guide](.github/CONTRIBUTING.md) for more info.
