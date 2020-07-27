@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from typing import Optional
 
 import typer
 from loguru import logger
@@ -14,7 +15,7 @@ app = typer.Typer()
 def crops_merge(
     ground_truth_file: str,
     output_file: str,
-    predictions_file: str = None,
+    predictions_file: Optional[str] = None,
     apply_nms: bool = True,
     nms_mode: str = "nms",
     score_thr: float = 0.0,
