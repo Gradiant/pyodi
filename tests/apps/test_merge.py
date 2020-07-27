@@ -33,7 +33,7 @@ def test_crops_merge(tmpdir):
     with open(gt_path, "w") as f:
         json.dump(gt, f)
 
-    output_path = crops_merge(gt_path, preds_path, output_path, iou_thr=iou_thr)
+    output_path = crops_merge(gt_path, output_path, preds_path, iou_thr=iou_thr)
 
     result = json.load(open(output_path))
 
