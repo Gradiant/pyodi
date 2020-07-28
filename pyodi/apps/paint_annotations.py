@@ -104,8 +104,8 @@ def paint_annotations(
                 bbox_left,
                 bbox_top,
                 f"{label}: {score:.2f}",
-                va='top',
-                ha='left',
+                va="top",
+                ha="left",
                 bbox=dict(facecolor="white", edgecolor=color, alpha=0.5, pad=0),
             )
 
