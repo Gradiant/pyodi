@@ -104,9 +104,9 @@ def paint_annotations(
                 bbox_left,
                 bbox_top,
                 f"{label}: {score:.2f}",
-                bbox=dict(facecolor="white", alpha=0.5),
-                ha="left",
-                va="center",
+                va='top',
+                ha='left',
+                bbox=dict(facecolor="white", edgecolor=color, alpha=0.5, pad=0),
             )
 
             np_poly = np.array(poly).reshape((4, 2))
