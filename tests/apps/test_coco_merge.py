@@ -35,7 +35,7 @@ def test_coco_merge(tmpdir):
         with open(tmp_files[-1], "w") as f:
             json.dump(coco_data, f)
 
-    result_file = coco_merge("result.json", tmp_files)
+    result_file = coco_merge(tmpdir / "result.json", tmp_files)
 
     data = json.load(open(result_file))
 
