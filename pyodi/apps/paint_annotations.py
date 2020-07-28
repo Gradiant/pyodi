@@ -1,5 +1,6 @@
 import json
 from collections import defaultdict
+from itertools import cycle
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -42,6 +43,14 @@ def paint_annotations(
     image_name_to_id = {
         Path(x["file_name"]).stem: x["id"] for x in ground_truth["images"]
     }
+
+    color_cycle = cycle([plt.cm.tab10(i) for i in range(10)])
+    category_id_to_label = {}
+    category_id_to_color = {}
+    for cat in ground_truth["categories"]:
+        category_id_to_label[cat["id"]] = cat["name"]
+        category_id_to_color[cat["id"]] = next(color_cycle)
+
     image_id_to_annotations: Dict = defaultdict(list)
 
     if predictions_file is not None:
@@ -52,7 +61,7 @@ def paint_annotations(
     for annotation in annotations:
         image_id_to_annotations[annotation["image_id"]].append(annotation)
 
-    for image in Path(image_folder).glob('**/*'):
+    for image in Path(image_folder).glob("**/*"):
         logger.info(f"Loading {image}")
 
         if image.stem not in image_name_to_id:
@@ -79,17 +88,30 @@ def paint_annotations(
                 continue
 
             bbox_left, bbox_top, bbox_width, bbox_height = annotation["bbox"]
+            cat_id = annotation["category_id"]
+            label = category_id_to_label[cat_id]
+            color = category_id_to_color[cat_id]
+            score = annotation["score"]
 
-            c = (np.random.random((1, 3)) * 0.6 + 0.4).tolist()[0]
             poly = [
                 [bbox_left, bbox_top],
                 [bbox_left, bbox_top + bbox_height],
                 [bbox_left + bbox_width, bbox_top + bbox_height],
                 [bbox_left + bbox_width, bbox_top],
             ]
+
+            ax.text(
+                bbox_left,
+                bbox_top,
+                f"{label}: {score:.2f}",
+                bbox=dict(facecolor="white", alpha=0.5),
+                ha="left",
+                va="center",
+            )
+
             np_poly = np.array(poly).reshape((4, 2))
             polygons.append(Polygon(np_poly))
-            colors.append(c)
+            colors.append(color)
 
         p = PatchCollection(polygons, facecolor=colors, linewidths=0, alpha=0.3)
         ax.add_collection(p)
