@@ -1,5 +1,6 @@
 import typer
 
+from pyodi.apps.coco import coco_app
 from pyodi.apps.crops import crops_app
 from pyodi.apps.evaluation import evaluation
 from pyodi.apps.ground_truth import ground_truth
@@ -13,6 +14,8 @@ app.command()(evaluation)
 app.command()(ground_truth)
 app.command()(paint_annotations)
 app.add_typer(train_config_app, name="train-config")
+app.add_typer(crops_app, name="crops")
+app.add_typer(coco_app, name="coco")
 
 
 if __name__ == "__main__":
