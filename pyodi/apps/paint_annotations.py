@@ -1,12 +1,12 @@
 import json
 from collections import defaultdict
-from itertools import cycle
 from pathlib import Path
 from typing import Dict, Optional
 
 import numpy as np
 import typer
 from loguru import logger
+from matplotlib import cm as cm
 from matplotlib import pyplot as plt
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Polygon
@@ -44,13 +44,10 @@ def paint_annotations(
         Path(x["file_name"]).stem: x["id"] for x in ground_truth["images"]
     }
 
-    color_cycle = cycle([plt.cm.tab10(i) for i in range(10)])
-    category_id_to_label = {}
-    category_id_to_color = {}
-    for cat in ground_truth["categories"]:
-        category_id_to_label[cat["id"]] = cat["name"]
-        category_id_to_color[cat["id"]] = next(color_cycle)
-
+    colormap = cm.rainbow(np.linspace(0, 1, len(ground_truth["categories"])))
+    category_id_to_label = {
+        cat["id"]: cat["name"] for cat in ground_truth["categories"]
+    }
     image_id_to_annotations: Dict = defaultdict(list)
 
     if predictions_file is not None:
@@ -90,7 +87,7 @@ def paint_annotations(
             bbox_left, bbox_top, bbox_width, bbox_height = annotation["bbox"]
             cat_id = annotation["category_id"]
             label = category_id_to_label[cat_id]
-            color = category_id_to_color[cat_id]
+            color = colormap[cat_id % len(colormap)]
             score = annotation["score"]
 
             poly = [
