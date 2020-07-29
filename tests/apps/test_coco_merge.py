@@ -44,11 +44,8 @@ def test_coco_merge(tmpdir):
         {"id": 2, "name": "bird"},
         {"id": 3, "name": "plane"},
     ]
-    assert [x["id"] for x in data["images"]] == list(range(len(data["images"]))
-    assert all(
-        [
-            data["annotations"][i - 1]["id"] == (data["annotations"][i]["id"] - 1)
-            for i in range(1, len(data["annotations"]))
-        ]
+    assert [x["id"] for x in data["images"]] == list(range(len(data["images"])))
+    assert [x["id"] for x in data["annotations"]] == list(
+        range(len(data["annotations"]))
     )
     assert [i["category_id"] for i in data["annotations"]] == [1, 2, 1, 3, 3, 1]
