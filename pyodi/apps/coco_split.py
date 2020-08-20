@@ -1,54 +1,182 @@
 """# Coco Split App.
 
-**in progress...**
+The [`pyodi coco`][pyodi.apps.coco_split.coco_split] app can be used to split COCO
+annotation files in train and val annotations files.
+
+There are two modes: 'random' or 'property'. The 'random' mode splits randomly the COCO file, while
+the 'property' mode allows to customize the split operation based in the properties of the COCO
+annotations file.
+
+Example usage:
+
+``` bash
+pyodi coco split coco.json --mode random --output-filename random_coco_split --val-percentage 0.1
+```
+
+``` bash
+pyodi coco split coco.json --mode property --output-filename property_coco_split --split-config-file config.json
+```
 """  # noqa: E501
 import json
-from copy import copy, deepcopy
+import re
+from copy import copy
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Any, List
 
 import numpy as np
 import typer
 from loguru import logger
+from sampler import divide_filename
 
 app = typer.Typer()
 
-# ToDo: create functions for reusing code
 
+def property_split(
+    annotations_file: str,
+    split_config_file: str,
+    output_filename: str,
+    show_summary: bool = True,
+) -> List[str]:
+    """Split the annotations file in training and validation subsets by properties.
 
-def load_data(file: str) -> Tuple[Dict, Dict, Dict]:
-    logger.info("Loading data...")
-    with open(file) as f:
-        data = json.load(f)
+    Args:
+        annotations_file: Path to annotations file.
+        split_config_file: Path to configuration file.
+        output_filename: Output filename.
+        show_summary: Whether to show some information about the results. Defaults to True.
 
-    train_data = deepcopy(data)
-    val_data = deepcopy(data)
+    Returns:
+        Output filenames.
 
-    return train_data, val_data, data
+    """
+    split_config = json.load(open(split_config_file))
+    annotations = json.load(open(annotations_file))
+    train_images, val_images = [], []
+    train_annotations, val_annotations = [], []
+    train_img_id, val_img_id = 0, 0
+    split_dict = dict()
+    checked = dict()
 
+    for i in range(len(annotations["images"])):
+        img = annotations["images"][i]
+        val_flag = False
+        discard_flag = False
 
-def write_summary(
-    train_imgs: Dict, val_imgs: Dict, train_anns: Dict, val_anns: Dict
-) -> None:
-    pass
+        for property_name, properties_to_match in split_config.items():
+            if re.match(properties_to_match.get("filename", ""), img["file_name"]):
+
+                if property_name == "discard":
+                    discard_flag = True
+
+                else:
+                    val_flag = True
+
+                if show_summary:
+                    if property_name not in checked:
+                        checked[property_name] = {
+                            "videos": set([divide_filename(img["file_name"])[0]]),
+                            "frames": 1,
+                        }
+                    else:
+                        checked[property_name]["videos"].add(  # type: ignore
+                            divide_filename(img["file_name"])[0]
+                        )
+                        checked[property_name]["frames"] += 1  # type: ignore
+
+                break
+
+        if not discard_flag:
+            if val_flag:
+                split_dict[img["id"]] = {"val": True, "new_idx": val_img_id}
+                img["id"] = val_img_id
+                val_images.append(img)
+                val_img_id += 1
+            else:
+                split_dict[img["id"]] = {"val": False, "new_idx": train_img_id}
+                img["id"] = train_img_id
+                train_images.append(img)
+                train_img_id += 1
+
+    n_train_anns, n_val_anns = 0, 0
+    for annotation in annotations["annotations"]:
+        ann_data = split_dict.get(annotation["image_id"], None)
+
+        if ann_data is None:
+            continue
+        else:
+            annotation["image_id"] = ann_data["new_idx"]
+            if ann_data["val"]:
+                annotation["id"] = n_val_anns
+                val_annotations.append(annotation)
+                n_val_anns += 1
+            else:
+                annotation["id"] = n_train_anns
+                train_annotations.append(annotation)
+                n_train_anns += 1
+
+    train_split = {
+        "images": train_images,
+        "annotations": train_annotations,
+        "info": annotations["info"],
+        "licenses": annotations["licenses"],
+        "categories": annotations["categories"],
+    }
+
+    val_split = {
+        "images": val_images,
+        "annotations": val_annotations,
+        "info": annotations["info"],
+        "licenses": annotations["licenses"],
+        "categories": annotations["categories"],
+    }
+
+    if show_summary:
+        logger.info(f"Validation summary for {Path(annotations_file).stem}")
+
+        for k, summ in checked.items():
+            logger.info(f"  {k}: {len(summ['videos'])} videos, {summ['frames']} frames")  # type: ignore
+
+        logger.info(f"Validation -> Images: {val_img_id}   Annotations: {n_val_anns}")
+        logger.info(f"Train -> Images: {train_img_id}   Annotations: {n_train_anns}")
+
+    logger.info("Saving splits to file")
+    output_files = []
+    for split_type, split in zip(["train", "val"], [train_split, val_split]):
+        output_files.append(output_filename + f"_{split_type}.json")
+        with open(output_files[-1], "w") as f:
+            json.dump(split, f, indent=2)
+
+    return output_files
 
 
 def random_split(
-    annotations_file: str, val_percentage: float = 0.25, seed: int = 47
-) -> None:
+    annotations_file: str,
+    output_filename: str,
+    val_percentage: float = 0.25,
+    seed: int = 47,
+    show_summary: bool = True,
+) -> List[str]:
+    """Split the annotations file in training and validation subsets randomly.
 
-    train_data, val_data, annotations_data = load_data(annotations_file)
+    Args:
+        annotations_file: Path to annotations file.
+        output_filename: Output filename.
+        val_percentage: Percentage of validation images. Defaults to 0.25.
+        seed: Seed for the random generator. Defaults to 47.
+        show_summary: Whether to show some information about the results. Defaults to True.
 
-    train_images = []
-    val_images = []
-    val_ids = []
-    summary = {}
+    Returns:
+        Output filenames.
+
+    """
+    annotations = json.load(open(annotations_file))
+    train_images, val_images, val_ids = [], [], []
 
     np.random.seed(seed)
-    rand_values = np.random.rand(len(annotations_data["images"]))
+    rand_values = np.random.rand(len(annotations["images"]))
 
     logger.info("Gathering images...")
-    for i, image in enumerate(annotations_data["images"]):
+    for i, image in enumerate(annotations["images"]):
 
         if rand_values[i] < val_percentage:
             val_images.append(copy(image))
@@ -56,238 +184,70 @@ def random_split(
         else:
             train_images.append(copy(image))
 
-    # print(f"Train: {len(train_images)}/{len(train_images)+len(val_images)}, Val: {len(val_images)}/{len(train_images)+len(val_images)}")
-
-    summary["train_imgs"] = len(train_images)
-    summary["val_imgs"] = len(val_images)
-    summary["total_imgs"] = summary["train_imgs"] + summary["val_images"]
-
-    train_annotations = []
-    val_annotations = []
+    train_annotations, val_annotations = [], []
 
     logger.info("Gathering annotations...")
-    for annotation in annotations_data["annotations"]:
+    for annotation in annotations["annotations"]:
 
         if annotation["image_id"] in val_ids:
             val_annotations.append(copy(annotation))
         else:
             train_annotations.append(copy(annotation))
 
-    # print(f"Train: {len(train_annotations)}/{len(train_annotations)+len(val_annotations)}, Val: {len(val_annotations)}/{len(train_annotations)+len(val_annotations)}")
+    train_split = {
+        "images": train_images,
+        "annotations": train_annotations,
+        "info": annotations["info"],
+        "licenses": annotations["licenses"],
+        "categories": annotations["categories"],
+    }
 
-    summary["train_anns"] = len(train_annotations)
-    summary["val_anns"] = len(val_annotations)
-    summary["total_anns"] = summary["train_anns"] + summary["val_anns"]
+    val_split = {
+        "images": val_images,
+        "annotations": val_annotations,
+        "info": annotations["info"],
+        "licenses": annotations["licenses"],
+        "categories": annotations["categories"],
+    }
 
-    print("Updating train and val annotations...", end=" ")
-    train_data["images"] = train_images
-    train_data["annotations"] = train_annotations
-    val_data["images"] = val_images
-    val_data["annotations"] = val_annotations
-    print("Done!")
+    if show_summary:
+        summary = [
+            f"\nValidation summary for {Path(annotations_file).stem}",
+            "-> IMAGES",
+            f"\t-> Train: {len(train_images)}/{len(annotations['images'])}",
+            f"\t-> Val: {len(val_images)}/{len(annotations['images'])}",
+            "-> ANNOTATIONS",
+            f"\t-> Train: {len(train_annotations)}/{len(annotations['annotations'])}",
+            f"\t-> Val: {len(val_annotations)}/{len(annotations['annotations'])}",
+        ]
+        logger.info("\n".join(summary))
 
-    print("Writing train and val annotations files...", end=" ")
-    output_path = Path(annotations_file).parent
-    annotations_name = Path(annotations_file).stem
-    train_file = output_path / (annotations_name + "_train.json")
-    val_file = output_path / (annotations_name + "_val.json")
+    logger.info("Saving splits to file...")
+    output_files = []
+    for split_type, split in zip(["train", "val"], [train_split, val_split]):
+        output_files.append(output_filename + f"_{split_type}.json")
+        with open(output_files[-1], "w") as f:
+            json.dump(split, f, indent=2)
 
-    with open(train_file, "w") as f:
-        json.dump(train_data, f, indent=2)
-    with open(val_file, "w") as f:
-        json.dump(val_data, f, indent=2)
-    print("Done!")
-
-
-def check_match_prefix(string: str, prefixes: List[str]) -> bool:
-    if len(prefixes) > 0:
-        for prefix in prefixes:
-            if prefix in string.lower():
-                return True
-
-    return False
-
-
-def split_fixed_coco_annotations(
-    annotations_file: str,
-    val_list: list = None,
-    split_json: dict = None,
-    val_keys: list = None,
-    discard: str = None,
-):
-    """
-    Divide the annotations file in two train and val annotations files.
-
-    Parameters
-    ----------
-    annotations_file: str
-        Path to COCO annotations file
-    val_list: list
-        If the filename of a given image matches with any substring of this list, it will be
-        included in the val annotations file, otherwise it will be included in the train one.
-        If None, val_keys and split_json will be used.
-    split_json: dict
-        Dictionary where the values are the substrings used to include filenames as val.
-    val_keys: list
-        List of keys from split_json of substrings that will be used as val.
-        Must be not None if val_list is None.
-    discard: str
-        Substrings that will be discarded.
-    """
-
-    print("Loading data...", end=" ", flush=True)
-    with open(annotations_file) as f:
-        annotations_data = json.load(f)
-
-    train_data = deepcopy(annotations_data)
-    val_data = deepcopy(annotations_data)
-    print("Done!")
-
-    print("Gathering prefixes...", end=" ", flush=True)
-    discard_prefixes = []
-    if discard is not None:
-        discard_prefixes = list(map(lambda x: x.lower(), discard.split("|")))
-
-    val_prefixes = []
-    if val_list is not None:
-        for substring in val_list:
-            val_prefixes += list(map(lambda x: x.lower(), substring.split("|")))
-    elif val_keys is not None:
-        split_data = split_json
-        for k in val_keys:
-            val_prefixes += list(map(lambda x: x.lower(), split_data[k].split("|")))
-    else:
-        raise ValueError("val_list and val_keys cannot be both None.")
-
-    print("Done!")
-
-    train_images = []
-    val_images = []
-    val_ids = []
-    discard_ids = []
-
-    print("Gathering images...", end=" ", flush=True)
-    for image in annotations_data["images"]:
-
-        filename = image["file_name"]
-
-        if check_match_prefix(filename, discard_prefixes):
-            discard_ids.append(image["id"])
-            continue
-
-        if check_match_prefix(filename, val_prefixes):
-            val_images.append(copy(image))
-            val_ids.append(image["id"])
-        else:
-            train_images.append(copy(image))
-
-    print("Done!")
-
-    train_annotations = []
-    val_annotations = []
-
-    print("Gathering annotations...", end=" ", flush=True)
-    for annotation in annotations_data["annotations"]:
-
-        if annotation["image_id"] in discard_ids:
-            continue
-        elif annotation["image_id"] in val_ids:
-            val_annotations.append(copy(annotation))
-        else:
-            train_annotations.append(copy(annotation))
-
-    print("Done!")
-
-    print("Updating train and val annotations...", end=" ", flush=True)
-    train_data["images"] = train_images
-    train_data["annotations"] = train_annotations
-    val_data["images"] = val_images
-    val_data["annotations"] = val_annotations
-    print("Done!")
-
-    print("Writing train and val annotations files...", end=" ", flush=True)
-    output_path = Path(annotations_file).parent
-    annotations_name = Path(annotations_file).stem
-    train_file = output_path / (annotations_name + "_train.json")
-    val_file = output_path / (annotations_name + "_val.json")
-
-    with open(train_file, "w") as f:
-        json.dump(train_data, f, indent=2)
-    with open(val_file, "w") as f:
-        json.dump(val_data, f, indent=2)
-    print("Done!")
-
-
-def split_coco_annotations_by_source(annotations_file: str, source_list: list):
-    print("Loading data...", end=" ", flush=True)
-    with open(annotations_file) as f:
-        annotations_data = json.load(f)
-
-    train_data = deepcopy(annotations_data)
-    val_data = deepcopy(annotations_data)
-    print("Done!")
-
-    train_images = []
-    val_images = []
-    val_ids = []
-    discard_ids = []
-
-    print("Gathering images...", end=" ", flush=True)
-    for image in annotations_data["images"]:
-
-        source = image["source"]
-
-        if check_match_prefix(source, source_list):
-            val_images.append(copy(image))
-            val_ids.append(image["id"])
-        else:
-            train_images.append(copy(image))
-
-    print("Done!")
-
-    train_annotations = []
-    val_annotations = []
-
-    print("Gathering annotations...", end=" ", flush=True)
-    for annotation in annotations_data["annotations"]:
-
-        if annotation["image_id"] in discard_ids:
-            continue
-        elif annotation["image_id"] in val_ids:
-            val_annotations.append(copy(annotation))
-        else:
-            train_annotations.append(copy(annotation))
-
-    print("Done!")
-
-    print("Updating train and val annotations...", end=" ", flush=True)
-    train_data["images"] = train_images
-    train_data["annotations"] = train_annotations
-    val_data["images"] = val_images
-    val_data["annotations"] = val_annotations
-    print("Done!")
-
-    print("Writing train and val annotations files...", end=" ", flush=True)
-    output_path = Path(annotations_file).parent
-    annotations_name = Path(annotations_file).stem
-    train_file = output_path / (annotations_name + "_train.json")
-    val_file = output_path / (annotations_name + "_val.json")
-
-    with open(train_file, "w") as f:
-        json.dump(train_data, f, indent=2)
-    with open(val_file, "w") as f:
-        json.dump(val_data, f, indent=2)
-    print("Done!")
+    return output_files
 
 
 @logger.catch
 @app.command()
-def coco_split(annotations_file, mode="random", **kwargs):
+def coco_split(annotations_file: str, mode: str = "random", **kwargs: Any) -> List[str]:
+    """Split the annotations file in training and validation subsets.
+
+    Args:
+        annotations_file: Path to annotations file.
+        mode: Mode used to split.
+
+    Returns:
+        Output filenames.
+
+    """
     if mode == "random":
-        random_split(annotations_file, **kwargs)
-    elif mode == "fixed":
-        split_fixed_coco_annotations(annotations_file, **kwargs)
-    elif mode == "source":
-        split_coco_annotations_by_source(annotations_file, **kwargs)
+        return random_split(annotations_file, **kwargs)
+    elif mode == "property":
+        return property_split(annotations_file, **kwargs)
     else:
         raise ValueError(f"Mode {mode} not supported")
