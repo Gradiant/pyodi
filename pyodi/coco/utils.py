@@ -1,4 +1,5 @@
 import json
+import re
 from collections import defaultdict
 from typing import Any, Dict, List, Optional, TextIO, Tuple
 
@@ -11,7 +12,7 @@ from pycocotools.coco import COCO
 
 
 def load_coco_ground_truth_from_StringIO(string_io: TextIO) -> COCO:
-    """Returns COCO object from StringIO.
+    """Return COCO object from StringIO.
 
     Args:
         string_io: IO stream in text mode.
@@ -27,7 +28,7 @@ def load_coco_ground_truth_from_StringIO(string_io: TextIO) -> COCO:
 
 
 def load_ground_truth_file(ground_truth_file: str) -> Dict:
-    """Loads ground truth file.
+    """Load ground truth file.
 
     Args:
         ground_truth_file: Path of ground truth file.
@@ -44,7 +45,7 @@ def load_ground_truth_file(ground_truth_file: str) -> Dict:
 def coco_ground_truth_to_dfs(
     coco_ground_truth: Dict, max_images: int = 200000
 ) -> Tuple[DataFrame, DataFrame]:
-    """Transforms COCO ground truth data to DataFrame objects.
+    """Transform COCO ground truth data to DataFrame objects.
 
     Args:
         coco_ground_truth: COCO ground truth data.
@@ -163,7 +164,7 @@ def scale_bbox_dimensions(
 
 
 def get_scale_and_ratio(df: DataFrame, prefix: str = None) -> DataFrame:
-    """Returns df with area and ratio per bbox measurements.
+    """Return df with area and ratio per bbox measurements.
 
     Args:
         df: DataFrame with COCO annotations.
@@ -187,7 +188,7 @@ def get_scale_and_ratio(df: DataFrame, prefix: str = None) -> DataFrame:
 def add_centroids(
     df: DataFrame, prefix: str = None, input_bbox_format: str = "coco"
 ) -> DataFrame:
-    """Computes bbox centroids.
+    """Compute bbox centroids.
 
     Args:
         df: DataFrame with COCO annotations.
@@ -214,7 +215,7 @@ def add_centroids(
 
 
 def corners_to_coco(bboxes: ndarray) -> ndarray:
-    """Transforms bboxes array from corners format to coco.
+    """Transform bboxes array from corners format to coco.
 
     Args:
         bboxes: Array with dimension N x 4 with bbox coordinates in corner format
@@ -231,7 +232,7 @@ def corners_to_coco(bboxes: ndarray) -> ndarray:
 
 
 def coco_to_corners(bboxes: ndarray) -> ndarray:
-    """Transforms bboxes array from coco format to corners.
+    """Transform bboxes array from coco format to corners.
 
     Args:
         bboxes: Array with dimension N x 4 with bbox coordinates in corner format
@@ -252,7 +253,7 @@ def coco_to_corners(bboxes: ndarray) -> ndarray:
 
 
 def normalize(bboxes: ndarray, image_width: int, image_height: int) -> ndarray:
-    """Transforms bboxes array from pixels to (0, 1) range.
+    """Transform bboxes array from pixels to (0, 1) range.
 
     Bboxes can be in both formats:
         "coco" ["col_left", "row_top", "width", "height"]
@@ -273,7 +274,7 @@ def normalize(bboxes: ndarray, image_width: int, image_height: int) -> ndarray:
 
 
 def denormalize(bboxes: ndarray, image_width: int, image_height: int) -> ndarray:
-    """Transforms bboxes array from (0, 1) range to pixels.
+    """Transform bboxes array from (0, 1) range to pixels.
 
     Bboxes can be in both formats:
         "coco" ["col_left", "row_top", "width", "height"]
@@ -294,7 +295,7 @@ def denormalize(bboxes: ndarray, image_width: int, image_height: int) -> ndarray
 
 
 def get_bbox_column_names(bbox_format: str, prefix: Optional[str] = None) -> List[str]:
-    """Returns predefined column names for each format.
+    """Return predefined column names for each format.
 
     When bbox_format is 'coco' column names are
     ["col_left", "row_top", "width", "height"], when 'corners'
@@ -327,7 +328,7 @@ def get_bbox_array(
     input_bbox_format: str = "coco",
     output_bbox_format: str = "coco",
 ) -> ndarray:
-    """Returns array with bbox coordinates.
+    """Return array with bbox coordinates.
 
     Args:
         df: DataFrame with COCO annotations.
@@ -365,7 +366,7 @@ def get_df_from_bboxes(
     input_bbox_format: str = "coco",
     output_bbox_format: str = "corners",
 ) -> DataFrame:
-    """Creates DataFrame of annotations in Coco format from array of bboxes.
+    """Create DataFrame of annotations in Coco format from array of bboxes.
 
     Args:
         bboxes: Array of bboxes of shape [n, 4].
@@ -388,7 +389,7 @@ def get_df_from_bboxes(
 
 
 def filter_zero_area_bboxes(df: DataFrame) -> DataFrame:
-    """Filters those bboxes with height or width equal to zero.
+    """Filter those bboxes with height or width equal to zero.
 
     Args:
         df: DataFrame with COCO annotations.
@@ -411,3 +412,20 @@ def filter_zero_area_bboxes(df: DataFrame) -> DataFrame:
         )
 
     return df
+
+
+def divide_filename(filename: str) -> Tuple[str, int, str]:
+    """Divide a image filename.
+
+    Args:
+        filename: Image filename.
+
+    Returns:
+        Name of the video, number of frame and extension.
+
+    """
+    extension, frame, video_name = map(
+        lambda x: x[::-1], re.match("(\w+)\.(\d+)(.+)", filename[::-1]).groups()  # type: ignore
+    )
+    video_name = video_name if video_name[-1] not in ("-", "_") else video_name[:-1]
+    return video_name, int(frame), extension

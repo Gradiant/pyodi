@@ -26,7 +26,8 @@ from typing import Any, List
 import numpy as np
 import typer
 from loguru import logger
-from sampler import divide_filename
+
+from ..coco.utils import divide_filename
 
 app = typer.Typer()
 
