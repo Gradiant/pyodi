@@ -1,5 +1,4 @@
 import json
-import re
 from collections import defaultdict
 from typing import Any, Dict, List, Optional, TextIO, Tuple
 
@@ -412,20 +411,3 @@ def filter_zero_area_bboxes(df: DataFrame) -> DataFrame:
         )
 
     return df
-
-
-def divide_filename(filename: str) -> Tuple[str, int, str]:
-    """Divide a image filename.
-
-    Args:
-        filename: Image filename.
-
-    Returns:
-        Name of the video, number of frame and extension.
-
-    """
-    extension, frame, video_name = map(
-        lambda x: x[::-1], re.match("(\w+)\.(\d+)(.+)", filename[::-1]).groups()  # type: ignore
-    )
-    video_name = video_name if video_name[-1] not in ("-", "_") else video_name[:-1]
-    return video_name, int(frame), extension

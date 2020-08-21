@@ -1,11 +1,11 @@
 import json
+import re
 from pathlib import Path
 
 from pyodi.apps.coco_split import coco_split
 
 
-def test_random_coco_split(tmpdir):
-    tmpdir = Path(tmpdir)
+def get_coco_data():
 
     categories = [{"id": 1, "name": "drone"}, {"id": 2, "name": "bird"}]
 
@@ -14,6 +14,10 @@ def test_random_coco_split(tmpdir):
         {"id": 1, "file_name": "vidA-1.jpg", "source": "A"},
         {"id": 2, "file_name": "vidB-0.jpg", "source": "B"},
         {"id": 3, "file_name": "vidC-0.jpg", "source": "C"},
+        {"id": 4, "file_name": "vidD-0.jpg", "source": "D"},
+        {"id": 5, "file_name": "vidD-66.jpg", "source": "badsrc"},
+        {"id": 6, "file_name": "badvid-13.jpg", "source": "E"},
+        {"id": 7, "file_name": "errvid-14.jpg", "source": "E"},
     ]
 
     annotations = [
@@ -25,6 +29,10 @@ def test_random_coco_split(tmpdir):
         {"image_id": 2, "category_id": 1, "id": 5},
         {"image_id": 3, "category_id": 2, "id": 6},
         {"image_id": 3, "category_id": 2, "id": 7},
+        {"image_id": 4, "category_id": 1, "id": 8},
+        {"image_id": 5, "category_id": 1, "id": 9},
+        {"image_id": 5, "category_id": 2, "id": 10},
+        {"image_id": 5, "category_id": 2, "id": 11},
     ]
 
     coco_data = dict(
@@ -35,6 +43,14 @@ def test_random_coco_split(tmpdir):
         licenses={},
     )
 
+    return coco_data
+
+
+def test_random_coco_split(tmpdir):
+    tmpdir = Path(tmpdir)
+
+    coco_data = get_coco_data()
+
     json.dump(coco_data, open(tmpdir / "coco.json", "w"))
 
     train_path, val_path = coco_split(
@@ -42,23 +58,61 @@ def test_random_coco_split(tmpdir):
         output_filename=str(tmpdir / "random_coco_split"),
         mode="random",
         val_percentage=0.25,
-        seed=47,
+        seed=49,
     )
 
     train_data = json.load(open(train_path))
     val_data = json.load(open(val_path))
 
-    assert train_data["categories"] == categories
-    assert val_data["categories"] == categories
-    assert len(train_data["images"]) == 3
-    assert len(val_data["images"]) == 1
-    for x in train_data["images"]:
-        assert x["file_name"] == images[x["id"]]["file_name"]
-    for x in val_data["images"]:
-        assert x["file_name"] == images[x["id"]]["file_name"]
-    assert len(train_data["annotations"]) == 6
-    assert len(val_data["annotations"]) == 2
+    assert train_data["categories"] == coco_data["categories"]
+    assert val_data["categories"] == coco_data["categories"]
+    assert len(train_data["images"]) == 6
+    assert len(val_data["images"]) == 2
+    assert len(train_data["annotations"]) == 9
+    assert len(val_data["annotations"]) == 3
 
 
 def test_property_coco_split(tmpdir):
-    pass  # ToDo test
+    def get_video(filename: str) -> str:
+        extension, frame, video_name = map(
+            lambda x: x[::-1], re.match("(\w+)\.(\d+)(.+)", filename[::-1]).groups()  # type: ignore
+        )
+        video_name = video_name if video_name[-1] not in ("-", "_") else video_name[:-1]
+        return video_name
+
+    tmpdir = Path(tmpdir)
+
+    coco_data = get_coco_data()
+
+    json.dump(coco_data, open(tmpdir / "coco.json", "w"))
+
+    config = {
+        "discard": {"file_name": "badvid|errvid", "source": "badsrc"},
+        "val": {
+            "file_name": {"frame 0": "vidA-0.jpg", "frame 1": "vidA-1.jpg"},
+            "source": {"example C": "C", "example D": "D"},
+        },
+    }
+
+    json.dump(config, open(tmpdir / "split_config.json", "w"))
+
+    train_path, val_path = coco_split(
+        annotations_file=str(tmpdir / "coco.json"),
+        output_filename=str(tmpdir / "property_coco_split"),
+        mode="property",
+        split_config_file=str(tmpdir / "split_config.json"),
+        get_video=get_video,
+    )
+
+    train_data = json.load(open(train_path))
+    val_data = json.load(open(val_path))
+
+    assert train_data["categories"] == coco_data["categories"]
+    assert val_data["categories"] == coco_data["categories"]
+    assert len(train_data["images"]) == 1
+    assert len(val_data["images"]) == 4
+    assert len(train_data["annotations"]) == 1
+    assert len(val_data["annotations"]) == 8
+
+
+test_property_coco_split("/home/igonro/workspace/tmp/")

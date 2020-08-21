@@ -21,22 +21,21 @@ import json
 import re
 from copy import copy
 from pathlib import Path
-from typing import Any, List
+from typing import Any, Callable, Dict, List, Optional
 
 import numpy as np
 import typer
 from loguru import logger
 
-from ..coco.utils import divide_filename
-
 app = typer.Typer()
 
 
-def property_split(
+def property_split(  # noqa: C901
     annotations_file: str,
     split_config_file: str,
     output_filename: str,
     show_summary: bool = True,
+    get_video: Optional[Callable[[str], str]] = None,
 ) -> List[str]:
     """Split the annotations file in training and validation subsets by properties.
 
@@ -45,48 +44,53 @@ def property_split(
         split_config_file: Path to configuration file.
         output_filename: Output filename.
         show_summary: Whether to show some information about the results. Defaults to True.
+        get_video: Function that returns video name from filename. If None,
+            there will not be information about videos in summary. Defaults to None.
 
     Returns:
         Output filenames.
 
     """
     split_config = json.load(open(split_config_file))
+
+    # Transform split_config from human readable format to a more code efficient format
+    for section in split_config:
+        for prop, prop_value in split_config[section].items():
+            if isinstance(prop_value, dict):
+                split_config[section][prop] = "|".join(prop_value.values())
+
     annotations = json.load(open(annotations_file))
     train_images, val_images = [], []
     train_annotations, val_annotations = [], []
     train_img_id, val_img_id = 0, 0
     split_dict = dict()
-    checked = dict()
+    properties = set()
+    any_discard_flag = False
 
     for i in range(len(annotations["images"])):
         img = annotations["images"][i]
         val_flag = False
         discard_flag = False
+        matched_flag = False
 
-        for property_name, properties_to_match in split_config.items():
-            if re.match(properties_to_match.get("filename", ""), img["file_name"]):
+        for section in split_config:
+            for property_name, property_match in split_config[section].items():
+                properties.add(property_name)
+                if re.match(property_match, img[property_name]):
+                    matched_flag = True
 
-                if property_name == "discard":
-                    discard_flag = True
-
-                else:
-                    val_flag = True
-
-                if show_summary:
-                    if property_name not in checked:
-                        checked[property_name] = {
-                            "videos": set([divide_filename(img["file_name"])[0]]),
-                            "frames": 1,
-                        }
+                    if section == "discard":
+                        discard_flag = True
+                        any_discard_flag = True
                     else:
-                        checked[property_name]["videos"].add(  # type: ignore
-                            divide_filename(img["file_name"])[0]
-                        )
-                        checked[property_name]["frames"] += 1  # type: ignore
+                        val_flag = True
+                    break
 
+            if matched_flag:
                 break
 
         if not discard_flag:
+
             if val_flag:
                 split_dict[img["id"]] = {"val": True, "new_idx": val_img_id}
                 img["id"] = val_img_id
@@ -132,13 +136,78 @@ def property_split(
     }
 
     if show_summary:
-        logger.info(f"Validation summary for {Path(annotations_file).stem}")
+        summary_info = dict()
+        for property_name in properties:
+            if property_name == "file_name":
+                if get_video is not None:
+                    property_name = "video"
+                    train_set, val_set, all_set = set(), set(), set()
+                    [
+                        train_set.add(get_video(img["file_name"]))  # type: ignore
+                        for img in train_split["images"]
+                    ]
+                    [
+                        val_set.add(get_video(img["file_name"]))  # type: ignore
+                        for img in val_split["images"]
+                    ]
+                    [
+                        all_set.add(get_video(img["file_name"]))  # type: ignore
+                        for img in annotations["images"]
+                    ]
+                else:
+                    continue
+            else:
+                train_set, val_set, all_set = set(), set(), set()
+                [train_set.add(img[property_name]) for img in train_split["images"]]  # type: ignore
+                [val_set.add(img[property_name]) for img in val_split["images"]]  # type: ignore
+                [all_set.add(img[property_name]) for img in annotations["images"]]  # type: ignore
 
-        for k, summ in checked.items():
-            logger.info(f"  {k}: {len(summ['videos'])} videos, {summ['frames']} frames")  # type: ignore
+            summary_info[property_name] = {
+                "train": train_set,
+                "val": val_set,
+                "discard": all_set - (train_set | val_set),
+                "all": all_set,
+            }
 
-        logger.info(f"Validation -> Images: {val_img_id}   Annotations: {n_val_anns}")
-        logger.info(f"Train -> Images: {train_img_id}   Annotations: {n_train_anns}")
+        summary = [f"\nSummary for {Path(annotations_file).name}:"]
+        sections = ["train", "val"]
+        splits: List[Optional[Dict[str, Any]]] = [train_split, val_split]
+        if any_discard_flag:
+            sections.append("discard")
+            splits.append(None)
+
+        total_imgs = len(annotations["images"])
+        total_anns = len(annotations["annotations"])
+        for section, split in zip(sections, splits):
+            summary.append(f"-> {section.upper()}")
+
+            if split:
+                partial_imgs = len(split["images"])
+                partial_anns = len(split["annotations"])
+            else:
+                partial_imgs = len(annotations["images"]) - (
+                    len(train_split["images"]) + len(val_split["images"])
+                )
+                partial_anns = len(annotations["annotations"]) - (
+                    len(train_split["annotations"]) + len(val_split["annotations"])
+                )
+
+            summary.append(f"Number of frames: {partial_imgs}/{total_imgs}")
+            summary.append(f"Number of annotations: {partial_anns}/{total_anns}")
+
+            for property_name in summary_info:
+                property_set = summary_info[property_name][section]
+                summary.append(
+                    "{} ({}/{}): {}".format(
+                        property_name.capitalize(),
+                        len(property_set),
+                        len(summary_info[property_name]["all"]),
+                        ", ".join(list(property_set)),
+                    )
+                )
+            summary.append("\n")
+
+        logger.success("\n".join(summary))
 
     logger.info("Saving splits to file")
     output_files = []
@@ -213,15 +282,15 @@ def random_split(
 
     if show_summary:
         summary = [
-            f"\nValidation summary for {Path(annotations_file).stem}",
-            "-> IMAGES",
-            f"\t-> Train: {len(train_images)}/{len(annotations['images'])}",
-            f"\t-> Val: {len(val_images)}/{len(annotations['images'])}",
-            "-> ANNOTATIONS",
-            f"\t-> Train: {len(train_annotations)}/{len(annotations['annotations'])}",
-            f"\t-> Val: {len(val_annotations)}/{len(annotations['annotations'])}",
+            f"\nSummary for {Path(annotations_file).name}",
+            "-> TRAIN",
+            f"Number of frames: {len(train_images)}/{len(annotations['images'])}",
+            f"Number of annotations: {len(train_annotations)}/{len(annotations['annotations'])}\n",
+            "-> VAL",
+            f"Number of frames: {len(val_images)}/{len(annotations['images'])}",
+            f"Number of annotations: {len(val_annotations)}/{len(annotations['annotations'])}",
         ]
-        logger.info("\n".join(summary))
+        logger.success("\n".join(summary))
 
     logger.info("Saving splits to file...")
     output_files = []
