@@ -14,7 +14,28 @@ pyodi coco split coco.json --mode random --output-filename random_coco_split --v
 ```
 
 ``` bash
-pyodi coco split coco.json --mode property --output-filename property_coco_split --split-config-file config.json
+pyodi coco split coco.json --mode property --output-filename property_coco_split --split-config-file split_config.json
+```
+
+The split config file is a json file that has 2 keys: 'discard' and 'val', both with dictionary values. The keys of the
+dictionaries will be the properties of the images that we want to match, and the values can be either the regex string to
+match or, for human readability, a dictionary with keys (you can choose whatever you want) and values (the regex string).
+
+Split config example:
+``` python
+{
+    "discard": {
+        "file_name": "people_video|crowd_video|multiple_people_video",
+        "source": "Youtube People Dataset|Bad Dataset"
+    },
+    "val": {
+        "file_name": {
+            "My Val Ground Vehicle Dataset": "val_car_video|val_bus_video|val_moto_video|val_bike_video",
+            "My Val Flying Vehicle Dataset": "val_plane_video|val_drone_video|val_helicopter_video"
+        }
+        "source": "Val Dataset"
+    }
+}
 ```
 """  # noqa: E501
 import json

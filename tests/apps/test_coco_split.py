@@ -113,6 +113,3 @@ def test_property_coco_split(tmpdir):
     assert len(val_data["images"]) == 4
     assert len(train_data["annotations"]) == 1
     assert len(val_data["annotations"]) == 8
-
-
-test_property_coco_split("/home/igonro/workspace/tmp/")
