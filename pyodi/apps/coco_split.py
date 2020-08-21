@@ -1,6 +1,6 @@
 """# Coco Split App.
 
-The [`pyodi coco`][pyodi.apps.coco_split.coco_split] app can be used to split COCO
+The [`pyodi coco`][pyodi.apps.coco_split] app can be used to split COCO
 annotation files in train and val annotations files.
 
 There are two modes: 'random' or 'property'. The 'random' mode splits randomly the COCO file, while
@@ -10,11 +10,11 @@ annotations file.
 Example usage:
 
 ``` bash
-pyodi coco split coco.json --mode random --output-filename random_coco_split --val-percentage 0.1
+pyodi coco random-split ./coco.json ./random_coco_split --val-percentage 0.1
 ```
 
 ``` bash
-pyodi coco split coco.json --mode property --output-filename property_coco_split --split-config-file split_config.json
+pyodi coco property-split ./coco.json ./property_coco_split ./split_config.json
 ```
 
 The split config file is a json file that has 2 keys: 'discard' and 'val', both with dictionary values. The keys of the
@@ -42,7 +42,7 @@ import json
 import re
 from copy import copy
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import List, Optional
 
 import numpy as np
 import typer
@@ -51,27 +51,40 @@ from loguru import logger
 app = typer.Typer()
 
 
-def property_split(  # noqa: C901
+@logger.catch  # noqa: C901
+@app.command()
+def property_split(
     annotations_file: str,
-    split_config_file: str,
     output_filename: str,
+    split_config_file: str,
     show_summary: bool = True,
-    get_video: Optional[Callable[[str], str]] = None,
+    get_video: Optional[str] = None,  # ToDo Fix this
 ) -> List[str]:
     """Split the annotations file in training and validation subsets by properties.
 
     Args:
         annotations_file: Path to annotations file.
-        split_config_file: Path to configuration file.
         output_filename: Output filename.
+        split_config_file: Path to configuration file.
         show_summary: Whether to show some information about the results. Defaults to True.
         get_video: Function that returns video name from filename. If None,
-            there will not be information about videos in summary. Defaults to None.
+            default function used. Defaults to None.
 
     Returns:
         Output filenames.
 
     """
+    if get_video is None:
+
+        def get_video_name(filename: str) -> str:
+            extension, frame, video_name = map(
+                lambda x: x[::-1], re.match("(\w+)\.(\d+)(.+)", filename[::-1]).groups()  # type: ignore
+            )
+            video_name = (
+                video_name if video_name[-1] not in ("-", "_") else video_name[:-1]
+            )
+            return video_name
+
     split_config = json.load(open(split_config_file))
 
     # Transform split_config from human readable format to a more code efficient format
@@ -160,23 +173,20 @@ def property_split(  # noqa: C901
         summary_info = dict()
         for property_name in properties:
             if property_name == "file_name":
-                if get_video is not None:
-                    property_name = "video"
-                    train_set, val_set, all_set = set(), set(), set()
-                    [
-                        train_set.add(get_video(img["file_name"]))  # type: ignore
-                        for img in train_split["images"]
-                    ]
-                    [
-                        val_set.add(get_video(img["file_name"]))  # type: ignore
-                        for img in val_split["images"]
-                    ]
-                    [
-                        all_set.add(get_video(img["file_name"]))  # type: ignore
-                        for img in annotations["images"]
-                    ]
-                else:
-                    continue
+                property_name = "video"
+                train_set, val_set, all_set = set(), set(), set()
+                [
+                    train_set.add(get_video_name(img["file_name"]))  # type: ignore
+                    for img in train_split["images"]
+                ]
+                [
+                    val_set.add(get_video_name(img["file_name"]))  # type: ignore
+                    for img in val_split["images"]
+                ]
+                [
+                    all_set.add(get_video_name(img["file_name"]))  # type: ignore
+                    for img in annotations["images"]
+                ]
             else:
                 train_set, val_set, all_set = set(), set(), set()
                 [train_set.add(img[property_name]) for img in train_split["images"]]  # type: ignore
@@ -192,10 +202,10 @@ def property_split(  # noqa: C901
 
         summary = [f"\nSummary for {Path(annotations_file).name}:"]
         sections = ["train", "val"]
-        splits: List[Optional[Dict[str, Any]]] = [train_split, val_split]
+        splits = [train_split, val_split]
         if any_discard_flag:
             sections.append("discard")
-            splits.append(None)
+            splits.append(None)  # type: ignore
 
         total_imgs = len(annotations["images"])
         total_anns = len(annotations["annotations"])
@@ -240,6 +250,8 @@ def property_split(  # noqa: C901
     return output_files
 
 
+@logger.catch
+@app.command()
 def random_split(
     annotations_file: str,
     output_filename: str,
@@ -321,24 +333,3 @@ def random_split(
             json.dump(split, f, indent=2)
 
     return output_files
-
-
-@logger.catch
-@app.command()
-def coco_split(annotations_file: str, mode: str = "random", **kwargs: Any) -> List[str]:
-    """Split the annotations file in training and validation subsets.
-
-    Args:
-        annotations_file: Path to annotations file.
-        mode: Mode used to split.
-
-    Returns:
-        Output filenames.
-
-    """
-    if mode == "random":
-        return random_split(annotations_file, **kwargs)
-    elif mode == "property":
-        return property_split(annotations_file, **kwargs)
-    else:
-        raise ValueError(f"Mode {mode} not supported")

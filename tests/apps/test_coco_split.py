@@ -1,8 +1,7 @@
 import json
-import re
 from pathlib import Path
 
-from pyodi.apps.coco_split import coco_split
+from pyodi.apps.coco_split import property_split, random_split
 
 
 def get_coco_data():
@@ -53,10 +52,9 @@ def test_random_coco_split(tmpdir):
 
     json.dump(coco_data, open(tmpdir / "coco.json", "w"))
 
-    train_path, val_path = coco_split(
+    train_path, val_path = random_split(
         annotations_file=str(tmpdir / "coco.json"),
         output_filename=str(tmpdir / "random_coco_split"),
-        mode="random",
         val_percentage=0.25,
         seed=49,
     )
@@ -73,13 +71,6 @@ def test_random_coco_split(tmpdir):
 
 
 def test_property_coco_split(tmpdir):
-    def get_video(filename: str) -> str:
-        extension, frame, video_name = map(
-            lambda x: x[::-1], re.match("(\w+)\.(\d+)(.+)", filename[::-1]).groups()  # type: ignore
-        )
-        video_name = video_name if video_name[-1] not in ("-", "_") else video_name[:-1]
-        return video_name
-
     tmpdir = Path(tmpdir)
 
     coco_data = get_coco_data()
@@ -96,12 +87,11 @@ def test_property_coco_split(tmpdir):
 
     json.dump(config, open(tmpdir / "split_config.json", "w"))
 
-    train_path, val_path = coco_split(
+    train_path, val_path = property_split(
         annotations_file=str(tmpdir / "coco.json"),
         output_filename=str(tmpdir / "property_coco_split"),
-        mode="property",
         split_config_file=str(tmpdir / "split_config.json"),
-        get_video=get_video,
+        get_video=None,
     )
 
     train_data = json.load(open(train_path))
