@@ -1,6 +1,6 @@
 """# Coco Split App.
 
-The [`pyodi coco`][pyodi.apps.coco_split] app can be used to split COCO
+The [`pyodi coco split`][pyodi.apps.coco_split] app can be used to split COCO
 annotation files in train and val annotations files.
 
 There are two modes: 'random' or 'property'. The 'random' mode splits randomly the COCO file, while
@@ -42,7 +42,7 @@ import json
 import re
 from copy import copy
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 import numpy as np
 import typer
@@ -58,7 +58,6 @@ def property_split(
     output_filename: str,
     split_config_file: str,
     show_summary: bool = True,
-    get_video: Optional[str] = None,  # ToDo Fix this
 ) -> List[str]:
     """Split the annotations file in training and validation subsets by properties.
 
@@ -67,24 +66,11 @@ def property_split(
         output_filename: Output filename.
         split_config_file: Path to configuration file.
         show_summary: Whether to show some information about the results. Defaults to True.
-        get_video: Function that returns video name from filename. If None,
-            default function used. Defaults to None.
 
     Returns:
         Output filenames.
 
     """
-    if get_video is None:
-
-        def get_video_name(filename: str) -> str:
-            extension, frame, video_name = map(
-                lambda x: x[::-1], re.match("(\w+)\.(\d+)(.+)", filename[::-1]).groups()  # type: ignore
-            )
-            video_name = (
-                video_name if video_name[-1] not in ("-", "_") else video_name[:-1]
-            )
-            return video_name
-
     split_config = json.load(open(split_config_file))
 
     # Transform split_config from human readable format to a more code efficient format
@@ -171,27 +157,12 @@ def property_split(
 
     if show_summary:
         summary_info = dict()
+        properties.discard("file_name")
         for property_name in properties:
-            if property_name == "file_name":
-                property_name = "video"
-                train_set, val_set, all_set = set(), set(), set()
-                [
-                    train_set.add(get_video_name(img["file_name"]))  # type: ignore
-                    for img in train_split["images"]
-                ]
-                [
-                    val_set.add(get_video_name(img["file_name"]))  # type: ignore
-                    for img in val_split["images"]
-                ]
-                [
-                    all_set.add(get_video_name(img["file_name"]))  # type: ignore
-                    for img in annotations["images"]
-                ]
-            else:
-                train_set, val_set, all_set = set(), set(), set()
-                [train_set.add(img[property_name]) for img in train_split["images"]]  # type: ignore
-                [val_set.add(img[property_name]) for img in val_split["images"]]  # type: ignore
-                [all_set.add(img[property_name]) for img in annotations["images"]]  # type: ignore
+            train_set, val_set, all_set = set(), set(), set()
+            [train_set.add(img[property_name]) for img in train_split["images"]]  # type: ignore
+            [val_set.add(img[property_name]) for img in val_split["images"]]  # type: ignore
+            [all_set.add(img[property_name]) for img in annotations["images"]]  # type: ignore
 
             summary_info[property_name] = {
                 "train": train_set,
