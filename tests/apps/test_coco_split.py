@@ -9,14 +9,14 @@ def get_coco_data():
     categories = [{"id": 1, "name": "drone"}, {"id": 2, "name": "bird"}]
 
     images = [
-        {"id": 0, "file_name": "vidA-0.jpg", "source": "A"},
-        {"id": 1, "file_name": "vidA-1.jpg", "source": "A"},
-        {"id": 2, "file_name": "vidB-0.jpg", "source": "B"},
-        {"id": 3, "file_name": "vidC-0.jpg", "source": "C"},
-        {"id": 4, "file_name": "vidD-0.jpg", "source": "D"},
-        {"id": 5, "file_name": "vidD-66.jpg", "source": "badsrc"},
-        {"id": 6, "file_name": "badvid-13.jpg", "source": "E"},
-        {"id": 7, "file_name": "errvid-14.jpg", "source": "E"},
+        {"id": 0, "file_name": "vidA-0.jpg", "source": "A", "video_name": "vidA"},
+        {"id": 1, "file_name": "vidA-1.jpg", "source": "A", "video_name": "vidA"},
+        {"id": 2, "file_name": "vidB-0.jpg", "source": "B", "video_name": "vidB"},
+        {"id": 3, "file_name": "vidC-0.jpg", "source": "C", "video_name": "vidC"},
+        {"id": 4, "file_name": "vidD-0.jpg", "source": "D", "video_name": "vidD"},
+        {"id": 5, "file_name": "vidD-66.jpg", "source": "badsrc", "video_name": "vidD"},
+        {"id": 6, "file_name": "badvid-13.jpg", "source": "E", "video_name": "badvid"},
+        {"id": 7, "file_name": "errvid-14.jpg", "source": "E", "video_name": "errvid"},
     ]
 
     annotations = [

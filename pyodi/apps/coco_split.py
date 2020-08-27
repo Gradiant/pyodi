@@ -26,14 +26,14 @@ Split config example:
 {
     "discard": {
         "file_name": "people_video|crowd_video|multiple_people_video",
-        "source": "Youtube People Dataset|Bad Dataset"
+        "source": "Youtube People Dataset|Bad Dataset",
     },
     "val": {
         "file_name": {
             "My Val Ground Vehicle Dataset": "val_car_video|val_bus_video|val_moto_video|val_bike_video",
-            "My Val Flying Vehicle Dataset": "val_plane_video|val_drone_video|val_helicopter_video"
-        }
-        "source": "Val Dataset"
+            "My Val Flying Vehicle Dataset": "val_plane_video|val_drone_video|val_helicopter_video",
+        },
+        "source": "Val Dataset",
     }
 }
 ```
@@ -42,7 +42,7 @@ import json
 import re
 from copy import copy
 from pathlib import Path
-from typing import List
+from typing import Any, Dict, List, Set
 
 import numpy as np
 import typer
@@ -82,26 +82,42 @@ def property_split(
     annotations = json.load(open(annotations_file))
     train_images, val_images = [], []
     train_annotations, val_annotations = [], []
-    train_img_id, val_img_id = 0, 0
+    n_train_imgs, n_val_imgs = 0, 0
+    total_imgs, total_anns = 0, 0
     split_dict = dict()
     properties = set()
-    any_discard_flag = False
+
+    for svalue in split_config.values():
+        for pname in svalue.keys():
+            properties.add(pname)
+
+    properties.discard("file_name")
+    if "video_name" in annotations["images"][0].keys():
+        properties.add("video_name")
+
+    summary_info: Dict[str, Dict[str, Set]] = {}
+    for pname in properties:
+        summary_info[pname] = {
+            "train": set(),
+            "val": set(),
+            "discard": set(),
+            "all": set(),
+        }
 
     for i in range(len(annotations["images"])):
         img = annotations["images"][i]
         val_flag = False
         discard_flag = False
         matched_flag = False
+        total_imgs += 1
 
         for section in split_config:
             for property_name, property_match in split_config[section].items():
-                properties.add(property_name)
                 if re.match(property_match, img[property_name]):
                     matched_flag = True
 
                     if section == "discard":
                         discard_flag = True
-                        any_discard_flag = True
                     else:
                         val_flag = True
                     break
@@ -109,21 +125,31 @@ def property_split(
             if matched_flag:
                 break
 
+        key = "discard"
         if not discard_flag:
 
             if val_flag:
-                split_dict[img["id"]] = {"val": True, "new_idx": val_img_id}
-                img["id"] = val_img_id
+                split_dict[img["id"]] = {"val": True, "new_idx": n_val_imgs}
+                img["id"] = n_val_imgs
                 val_images.append(img)
-                val_img_id += 1
+                n_val_imgs += 1
+                key = "val"
+
             else:
-                split_dict[img["id"]] = {"val": False, "new_idx": train_img_id}
-                img["id"] = train_img_id
+                split_dict[img["id"]] = {"val": False, "new_idx": n_train_imgs}
+                img["id"] = n_train_imgs
                 train_images.append(img)
-                train_img_id += 1
+                n_train_imgs += 1
+                key = "train"
+
+        if show_summary:
+            for pname in properties:
+                summary_info[pname][key].add(img[pname])
+                summary_info[pname]["all"].add(img[pname])
 
     n_train_anns, n_val_anns = 0, 0
     for annotation in annotations["annotations"]:
+        total_anns += 1
         ann_data = split_dict.get(annotation["image_id"], None)
 
         if ann_data is None:
@@ -156,46 +182,34 @@ def property_split(
     }
 
     if show_summary:
-        summary_info = dict()
-        properties.discard("file_name")
-        for property_name in properties:
-            train_set, val_set, all_set = set(), set(), set()
-            [train_set.add(img[property_name]) for img in train_split["images"]]  # type: ignore
-            [val_set.add(img[property_name]) for img in val_split["images"]]  # type: ignore
-            [all_set.add(img[property_name]) for img in annotations["images"]]  # type: ignore
 
-            summary_info[property_name] = {
-                "train": train_set,
-                "val": val_set,
-                "discard": all_set - (train_set | val_set),
-                "all": all_set,
-            }
+        n_discard_imgs = total_imgs - (n_train_imgs + n_val_imgs)
+        n_discard_anns = total_anns - (n_train_anns + n_val_anns)
 
         summary = [f"\nSummary for {Path(annotations_file).name}:"]
-        sections = ["train", "val"]
-        splits = [train_split, val_split]
-        if any_discard_flag:
-            sections.append("discard")
-            splits.append(None)  # type: ignore
+        splits: List[Any]
 
-        total_imgs = len(annotations["images"])
-        total_anns = len(annotations["annotations"])
+        if (n_discard_imgs + n_discard_anns) == 0:
+            sections = ["train", "val"]
+            splits = [train_split, val_split]
+        else:
+            sections = ["train", "val", "discard"]
+            splits = [train_split, val_split, None]
+
         for section, split in zip(sections, splits):
             summary.append(f"-> {section.upper()}")
 
-            if split:
-                partial_imgs = len(split["images"])
-                partial_anns = len(split["annotations"])
-            else:
-                partial_imgs = len(annotations["images"]) - (
-                    len(train_split["images"]) + len(val_split["images"])
-                )
-                partial_anns = len(annotations["annotations"]) - (
-                    len(train_split["annotations"]) + len(val_split["annotations"])
-                )
+            if section == "train":
+                summary.append(f"Number of frames: {n_train_imgs}/{total_imgs}")
+                summary.append(f"Number of annotations: {n_train_anns}/{total_anns}")
 
-            summary.append(f"Number of frames: {partial_imgs}/{total_imgs}")
-            summary.append(f"Number of annotations: {partial_anns}/{total_anns}")
+            elif section == "val":
+                summary.append(f"Number of frames: {n_val_imgs}/{total_imgs}")
+                summary.append(f"Number of annotations: {n_val_anns}/{total_anns}")
+
+            elif section == "discard":
+                summary.append(f"Number of frames: {n_discard_imgs}/{total_imgs}")
+                summary.append(f"Number of annotations: {n_discard_anns}/{total_anns}")
 
             for property_name in summary_info:
                 property_set = summary_info[property_name][section]
