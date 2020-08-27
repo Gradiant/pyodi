@@ -4,29 +4,29 @@ channels:
   - plotly
 dependencies:
   - python=3.6
-  - cython
-  - numpy
-  - matplotlib
-  - pandas
-  - flake8
-  - pytest
-  - scikit-learn
-  - numba
-  - pillow
-  - plotly-orca
+  - cython=0.29.21
+  - numpy=1.18.5
+  - matplotlib=3.2.2
+  - pandas=1.0.5
+  - flake8=3.8.3
+  - pytest=5.4.3
+  - scikit-learn=0.23.2
+  - numba=0.49.1
+  - pillow=7.1.2
+  - plotly-orca=1.3.1
   - pip:
-      - ensemble_boxes
-      - typer
-      - loguru
-      - plotly
-      - psutil
-      - pre-commit
-      - mypy
-      - black
-      - isort
+      - ensemble-boxes==1.0.4
+      - typer==0.3.2
+      - loguru==0.5.1
+      - plotly==4.8.2
+      - psutil==5.7.2
+      - pre-commit==2.6.0
+      - mypy==0.782
+      - black==19.10b0
+      - isort==5.3.2
       - git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI
-      - mkdocs
-      - mkdocs-material
-      - mkdocstrings
-      - pydocstyle
-      - flake8-docstrings
+      - mkdocs==1.1.2
+      - mkdocs-material==5.4.0
+      - mkdocstrings==0.12.2
+      - pydocstyle==5.0.2
+      - flake8-docstrings==1.5.0
