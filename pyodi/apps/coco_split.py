@@ -42,7 +42,7 @@ import json
 import re
 from copy import copy
 from pathlib import Path
-from typing import Any, Dict, List, Set
+from typing import List
 
 import numpy as np
 import typer
@@ -54,10 +54,7 @@ app = typer.Typer()
 @logger.catch  # noqa: C901
 @app.command()
 def property_split(
-    annotations_file: str,
-    output_filename: str,
-    split_config_file: str,
-    show_summary: bool = True,
+    annotations_file: str, output_filename: str, split_config_file: str,
 ) -> List[str]:
     """Split the annotations file in training and validation subsets by properties.
 
@@ -65,7 +62,6 @@ def property_split(
         annotations_file: Path to annotations file.
         output_filename: Output filename.
         split_config_file: Path to configuration file.
-        show_summary: Whether to show some information about the results. Defaults to True.
 
     Returns:
         Output filenames.
@@ -85,24 +81,6 @@ def property_split(
     n_train_imgs, n_val_imgs = 0, 0
     total_imgs, total_anns = 0, 0
     split_dict = dict()
-    properties = set()
-
-    for svalue in split_config.values():
-        for pname in svalue.keys():
-            properties.add(pname)
-
-    properties.discard("file_name")
-    if "video_name" in annotations["images"][0].keys():
-        properties.add("video_name")
-
-    summary_info: Dict[str, Dict[str, Set]] = {}
-    for pname in properties:
-        summary_info[pname] = {
-            "train": set(),
-            "val": set(),
-            "discard": set(),
-            "all": set(),
-        }
 
     for i in range(len(annotations["images"])):
         img = annotations["images"][i]
@@ -125,7 +103,6 @@ def property_split(
             if matched_flag:
                 break
 
-        key = "discard"
         if not discard_flag:
 
             if val_flag:
@@ -133,19 +110,12 @@ def property_split(
                 img["id"] = n_val_imgs
                 val_images.append(img)
                 n_val_imgs += 1
-                key = "val"
 
             else:
                 split_dict[img["id"]] = {"val": False, "new_idx": n_train_imgs}
                 img["id"] = n_train_imgs
                 train_images.append(img)
                 n_train_imgs += 1
-                key = "train"
-
-        if show_summary:
-            for pname in properties:
-                summary_info[pname][key].add(img[pname])
-                summary_info[pname]["all"].add(img[pname])
 
     n_train_anns, n_val_anns = 0, 0
     for annotation in annotations["annotations"]:
@@ -180,50 +150,6 @@ def property_split(
         "licenses": annotations["licenses"],
         "categories": annotations["categories"],
     }
-
-    if show_summary:
-
-        n_discard_imgs = total_imgs - (n_train_imgs + n_val_imgs)
-        n_discard_anns = total_anns - (n_train_anns + n_val_anns)
-
-        summary = [f"\nSummary for {Path(annotations_file).name}:"]
-        splits: List[Any]
-
-        if (n_discard_imgs + n_discard_anns) == 0:
-            sections = ["train", "val"]
-            splits = [train_split, val_split]
-        else:
-            sections = ["train", "val", "discard"]
-            splits = [train_split, val_split, None]
-
-        for section, split in zip(sections, splits):
-            summary.append(f"-> {section.upper()}")
-
-            if section == "train":
-                summary.append(f"Number of frames: {n_train_imgs}/{total_imgs}")
-                summary.append(f"Number of annotations: {n_train_anns}/{total_anns}")
-
-            elif section == "val":
-                summary.append(f"Number of frames: {n_val_imgs}/{total_imgs}")
-                summary.append(f"Number of annotations: {n_val_anns}/{total_anns}")
-
-            elif section == "discard":
-                summary.append(f"Number of frames: {n_discard_imgs}/{total_imgs}")
-                summary.append(f"Number of annotations: {n_discard_anns}/{total_anns}")
-
-            for property_name in summary_info:
-                property_set = summary_info[property_name][section]
-                summary.append(
-                    "{} ({}/{}): {}".format(
-                        property_name.capitalize(),
-                        len(property_set),
-                        len(summary_info[property_name]["all"]),
-                        ", ".join(list(property_set)),
-                    )
-                )
-            summary.append("\n")
-
-        logger.success("\n".join(summary))
 
     logger.info("Saving splits to file")
     output_files = []
