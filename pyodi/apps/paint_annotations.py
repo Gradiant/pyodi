@@ -23,6 +23,7 @@ def paint_annotations(
     output_folder: str,
     predictions_file: Optional[str] = None,
     show_score_thr: float = 0.0,
+    color_key: str = "category_id",
 ) -> None:
     """Paint `ground_truth_file` or `predictions_file` annotations on `image_folder` images.
 
@@ -35,7 +36,7 @@ def paint_annotations(
             If not None, the annotations of predictions_file will be painted instead of ground_truth_file's.
         show_score_thr: Detections bellow this threshold will not be painted.
             Default 0.0.
-
+        color_key: Choose the key in annotations on which the color will depend. Defaults to 'category_id'.
     """
     Path(output_folder).mkdir(exist_ok=True, parents=True)
 
@@ -44,7 +45,6 @@ def paint_annotations(
         Path(x["file_name"]).stem: x["id"] for x in ground_truth["images"]
     }
 
-    colormap = cm.rainbow(np.linspace(0, 1, len(ground_truth["categories"])))
     category_id_to_label = {
         cat["id"]: cat["name"] for cat in ground_truth["categories"]
     }
@@ -54,6 +54,9 @@ def paint_annotations(
         annotations = json.load(open(predictions_file))
     else:
         annotations = ground_truth["annotations"]
+
+    n_colors = len(set(ann[color_key] for ann in annotations))
+    colormap = cm.rainbow(np.linspace(0, 1, n_colors))
 
     for annotation in annotations:
         image_id_to_annotations[annotation["image_id"]].append(annotation)
@@ -87,7 +90,8 @@ def paint_annotations(
             bbox_left, bbox_top, bbox_width, bbox_height = annotation["bbox"]
             cat_id = annotation["category_id"]
             label = category_id_to_label[cat_id]
-            color = colormap[cat_id % len(colormap)]
+            color_id = annotation[color_key]
+            color = colormap[color_id % len(colormap)]
             score = annotation["score"]
 
             poly = [
