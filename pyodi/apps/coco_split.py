@@ -70,88 +70,82 @@ def property_split(
     split_config = json.load(open(split_config_file))
 
     # Transform split_config from human readable format to a more code efficient format
-    for section in split_config:
-        for prop, prop_value in split_config[section].items():
-            if isinstance(prop_value, dict):
-                split_config[section][prop] = "|".join(prop_value.values())
+    for section in split_config:  # sections: val / discard
+        for property_name, property_value in split_config[section].items():
+            if isinstance(property_value, dict):
+                split_config[section][property_name] = "|".join(property_value.values())
 
-    annotations = json.load(open(annotations_file))
+    data = json.load(open(annotations_file))
+
     train_images, val_images = [], []
     train_annotations, val_annotations = [], []
+
     n_train_imgs, n_val_imgs = 0, 0
-    total_imgs, total_anns = 0, 0
-    split_dict = dict()
+    n_train_anns, n_val_anns = 0, 0
 
-    for i in range(len(annotations["images"])):
-        img = annotations["images"][i]
-        val_flag = False
-        discard_flag = False
-        matched_flag = False
-        total_imgs += 1
+    train_ids_map = dict()  # {old_id: new_id}
+    val_ids_map = dict()  # {old_id: new_id}
+    discard_ids = set()
 
-        for section in split_config:
+    logger.info("Gathering images...")
+    for img in data["images"]:
+        section_idx = 0
+        matched = False
+        while not matched and section_idx < 2:
+            section = list(split_config)[section_idx]
             for property_name, property_match in split_config[section].items():
                 if re.match(property_match, img[property_name]):
-                    matched_flag = True
-
-                    if section == "discard":
-                        discard_flag = True
+                    matched = True
+                    if section == "val":
+                        val_ids_map[img["id"]] = n_val_imgs
+                        img["id"] = n_val_imgs
+                        val_images.append(img)
+                        n_val_imgs += 1
                     else:
-                        val_flag = True
+                        discard_ids.add(img["id"])
                     break
+            section_idx += 1
 
-            if matched_flag:
-                break
+        if not matched:
+            train_ids_map[img["id"]] = n_train_imgs
+            img["id"] = n_train_imgs
+            train_images.append(img)
+            n_train_imgs += 1
 
-        if not discard_flag:
+    logger.info("Gathering annotations...")
+    for ann in data["annotations"]:
 
-            if val_flag:
-                split_dict[img["id"]] = {"val": True, "new_idx": n_val_imgs}
-                img["id"] = n_val_imgs
-                val_images.append(img)
-                n_val_imgs += 1
-
-            else:
-                split_dict[img["id"]] = {"val": False, "new_idx": n_train_imgs}
-                img["id"] = n_train_imgs
-                train_images.append(img)
-                n_train_imgs += 1
-
-    n_train_anns, n_val_anns = 0, 0
-    for annotation in annotations["annotations"]:
-        total_anns += 1
-        ann_data = split_dict.get(annotation["image_id"], None)
-
-        if ann_data is None:
+        if ann["image_id"] in discard_ids:
             continue
-        else:
-            annotation["image_id"] = ann_data["new_idx"]
-            if ann_data["val"]:
-                annotation["id"] = n_val_anns
-                val_annotations.append(annotation)
-                n_val_anns += 1
-            else:
-                annotation["id"] = n_train_anns
-                train_annotations.append(annotation)
-                n_train_anns += 1
 
+        if ann["image_id"] in val_ids_map.keys():
+            ann["image_id"] = val_ids_map[ann["image_id"]]
+            ann["id"] = n_val_anns
+            val_annotations.append(ann)
+            n_val_anns += 1
+        else:
+            ann["image_id"] = train_ids_map[ann["image_id"]]
+            ann["id"] = n_train_anns
+            train_annotations.append(ann)
+            n_train_anns += 1
+
+    logger.info("Spliting data...")
     train_split = {
         "images": train_images,
         "annotations": train_annotations,
-        "info": annotations["info"],
-        "licenses": annotations["licenses"],
-        "categories": annotations["categories"],
+        "info": data["info"],
+        "licenses": data["licenses"],
+        "categories": data["categories"],
     }
-
     val_split = {
         "images": val_images,
         "annotations": val_annotations,
-        "info": annotations["info"],
-        "licenses": annotations["licenses"],
-        "categories": annotations["categories"],
+        "info": data["info"],
+        "licenses": data["licenses"],
+        "categories": data["categories"],
     }
 
-    logger.info("Saving splits to file")
+    logger.info("Writing splited files...")
     output_files = []
     for split_type, split in zip(["train", "val"], [train_split, val_split]):
         output_files.append(output_filename + f"_{split_type}.json")
@@ -183,14 +177,14 @@ def random_split(
         Output filenames.
 
     """
-    annotations = json.load(open(annotations_file))
+    data = json.load(open(annotations_file))
     train_images, val_images, val_ids = [], [], []
 
     np.random.seed(seed)
-    rand_values = np.random.rand(len(annotations["images"]))
+    rand_values = np.random.rand(len(data["images"]))
 
     logger.info("Gathering images...")
-    for i, image in enumerate(annotations["images"]):
+    for i, image in enumerate(data["images"]):
 
         if rand_values[i] < val_percentage:
             val_images.append(copy(image))
@@ -201,7 +195,7 @@ def random_split(
     train_annotations, val_annotations = [], []
 
     logger.info("Gathering annotations...")
-    for annotation in annotations["annotations"]:
+    for annotation in data["annotations"]:
 
         if annotation["image_id"] in val_ids:
             val_annotations.append(copy(annotation))
@@ -211,28 +205,28 @@ def random_split(
     train_split = {
         "images": train_images,
         "annotations": train_annotations,
-        "info": annotations["info"],
-        "licenses": annotations["licenses"],
-        "categories": annotations["categories"],
+        "info": data["info"],
+        "licenses": data["licenses"],
+        "categories": data["categories"],
     }
 
     val_split = {
         "images": val_images,
         "annotations": val_annotations,
-        "info": annotations["info"],
-        "licenses": annotations["licenses"],
-        "categories": annotations["categories"],
+        "info": data["info"],
+        "licenses": data["licenses"],
+        "categories": data["categories"],
     }
 
     if show_summary:
         summary = [
             f"\nSummary for {Path(annotations_file).name}",
             "-> TRAIN",
-            f"Number of frames: {len(train_images)}/{len(annotations['images'])}",
-            f"Number of annotations: {len(train_annotations)}/{len(annotations['annotations'])}\n",
+            f"Number of frames: {len(train_images)}/{len(data['images'])}",
+            f"Number of annotations: {len(train_annotations)}/{len(data['annotations'])}\n",
             "-> VAL",
-            f"Number of frames: {len(val_images)}/{len(annotations['images'])}",
-            f"Number of annotations: {len(val_annotations)}/{len(annotations['annotations'])}",
+            f"Number of frames: {len(val_images)}/{len(data['images'])}",
+            f"Number of annotations: {len(val_annotations)}/{len(data['annotations'])}",
         ]
         logger.success("\n".join(summary))
 
