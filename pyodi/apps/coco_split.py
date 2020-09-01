@@ -62,6 +62,7 @@ def get_summary(train_file: str, val_file: str, full_file: str) -> str:
     Returns:
         A string with the summary.
     """
+    logger.info("Computing summary...")
     train_data = json.load(open(train_file))
     val_data = json.load(open(val_file))
     full_data = json.load(open(full_file))
@@ -72,9 +73,16 @@ def get_summary(train_file: str, val_file: str, full_file: str) -> str:
 
     summary_info = {}
     for property_name in properties:
-        train_set = {img[property_name] for img in train_data["images"]}
-        val_set = {img[property_name] for img in val_data["images"]}
-        all_set = {img[property_name] for img in full_data["images"]}
+        train_set, val_set, all_set = set(), set(), set()
+        for img in train_data["images"]:
+            if property_name in img:
+                train_set.add(str(img[property_name]))
+        for img in val_data["images"]:
+            if property_name in img:
+                val_set.add(str(img[property_name]))
+        for img in full_data["images"]:
+            if property_name in img:
+                all_set.add(str(img[property_name]))
 
         summary_info[property_name] = {
             "train": train_set,
@@ -137,7 +145,7 @@ def property_split(
     annotations_file: str,
     output_filename: str,
     split_config_file: str,
-    show_summary: bool = False,
+    show_summary: bool = True,
 ) -> List[str]:
     """Split the annotations file in training and validation subsets by properties.
 
@@ -151,7 +159,8 @@ def property_split(
         Output filenames.
 
     """
-    split_config = json.load(open(split_config_file))
+    logger.info("Loading files...")
+    split_config = json.load(open(Path(split_config_file)))
     split_list = []
 
     # Transform split_config from human readable format to a more code efficient format
@@ -238,6 +247,8 @@ def property_split(
 
     if show_summary:
         logger.info(get_summary(output_files[0], output_files[1], annotations_file))
+
+    logger.success("Done!")
 
     return output_files
 
