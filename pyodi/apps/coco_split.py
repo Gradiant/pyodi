@@ -51,10 +51,93 @@ from loguru import logger
 app = typer.Typer()
 
 
+def get_summary(train_file: str, val_file: str, full_file: str) -> str:
+    """Log summary of the split operation.
+
+    Args:
+        train_file: Train annotations file.
+        val_file: Val annotations file.
+        full_file: Full annotations file.
+
+    Returns:
+        A string with the summary.
+    """
+    train_data = json.load(open(train_file))
+    val_data = json.load(open(val_file))
+    full_data = json.load(open(full_file))
+
+    properties = list(full_data["images"][0].keys())
+    properties.remove("id")
+    properties.remove("file_name")
+
+    summary_info = {}
+    for property_name in properties:
+        train_set = {img[property_name] for img in train_data["images"]}
+        val_set = {img[property_name] for img in val_data["images"]}
+        all_set = {img[property_name] for img in full_data["images"]}
+
+        summary_info[property_name] = {
+            "train": train_set,
+            "val": val_set,
+            "discard": all_set - (train_set | val_set),
+            "all": all_set,
+        }
+
+    n_discard_imgs = len(full_data["images"]) - (
+        len(train_data["images"]) + len(val_data["images"])
+    )
+    n_discard_anns = len(full_data["annotations"]) - (
+        len(train_data["annotations"]) + len(val_data["annotations"])
+    )
+
+    summary = ["\n\nSUMMARY:\n"]
+    if (n_discard_imgs + n_discard_anns) == 0:
+        sections = ["train", "val"]
+        splits = [train_data, val_data]
+    else:
+        sections = ["train", "val", "discard"]
+        splits = [train_data, val_data, None]
+
+    for section, split in zip(sections, splits):
+        summary.append(f"-> {section.upper()}")
+
+        if section == "discard":
+            summary.append(
+                f"Number of frames: {n_discard_imgs}/{len(full_data['images'])}"
+            )
+            summary.append(
+                f"Number of annotations: {n_discard_anns}/{len(full_data['annotations'])}"
+            )
+        else:
+            summary.append(
+                f"Number of frames: {len(split['images'])}/{len(full_data['images'])}"
+            )
+            summary.append(
+                f"Number of annotations: {len(split['annotations'])}/{len(full_data['annotations'])}"
+            )
+
+        for property_name in summary_info:
+            property_set = summary_info[property_name][section]
+            summary.append(
+                "{} ({}/{}): {}".format(
+                    property_name.capitalize(),
+                    len(property_set),
+                    len(summary_info[property_name]["all"]),
+                    ", ".join(list(property_set)),
+                )
+            )
+        summary.append("\n")
+
+    return "\n".join(summary)
+
+
 @logger.catch  # noqa: C901
 @app.command()
 def property_split(
-    annotations_file: str, output_filename: str, split_config_file: str,
+    annotations_file: str,
+    output_filename: str,
+    split_config_file: str,
+    show_summary: bool = False,
 ) -> List[str]:
     """Split the annotations file in training and validation subsets by properties.
 
@@ -62,6 +145,7 @@ def property_split(
         annotations_file: Path to annotations file.
         output_filename: Output filename.
         split_config_file: Path to configuration file.
+        show_summary: Whether to show some information about the results. Defaults to False.
 
     Returns:
         Output filenames.
@@ -151,6 +235,9 @@ def property_split(
         output_files.append(output_filename + f"_{split_type}.json")
         with open(output_files[-1], "w") as f:
             json.dump(split, f, indent=2)
+
+    if show_summary:
+        logger.info(get_summary(output_files[0], output_files[1], annotations_file))
 
     return output_files
 

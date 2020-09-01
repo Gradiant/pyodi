@@ -91,6 +91,7 @@ def test_property_coco_split(tmpdir):
         annotations_file=str(tmpdir / "coco.json"),
         output_filename=str(tmpdir / "property_coco_split"),
         split_config_file=str(tmpdir / "split_config.json"),
+        show_summary=True,
     )
 
     train_data = json.load(open(train_path))
