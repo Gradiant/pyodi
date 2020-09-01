@@ -202,12 +202,12 @@ def property_split(
     logger.info("Gathering annotations...")
     for ann in data["annotations"]:
 
-        if ann["image_id"] in old_to_new_val_ids.keys():
+        if ann["image_id"] in old_to_new_val_ids:
             ann["image_id"] = old_to_new_val_ids[ann["image_id"]]
             ann["id"] = n_val_anns
             val_annotations.append(ann)
             n_val_anns += 1
-        elif ann["image_id"] in old_to_new_train_ids.keys():
+        elif ann["image_id"] in old_to_new_train_ids:
             ann["image_id"] = old_to_new_train_ids[ann["image_id"]]
             ann["id"] = n_train_anns
             train_annotations.append(ann)
