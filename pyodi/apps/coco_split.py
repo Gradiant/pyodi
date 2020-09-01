@@ -68,12 +68,20 @@ def property_split(
 
     """
     split_config = json.load(open(split_config_file))
+    split_list = []
 
     # Transform split_config from human readable format to a more code efficient format
     for section in split_config:  # sections: val / discard
         for property_name, property_value in split_config[section].items():
             if isinstance(property_value, dict):
-                split_config[section][property_name] = "|".join(property_value.values())
+                property_value = "|".join(property_value.values())
+            split_list.append(
+                dict(
+                    split=section,
+                    property_name=property_name,
+                    property_regex=property_value,
+                )
+            )
 
     data = json.load(open(annotations_file))
 
@@ -83,30 +91,26 @@ def property_split(
     n_train_imgs, n_val_imgs = 0, 0
     n_train_anns, n_val_anns = 0, 0
 
-    old_to_new_ids_map = dict()  # {old_id: {"new_id": new_id, "val": bool}}
+    old_to_new_train_ids = dict()
+    old_to_new_val_ids = dict()
 
     logger.info("Gathering images...")
     for img in data["images"]:
-        section_idx = 0
-        matched = False
-        while not matched and section_idx < 2:
-            section = list(split_config)[section_idx]
-            for property_name, property_match in split_config[section].items():
-                if re.match(property_match, img[property_name]):
-                    matched = True
-                    if section == "val":
-                        old_to_new_ids_map[img["id"]] = {
-                            "new_id": n_val_imgs,
-                            "val": True,
-                        }
-                        img["id"] = n_val_imgs
-                        val_images.append(img)
-                        n_val_imgs += 1
-                    break
-            section_idx += 1
 
-        if not matched:
-            old_to_new_ids_map[img["id"]] = {"new_id": n_train_imgs, "val": False}
+        i = 0
+        while i < len(split_list) and not re.match(
+            split_list[i]["property_regex"], img[split_list[i]["property_name"]]
+        ):
+            i += 1
+
+        if i < len(split_list):  # discard or val
+            if split_list[i]["split"] == "val":
+                old_to_new_val_ids[img["id"]] = n_val_imgs
+                img["id"] = n_val_imgs
+                val_images.append(img)
+                n_val_imgs += 1
+        else:  # train
+            old_to_new_train_ids[img["id"]] = n_train_imgs
             img["id"] = n_train_imgs
             train_images.append(img)
             n_train_imgs += 1
@@ -114,18 +118,13 @@ def property_split(
     logger.info("Gathering annotations...")
     for ann in data["annotations"]:
 
-        # discard
-        if ann["image_id"] not in old_to_new_ids_map.keys():
-            continue
-
-        ann_info = old_to_new_ids_map[ann["image_id"]]
-        if ann_info["val"]:
-            ann["image_id"] = ann_info["new_id"]
+        if ann["image_id"] in old_to_new_val_ids.keys():
+            ann["image_id"] = old_to_new_val_ids[ann["image_id"]]
             ann["id"] = n_val_anns
             val_annotations.append(ann)
             n_val_anns += 1
-        else:
-            ann["image_id"] = ann_info["new_id"]
+        elif ann["image_id"] in old_to_new_train_ids.keys():
+            ann["image_id"] = old_to_new_train_ids[ann["image_id"]]
             ann["id"] = n_train_anns
             train_annotations.append(ann)
             n_train_anns += 1
