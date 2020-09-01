@@ -83,9 +83,7 @@ def property_split(
     n_train_imgs, n_val_imgs = 0, 0
     n_train_anns, n_val_anns = 0, 0
 
-    train_ids_map = dict()  # {old_id: new_id}
-    val_ids_map = dict()  # {old_id: new_id}
-    discard_ids = set()
+    old_to_new_ids_map = dict()  # {old_id: {"new_id": new_id, "val": bool}}
 
     logger.info("Gathering images...")
     for img in data["images"]:
@@ -97,17 +95,18 @@ def property_split(
                 if re.match(property_match, img[property_name]):
                     matched = True
                     if section == "val":
-                        val_ids_map[img["id"]] = n_val_imgs
+                        old_to_new_ids_map[img["id"]] = {
+                            "new_id": n_val_imgs,
+                            "val": True,
+                        }
                         img["id"] = n_val_imgs
                         val_images.append(img)
                         n_val_imgs += 1
-                    else:
-                        discard_ids.add(img["id"])
                     break
             section_idx += 1
 
         if not matched:
-            train_ids_map[img["id"]] = n_train_imgs
+            old_to_new_ids_map[img["id"]] = {"new_id": n_train_imgs, "val": False}
             img["id"] = n_train_imgs
             train_images.append(img)
             n_train_imgs += 1
@@ -115,16 +114,18 @@ def property_split(
     logger.info("Gathering annotations...")
     for ann in data["annotations"]:
 
-        if ann["image_id"] in discard_ids:
+        # discard
+        if ann["image_id"] not in old_to_new_ids_map.keys():
             continue
 
-        if ann["image_id"] in val_ids_map.keys():
-            ann["image_id"] = val_ids_map[ann["image_id"]]
+        ann_info = old_to_new_ids_map[ann["image_id"]]
+        if ann_info["val"]:
+            ann["image_id"] = ann_info["new_id"]
             ann["id"] = n_val_anns
             val_annotations.append(ann)
             n_val_anns += 1
         else:
-            ann["image_id"] = train_ids_map[ann["image_id"]]
+            ann["image_id"] = ann_info["new_id"]
             ann["id"] = n_train_anns
             train_annotations.append(ann)
             n_train_anns += 1
