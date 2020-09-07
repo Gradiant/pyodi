@@ -16,7 +16,7 @@ jobs:
         uses: goanpeca/setup-miniconda@v1
         with:
           auto-update-conda: true
-          activate-environment: pyodi
+          activate-environment: pyodi-dev
           environment-file: pyodi-dev.yaml
       - name: Lint code
         shell: bash -l {0}
