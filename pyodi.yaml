@@ -1,0 +1,21 @@
+name: pyodi
+channels:
+  - anaconda
+  - plotly
+dependencies:
+  - python=3.6
+  - cython
+  - numpy
+  - matplotlib
+  - pandas
+  - scikit-learn
+  - numba
+  - pillow
+  - plotly-orca
+  - pip:
+      - ensemble_boxes
+      - typer
+      - loguru
+      - plotly
+      - psutil
+      - git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI

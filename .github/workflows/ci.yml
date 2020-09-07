@@ -17,7 +17,7 @@ jobs:
         with:
           auto-update-conda: true
           activate-environment: pyodi
-          environment-file: conda.yaml
+          environment-file: pyodi-dev.yaml
       - name: Lint code
         shell: bash -l {0}
         run: |

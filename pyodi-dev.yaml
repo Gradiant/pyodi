@@ -1,4 +1,4 @@
-name: pyodi
+name: pyodi-dev
 channels:
   - anaconda
   - plotly
