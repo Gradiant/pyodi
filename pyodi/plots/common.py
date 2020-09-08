@@ -193,4 +193,4 @@ def save_figure(
     """
     output = str(Path(output_dir) / (output_name.replace(" ", "_") + ".png"))
     figure.update_layout(width=output_size[0], height=output_size[1])
-    figure.write_image(output)
+    figure.write_image(output, engine="kaleido")
