@@ -1,0 +1,12 @@
+numpy==1.19.1
+ensemble-boxes==1.0.4
+loguru==0.5.1
+matplotlib==3.2.2
+numba==0.49.1
+pandas==1.0.5
+pillow==7.1.2
+plotly==4.8.2
+pycocotools@git+https://github.com/open-mmlab/cocoapi.git#subdirectory=pycocotools
+kaleido==0.0.3.post1
+scikit-learn==0.23.2
+typer==0.3.2

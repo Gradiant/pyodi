@@ -7,27 +7,37 @@ on:
     branches: [master]
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: Install pre-commit hooks
+        run: |
+          pip install pre-commit
+          pre-commit install
+      - name: Lint code
+        run: pre-commit run --all-files
+
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up Conda environment
         uses: goanpeca/setup-miniconda@v1
         with:
+          miniconda-version: latest
           auto-update-conda: true
-          activate-environment: pyodi
-          environment-file: conda.yaml
-      - name: Lint code
+          python-version: 3.7
+      - name: Install build requirements
         shell: bash -l {0}
-        run: |
-          isort --check-only --diff pyodi/ tests/
-          flake8 . --count --show-source --statistics
-          mypy -p pyodi
-          black .
+        run: pip install -r requirements/build.txt
       - name: Install pyodi
         shell: bash -l {0}
-        run: pip install .
+        run: rm -rf .eggs && pip install -e .[all]
       - name: Test with pytest
         shell: bash -l {0}
         run: pytest
