@@ -95,7 +95,7 @@ if __name__ == "__main__":
         include_package_data=True,
         license="MIT License",
         platforms="any",
-        python_requires=">=3.6",
+        python_requires=">=3.7",
         setup_requires=parse_requirements("requirements/build.txt"),
         tests_require=parse_requirements("requirements/dev.txt"),
         install_requires=parse_requirements("requirements/runtime.txt"),

@@ -24,9 +24,6 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    strategy:
-        matrix:
-          python-version: [3.6, 3.7, 3.8]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Conda environment
@@ -34,7 +31,7 @@ jobs:
         with:
           miniconda-version: latest
           auto-update-conda: true
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.7
       - name: Install build requirements
         shell: bash -l {0}
         run: pip install -r requirements/build.txt
