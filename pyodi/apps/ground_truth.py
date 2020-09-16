@@ -86,7 +86,7 @@ def ground_truth(
         output=output,
         output_size=output_size,
         histogram_xbins=dict(size=10),
-        histogram_ybins=dict(size=10),        
+        histogram_ybins=dict(size=10),
     )
 
     df_annotations = join_annotations_with_image_sizes(df_annotations, df_images)
@@ -111,7 +111,7 @@ def ground_truth(
         xaxis_range=(-0.01, 1.01),
         yaxis_range=(-0.01, 1.01),
         histogram_xbins=dict(size=0.05),
-        histogram_ybins=dict(size=0.05),        
+        histogram_ybins=dict(size=0.05),
     )
 
     plot_heatmap(

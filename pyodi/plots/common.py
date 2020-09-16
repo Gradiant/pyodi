@@ -22,10 +22,10 @@ def plot_scatter_with_histograms(
     fig: Optional[go.Figure] = None,
     row: int = 1,
     col: int = 1,
-    xaxis_range=None,
-    yaxis_range=None,
-    histogram_xbins=None,
-    histogram_ybins=None,    
+    xaxis_range: Optional[Tuple[float, float]] = None,
+    yaxis_range: Optional[Tuple[float, float]] = None,
+    histogram_xbins: Optional[Dict[str, Any]] = None,
+    histogram_ybins: Optional[Dict[str, Any]] = None,
     **kwargs: Any,
 ) -> go.Figure:
     """Allows to compare the relation between two variables of your COCO dataset.
