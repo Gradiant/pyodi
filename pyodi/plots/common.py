@@ -22,6 +22,10 @@ def plot_scatter_with_histograms(
     fig: Optional[go.Figure] = None,
     row: int = 1,
     col: int = 1,
+    xaxis_range=None,
+    yaxis_range=None,
+    histogram_xbins=None,
+    histogram_ybins=None,    
     **kwargs: Any,
 ) -> go.Figure:
     """Allows to compare the relation between two variables of your COCO dataset.
@@ -83,7 +87,7 @@ def plot_scatter_with_histograms(
             yaxis="y2",
             marker=dict(color="rgb(246, 207, 113)"),
             histnorm="percent",
-            xbins=dict(size=10),
+            xbins=histogram_xbins,
         )
         fig.add_histogram(
             y=df[y],
@@ -91,12 +95,16 @@ def plot_scatter_with_histograms(
             xaxis="x2",
             marker=dict(color="rgb(102, 197, 204)"),
             histnorm="percent",
-            ybins=dict(size=10),
+            ybins=histogram_ybins,
         )
 
         fig.layout = dict(
-            xaxis=dict(domain=[0, 0.84], showgrid=False, zeroline=False,),
-            yaxis=dict(domain=[0, 0.83], showgrid=False, zeroline=False,),
+            xaxis=dict(
+                domain=[0, 0.84], showgrid=False, zeroline=False, range=xaxis_range
+            ),
+            yaxis=dict(
+                domain=[0, 0.83], showgrid=False, zeroline=False, range=yaxis_range
+            ),
             xaxis2=dict(
                 domain=[0.85, 1], showgrid=False, zeroline=False, range=(0, 100)
             ),
