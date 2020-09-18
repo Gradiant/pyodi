@@ -26,11 +26,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Conda environment
-        uses: goanpeca/setup-miniconda@v1
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
         with:
-          miniconda-version: latest
-          auto-update-conda: true
           python-version: 3.7
       - name: Install build requirements
         shell: bash -l {0}
