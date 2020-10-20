@@ -38,7 +38,10 @@ app = typer.Typer()
 @logger.catch
 @app.command()
 def coco_merge(
-    output_file: str, annotation_files: List[str], base_imgs_folders: List[str] = None
+    output_file: str,
+    annotation_files: List[str],
+    base_imgs_folders: List[str] = None,
+    img_folder_preffix: str = "",
 ) -> str:
     """Merge COCO annotation files and concat correspondent base_img_folder to image paths.
 
@@ -47,6 +50,8 @@ def coco_merge(
         annotation_files: List of paths of COCO annotation files to be merged
         base_imgs_folders: Base image folder path to concatenate to each annotation
             file images path. If None, annotations maintain its filename. Defaults to None
+        img_folder_preffix: Image folder preffix, it will be used to check if image
+            files exist. If empty, preffix will not be added.
     """
     n_imgs, n_anns = 0, 0
     result: Dict[str, Any] = defaultdict()
@@ -100,13 +105,14 @@ def coco_merge(
             n_imgs += 1
             result["images"].append(image)
 
-            if not (filename).is_file():
+            if not (Path(img_folder_preffix) / filename).is_file():
                 logger.error(f"{filename} not found")
 
         for annotation in data["annotations"]:
             annotation["id"] = n_anns
             annotation["image_id"] = img_id_map[annotation["image_id"]]
-            annotation["category_id"] = cat_id_map[annotation["category_id"]]
+            if i:
+                annotation["category_id"] = cat_id_map[annotation["category_id"]]
 
             n_anns += 1
             result["annotations"].append(annotation)
