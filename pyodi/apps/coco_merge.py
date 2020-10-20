@@ -25,6 +25,7 @@ pyodi coco merge output_file_path coco_1.json coco_2.json --base-imgs-folders pa
 """  # noqa: E501
 import json
 from collections import defaultdict
+from copy import deepcopy
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -47,7 +48,7 @@ def coco_merge(
         base_imgs_folders: Base image folder path to concatenate to each annotation
             file images path. If None, annotations maintain its filename. Defaults to None
     """
-    start_image_id, start_ann_id = 0, 0
+    n_imgs, n_anns = 0, 0
     result: Dict[str, Any] = defaultdict()
 
     if base_imgs_folders is None:
@@ -60,49 +61,61 @@ def coco_merge(
         zip(annotation_files, base_imgs_folders)
     ):
         data = json.load(open(annotation_file))
+        logger.info(
+            "Processing {}: {} images, {} annotations".format(
+                Path(annotation_file).name,
+                len(data["images"]),
+                len(data["annotations"]),
+            )
+        )
 
+        if not i:
+            result = deepcopy(data)
+            result["images"], result["annotations"] = [], []
+        else:
+            cat_id_map = {}  # cat_id_map = {old_id: new_id}
+            for data_cat in data["categories"]:
+                new_id = None
+                for result_cat in result["categories"]:
+                    if data_cat["name"] == result_cat["name"]:
+                        new_id = result_cat["id"]
+                        break
+
+                if new_id is not None:
+                    cat_id_map[data_cat["id"]] = new_id
+                else:
+                    cat_id_map[data_cat["id"]] = (
+                        max(c["id"] for c in result["categories"]) + 1
+                    )
+                    data_cat["id"] = max(c["id"] for c in result["categories"]) + 1
+                    result["categories"].append(data_cat)
+
+        img_id_map = {}  # img_id_map = {old_id: new_id}
         for image in data["images"]:
             filename = Path(base_img_folder) / image["file_name"]
-            image["id"] += start_image_id
+            img_id_map[image["id"]] = n_imgs
+            image["id"] = n_imgs
             image["file_name"] = str(filename)
+
+            n_imgs += 1
+            result["images"].append(image)
 
             if not (filename).is_file():
                 logger.error(f"{filename} not found")
 
-        if not i:
-            result = data
+        for annotation in data["annotations"]:
+            annotation["id"] = n_anns
+            annotation["image_id"] = img_id_map[annotation["image_id"]]
+            annotation["category_id"] = cat_id_map[annotation["category_id"]]
 
-        else:
+            n_anns += 1
+            result["annotations"].append(annotation)
 
-            rename_categories = dict()
-
-            for new_category in data["categories"]:
-                new_id = None
-                for actual_category in result["categories"]:
-                    if new_category["name"] == actual_category["name"]:
-                        new_id = actual_category["id"]
-                        break
-
-                if new_id is not None:
-                    rename_categories[new_category["id"]] = new_id
-                else:
-                    rename_categories[new_category["id"]] = (
-                        len(result["categories"]) + 1
-                    )
-                    new_category["id"] = len(result["categories"]) + 1
-                    result["categories"].append(new_category)
-
-            for ann in data["annotations"]:
-                ann["id"] += start_ann_id
-                ann["image_id"] += start_image_id
-                ann["category_id"] = rename_categories[ann["category_id"]]
-
-            result["annotations"] += data["annotations"]
-            result["images"] += data["images"]
-
-        start_ann_id = len(result["annotations"])
-        start_image_id = len(result["images"])
-
+    logger.info(
+        "Result {}: {} images, {} annotations".format(
+            Path(output_file).name, len(result["images"]), len(result["annotations"])
+        )
+    )
     with open(output_file, "w") as f:
         json.dump(result, f, indent=2)
 
