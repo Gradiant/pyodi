@@ -6,19 +6,19 @@ from pyodi.apps.coco_merge import coco_merge
 
 def test_coco_merge(tmpdir):
     tmpdir = Path(tmpdir)
-    images = [{"id": 0, "file_name": "0.jpg"}, {"id": 1, "file_name": "1.jpg"}]
+    images = [{"id": 0, "file_name": "0.jpg"}, {"id": 2, "file_name": "1.jpg"}]
 
     anns1 = [
         {"image_id": 0, "category_id": 1, "id": 0},
-        {"image_id": 1, "category_id": 2, "id": 1},
+        {"image_id": 2, "category_id": 2, "id": 1},
     ]
     anns2 = [
         {"image_id": 0, "category_id": 1, "id": 0},
-        {"image_id": 1, "category_id": 2, "id": 1},
+        {"image_id": 2, "category_id": 2, "id": 1},
     ]
     anns3 = [
         {"image_id": 0, "category_id": 1, "id": 0},
-        {"image_id": 1, "category_id": 2, "id": 1},
+        {"image_id": 2, "category_id": 2, "id": 1},
     ]
 
     categories1 = [{"id": 1, "name": "drone"}, {"id": 2, "name": "bird"}]
