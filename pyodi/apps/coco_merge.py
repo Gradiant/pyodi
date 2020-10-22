@@ -1,25 +1,15 @@
 """# Coco Merge App.
 
-The [`pyodi coco`][pyodi.apps.coco_merge.coco_merge] app can be used to merge multiple COCO
-annotation files.
+The [`pyodi coco`][pyodi.apps.coco_merge.coco_merge] app can be used to merge COCO annotation files.
 
 Example usage:
 
 ``` bash
-pyodi coco merge output_file_path coco_1.json coco_2.json
+pyodi coco merge coco_1.json coco_2.json output.json
 ```
 
 This app merges COCO annotation files by replacing original image and annotations ids with new ones
 and adding all existent categories.
-
-It is possible to concatenate a different base path for images in each file by using 'base_imgs_folders'
-argument. A simple example could be:
-
-``` bash
-pyodi coco merge output_file_path coco_1.json coco_2.json --base-imgs-folders path/coco_images_1 --base-imgs-folders path/coco_images_2
-```
-
-```
 
 # API REFERENCE
 """  # noqa: E501
@@ -37,7 +27,7 @@ app = typer.Typer()
 @logger.catch
 @app.command()
 def coco_merge(input_file_1: str, input_file_2: str, output_file: str,) -> str:
-    """Merge COCO annotation files and concat correspondent base_img_folder to image paths.
+    """Merge COCO annotation files.
 
     Args:
         input_file_1: Path to input file to be extended.
