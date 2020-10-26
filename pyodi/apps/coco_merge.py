@@ -15,7 +15,6 @@ and adding all existent categories.
 """  # noqa: E501
 import json
 from collections import defaultdict
-from copy import deepcopy
 from typing import Any, Dict
 
 import typer
@@ -42,10 +41,7 @@ def coco_merge(input_file_1: str, input_file_2: str, output_file: str,) -> str:
     with open(input_file_2, "r") as f:
         data_2 = json.load(f)
 
-    output = {}
-    for k, v in data_1.items():
-        if k not in ("images", "annotations"):
-            output[k] = deepcopy(v)
+    output = {k: data_1[k] for k in data_1 if k not in ("images", "annotations")}
 
     output["images"], output["annotations"] = [], []
 
