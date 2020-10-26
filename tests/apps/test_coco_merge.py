@@ -6,19 +6,19 @@ from pyodi.apps.coco_merge import coco_merge
 
 def test_coco_merge(tmpdir):
     tmpdir = Path(tmpdir)
-    images = [{"id": 0, "file_name": "0.jpg"}, {"id": 1, "file_name": "1.jpg"}]
+    images = [{"id": 0, "file_name": "0.jpg"}, {"id": 2, "file_name": "1.jpg"}]
 
     anns1 = [
         {"image_id": 0, "category_id": 1, "id": 0},
-        {"image_id": 1, "category_id": 2, "id": 1},
+        {"image_id": 2, "category_id": 2, "id": 1},
     ]
     anns2 = [
         {"image_id": 0, "category_id": 1, "id": 0},
-        {"image_id": 1, "category_id": 2, "id": 1},
+        {"image_id": 2, "category_id": 2, "id": 1},
     ]
     anns3 = [
         {"image_id": 0, "category_id": 1, "id": 0},
-        {"image_id": 1, "category_id": 2, "id": 1},
+        {"image_id": 2, "category_id": 2, "id": 1},
     ]
 
     categories1 = [{"id": 1, "name": "drone"}, {"id": 2, "name": "bird"}]
@@ -35,7 +35,16 @@ def test_coco_merge(tmpdir):
         with open(tmp_files[-1], "w") as f:
             json.dump(coco_data, f)
 
-    result_file = coco_merge(tmpdir / "result.json", tmp_files)
+    result_file = coco_merge(
+        input_file_1=tmpdir / "0.json",
+        input_file_2=tmpdir / "1.json",
+        output_file=tmpdir / "result.json",
+    )
+    result_file = coco_merge(
+        input_file_1=tmpdir / "result.json",
+        input_file_2=tmpdir / "2.json",
+        output_file=tmpdir / "result.json",
+    )
 
     data = json.load(open(result_file))
 
