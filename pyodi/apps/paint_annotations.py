@@ -1,5 +1,4 @@
 import json
-import os
 from collections import defaultdict
 from pathlib import Path
 from typing import Dict, Optional
@@ -63,18 +62,20 @@ def paint_annotations(
         image_id_to_annotations[annotation["image_id"]].append(annotation)
 
     img_data = ground_truth["images"]
-    bbox_data = ground_truth["annotations"]
+    annotations_data = ground_truth["annotations"]
+    bbox_data = {}
+    for data in annotations_data:
+        bbox_data[data["image_id"]] = data
 
     for img in img_data:
 
-        image = img.get("file_name")
+        image = img["file_name"]
         logger.info(f"Loading {image}")
 
         if image not in image_name_to_id:
             logger.warning(f"{image} not in ground_truth_file")
 
-        if os.path.isfile(image_folder + "/" + image):
-
+        if Path(image_folder + "/" + image).is_file():
             image_pil = Image.open(image_folder + "/" + image)
 
             width, height = image_pil.size
@@ -87,20 +88,16 @@ def paint_annotations(
             polygons = []
             colors = []
 
-            # Filter the list of annotations and receive a list with only the desired element
-            bbox_dict = list(
-                filter(lambda bbox: bbox["image_id"] == img.get("id"), bbox_data)
-            )
-
-            if not bbox_dict:
+            if img["id"] not in bbox_data.keys():
                 logger.warning(f"No bbox found at {image}")
                 continue
-            bbox_left, bbox_top, bbox_width, bbox_height = bbox_dict[0].get("bbox")
-            cat_id = bbox_dict[0].get("category_id")
+
+            bbox_left, bbox_top, bbox_width, bbox_height = bbox_data[img["id"]]["bbox"]
+            cat_id = bbox_data[img["id"]]["category_id"]
             label = category_id_to_label[cat_id]
             color_id = annotation[color_key]
             color = colormap[color_id % len(colormap)]
-            score = bbox_dict[0].get("score")
+            score = bbox_data[img["id"]]["score"]
 
             poly = [
                 [bbox_left, bbox_top],
@@ -130,12 +127,11 @@ def paint_annotations(
             )
             ax.add_collection(p)
 
-            filename, file_extension = os.path.splitext(image)
-            filename = filename.split("/")
-            output_file = Path(output_folder) / f"{filename[1]}_result{file_extension}"
+            filename = Path(image).stem
+            file_extension = Path(image).suffix
+            output_file = Path(output_folder) / f"{filename}_result{file_extension}"
             logger.info(f"Saving {output_file}")
             plt.savefig(output_file)
-            fig.close()
             plt.close()
 
 
