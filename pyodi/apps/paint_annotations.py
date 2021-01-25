@@ -91,7 +91,9 @@ def paint_annotations(
             bbox_dict = list(
                 filter(lambda bbox: bbox["image_id"] == img.get("id"), bbox_data)
             )
+
             if not bbox_dict:
+                logger.warning(f"No bbox found at {image}")
                 continue
             bbox_left, bbox_top, bbox_width, bbox_height = bbox_dict[0].get("bbox")
             cat_id = bbox_dict[0].get("category_id")
@@ -133,6 +135,7 @@ def paint_annotations(
             output_file = Path(output_folder) / f"{filename[1]}_result{file_extension}"
             logger.info(f"Saving {output_file}")
             plt.savefig(output_file)
+            fig.close()
             plt.close()
 
 
