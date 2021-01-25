@@ -1,4 +1,5 @@
 import json
+import os
 from collections import defaultdict
 from pathlib import Path
 from typing import Dict, Optional
@@ -61,38 +62,43 @@ def paint_annotations(
     for annotation in annotations:
         image_id_to_annotations[annotation["image_id"]].append(annotation)
 
-    for image in Path(image_folder).glob("**/*"):
+    img_data = ground_truth["images"]
+    bbox_data = ground_truth["annotations"]
+
+    for img in img_data:
+
+        image = img.get("file_name")
         logger.info(f"Loading {image}")
 
-        if image.stem not in image_name_to_id:
-            logger.warning(f"{image.stem} not in ground_truth_file")
-            continue
+        if image not in image_name_to_id:
+            logger.warning(f"{image} not in ground_truth_file")
 
-        image_pil = Image.open(image)
+        if os.path.isfile(image_folder + "/" + image):
 
-        width, height = image_pil.size
-        fig = plt.figure(frameon=False, figsize=(width / 80, height / 80))
+            image_pil = Image.open(image_folder + "/" + image)
 
-        ax = plt.Axes(fig, [0.0, 0.0, 1.0, 1.0])
-        ax.set_axis_off()
-        fig.add_axes(ax)
+            width, height = image_pil.size
+            fig = plt.figure(frameon=False, figsize=(width / 80, height / 80))
+            ax = plt.Axes(fig, [0.0, 0.0, 1.0, 1.0])
+            ax.set_axis_off()
+            fig.add_axes(ax)
+            ax.imshow(image_pil, aspect="auto")
 
-        ax.imshow(image_pil, aspect="auto")
+            polygons = []
+            colors = []
 
-        polygons = []
-        colors = []
-        image_id = image_name_to_id[image.stem]
-        annotations = image_id_to_annotations[image_id]
-        for annotation in annotations:
-            if annotation["score"] < show_score_thr:
+            # Filter the list of annotations and receive a list with only the desired element
+            bbox_dict = list(
+                filter(lambda bbox: bbox["image_id"] == img.get("id"), bbox_data)
+            )
+            if not bbox_dict:
                 continue
-
-            bbox_left, bbox_top, bbox_width, bbox_height = annotation["bbox"]
-            cat_id = annotation["category_id"]
+            bbox_left, bbox_top, bbox_width, bbox_height = bbox_dict[0].get("bbox")
+            cat_id = bbox_dict[0].get("category_id")
             label = category_id_to_label[cat_id]
             color_id = annotation[color_key]
             color = colormap[color_id % len(colormap)]
-            score = annotation["score"]
+            score = bbox_dict[0].get("score")
 
             poly = [
                 [bbox_left, bbox_top],
@@ -114,15 +120,20 @@ def paint_annotations(
             polygons.append(Polygon(np_poly))
             colors.append(color)
 
-        p = PatchCollection(polygons, facecolor=colors, linewidths=0, alpha=0.3)
-        ax.add_collection(p)
+            p = PatchCollection(polygons, facecolor=colors, linewidths=0, alpha=0.3)
+            ax.add_collection(p)
 
-        p = PatchCollection(polygons, facecolor="none", edgecolors=colors, linewidths=1)
-        ax.add_collection(p)
+            p = PatchCollection(
+                polygons, facecolor="none", edgecolors=colors, linewidths=1
+            )
+            ax.add_collection(p)
 
-        output_file = Path(output_folder) / f"{image.stem}_result{image.suffix}"
-        logger.info(f"Saving {output_file}")
-        plt.savefig(output_file)
+            filename, file_extension = os.path.splitext(image)
+            filename = filename.split("/")
+            output_file = Path(output_folder) / f"{filename[1]}_result{file_extension}"
+            logger.info(f"Saving {output_file}")
+            plt.savefig(output_file)
+            plt.close()
 
 
 if __name__ == "__main__":
