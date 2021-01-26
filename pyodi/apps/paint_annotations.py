@@ -63,9 +63,10 @@ def paint_annotations(
 
     img_data = ground_truth["images"]
     annotations_data = ground_truth["annotations"]
-    bbox_data = {}
+
+    bbox_data: Dict = defaultdict(list)
     for data in annotations_data:
-        bbox_data[data["image_id"]] = data
+        bbox_data[data["image_id"]].append(data)
 
     for img in img_data:
 
@@ -75,8 +76,8 @@ def paint_annotations(
         if image not in image_name_to_id:
             logger.warning(f"{image} not in ground_truth_file")
 
-        if Path(image_folder + "/" + image).is_file():
-            image_pil = Image.open(image_folder + "/" + image)
+        if (Path(image_folder) / image).is_file():
+            image_pil = Image.open((Path(image_folder) / image))
 
             width, height = image_pil.size
             fig = plt.figure(frameon=False, figsize=(width / 80, height / 80))
@@ -92,40 +93,45 @@ def paint_annotations(
                 logger.warning(f"No bbox found at {image}")
                 continue
 
-            bbox_left, bbox_top, bbox_width, bbox_height = bbox_data[img["id"]]["bbox"]
-            cat_id = bbox_data[img["id"]]["category_id"]
-            label = category_id_to_label[cat_id]
-            color_id = annotation[color_key]
-            color = colormap[color_id % len(colormap)]
-            score = bbox_data[img["id"]]["score"]
+            for v in range(len(bbox_data[img["id"]])):
 
-            poly = [
-                [bbox_left, bbox_top],
-                [bbox_left, bbox_top + bbox_height],
-                [bbox_left + bbox_width, bbox_top + bbox_height],
-                [bbox_left + bbox_width, bbox_top],
-            ]
+                bbox_left, bbox_top, bbox_width, bbox_height = bbox_data[img["id"]][v][
+                    "bbox"
+                ]
 
-            ax.text(
-                bbox_left,
-                bbox_top,
-                f"{label}: {score:.2f}",
-                va="top",
-                ha="left",
-                bbox=dict(facecolor="white", edgecolor=color, alpha=0.5, pad=0),
-            )
+                cat_id = bbox_data[img["id"]][v]["category_id"]
+                label = category_id_to_label[cat_id]
+                color_id = annotation[color_key]
+                color = colormap[color_id % len(colormap)]
+                score = bbox_data[img["id"]][v]["score"]
 
-            np_poly = np.array(poly).reshape((4, 2))
-            polygons.append(Polygon(np_poly))
-            colors.append(color)
+                poly = [
+                    [bbox_left, bbox_top],
+                    [bbox_left, bbox_top + bbox_height],
+                    [bbox_left + bbox_width, bbox_top + bbox_height],
+                    [bbox_left + bbox_width, bbox_top],
+                ]
 
-            p = PatchCollection(polygons, facecolor=colors, linewidths=0, alpha=0.3)
-            ax.add_collection(p)
+                ax.text(
+                    bbox_left,
+                    bbox_top,
+                    f"{label}: {score:.2f}",
+                    va="top",
+                    ha="left",
+                    bbox=dict(facecolor="white", edgecolor=color, alpha=0.5, pad=0),
+                )
 
-            p = PatchCollection(
-                polygons, facecolor="none", edgecolors=colors, linewidths=1
-            )
-            ax.add_collection(p)
+                np_poly = np.array(poly).reshape((4, 2))
+                polygons.append(Polygon(np_poly))
+                colors.append(color)
+
+                p = PatchCollection(polygons, facecolor=colors, linewidths=0, alpha=0.3)
+                ax.add_collection(p)
+
+                p = PatchCollection(
+                    polygons, facecolor="none", edgecolors=colors, linewidths=1
+                )
+                ax.add_collection(p)
 
             filename = Path(image).stem
             file_extension = Path(image).suffix
