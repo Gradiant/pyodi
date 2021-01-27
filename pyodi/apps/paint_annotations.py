@@ -49,7 +49,6 @@ def paint_annotations(
         cat["id"]: cat["name"] for cat in ground_truth["categories"]
     }
     image_id_to_annotations: Dict = defaultdict(list)
-
     if predictions_file is not None:
         annotations = json.load(open(predictions_file))
     else:
@@ -61,23 +60,21 @@ def paint_annotations(
     for annotation in annotations:
         image_id_to_annotations[annotation["image_id"]].append(annotation)
 
-    img_data = ground_truth["images"]
-    annotations_data = ground_truth["annotations"]
+    image_data = ground_truth["images"]
 
-    bbox_data: Dict = defaultdict(list)
-    for data in annotations_data:
-        bbox_data[data["image_id"]].append(data)
+    for image in image_data:
 
-    for img in img_data:
+        image_filename = image["file_name"]
+        image_id = image["id"]
+        image_path = Path(image_folder) / image_filename
 
-        image = img["file_name"]
-        logger.info(f"Loading {image}")
+        logger.info(f"Loading {image_filename}")
 
-        if image not in image_name_to_id:
-            logger.warning(f"{image} not in ground_truth_file")
+        if image_filename not in image_name_to_id:
+            logger.warning(f"{image_filename} not in ground_truth_file")
 
-        if (Path(image_folder) / image).is_file():
-            image_pil = Image.open((Path(image_folder) / image))
+        if image_path.is_file():
+            image_pil = Image.open(image_path)
 
             width, height = image_pil.size
             fig = plt.figure(frameon=False, figsize=(width / 80, height / 80))
@@ -89,21 +86,19 @@ def paint_annotations(
             polygons = []
             colors = []
 
-            if img["id"] not in bbox_data.keys():
-                logger.warning(f"No bbox found at {image}")
+            if image_id not in image_id_to_annotations:
+                logger.warning(f"No bbox found at {image_filename}")
                 continue
 
-            for v in range(len(bbox_data[img["id"]])):
+            for annotation in image_id_to_annotations[image_id]:
 
-                bbox_left, bbox_top, bbox_width, bbox_height = bbox_data[img["id"]][v][
-                    "bbox"
-                ]
+                bbox_left, bbox_top, bbox_width, bbox_height = annotation["bbox"]
 
-                cat_id = bbox_data[img["id"]][v]["category_id"]
+                cat_id = annotation["category_id"]
                 label = category_id_to_label[cat_id]
                 color_id = annotation[color_key]
                 color = colormap[color_id % len(colormap)]
-                score = bbox_data[img["id"]][v]["score"]
+                score = annotation["score"]
 
                 poly = [
                     [bbox_left, bbox_top],
@@ -133,8 +128,8 @@ def paint_annotations(
                 )
                 ax.add_collection(p)
 
-            filename = Path(image).stem
-            file_extension = Path(image).suffix
+            filename = Path(image_filename).stem
+            file_extension = Path(image_filename).suffix
             output_file = Path(output_folder) / f"{filename}_result{file_extension}"
             logger.info(f"Saving {output_file}")
             plt.savefig(output_file)
