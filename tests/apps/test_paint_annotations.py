@@ -16,42 +16,21 @@ def create_annotations(tmp_path):
                 "width": 1920,
                 "height": 1080,
                 "file_name": "test_0.png",
-                "license": "",
-                "flickr_url": "",
-                "coco_url": "",
-                "date_captured": "",
-                "POV": "",
-                "source": "",
-                "is_full_sequence": False,
-                "owner": "",
+               
             },
             {
                 "id": 1,
                 "width": 1920,
                 "height": 1080,
                 "file_name": "test_1.png",
-                "license": "",
-                "flickr_url": "",
-                "coco_url": "",
-                "date_captured": "",
-                "POV": "",
-                "source": "",
-                "is_full_sequence": False,
-                "owner": "",
+                
             },
             {
                 "id": 2,
                 "width": 1920,
                 "height": 1080,
                 "file_name": "test_2.png",
-                "license": "",
-                "flickr_url": "",
-                "coco_url": "",
-                "date_captured": "",
-                "POV": "",
-                "source": "",
-                "is_full_sequence": False,
-                "owner": "",
+               
             },
         ],
         "annotations": [
@@ -59,9 +38,6 @@ def create_annotations(tmp_path):
                 "id": 0,
                 "image_id": 0,
                 "category_id": 1,
-                "segmentation": [
-                    [316.0, 951.0, 316.0, 963.0, 329.0, 963.0, 329.0, 951.0]
-                ],
                 "area": 156.0,
                 "bbox": [653.0, 950.0, 15.0, 10.0],
                 "iscrowd": 0,
@@ -71,9 +47,6 @@ def create_annotations(tmp_path):
                 "id": 1,
                 "image_id": 1,
                 "category_id": 1,
-                "segmentation": [
-                    [346.0, 957.0, 346.0, 968.0, 359.0, 968.0, 359.0, 957.0]
-                ],
                 "area": 143.0,
                 "bbox": [231.0, 200.0, 10.0, 10.0],
                 "iscrowd": 0,
@@ -83,23 +56,12 @@ def create_annotations(tmp_path):
                 "id": 2,
                 "image_id": 1,
                 "category_id": 1,
-                "segmentation": [
-                    [346.0, 957.0, 346.0, 968.0, 359.0, 968.0, 359.0, 957.0]
-                ],
                 "area": 143.0,
                 "bbox": [600.0, 674.0, 30.0, 30.0],
                 "iscrowd": 0,
                 "score": 1,
             },
         ],
-        "info": {
-            "year": "",
-            "version": "",
-            "description": "",
-            "contributor": "",
-            "url": "",
-            "date_created": "",
-        },
         "licenses": [],
         "categories": [{"id": 1, "name": "drone", "supercategory": "object"}],
     }
