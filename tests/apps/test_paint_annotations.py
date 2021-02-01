@@ -2,82 +2,13 @@ import json
 from pathlib import Path
 
 import numpy as np
+from matplotlib import cm
 from PIL import Image
 
 from pyodi.apps.paint_annotations import paint_annotations
 
 
-def create_annotations(tmp_path):
-
-    annotations_file = {
-        "images": [
-            {
-                "id": 0,
-                "width": 1920,
-                "height": 1080,
-                "file_name": "test_0.png",
-               
-            },
-            {
-                "id": 1,
-                "width": 1920,
-                "height": 1080,
-                "file_name": "test_1.png",
-                
-            },
-            {
-                "id": 2,
-                "width": 1920,
-                "height": 1080,
-                "file_name": "test_2.png",
-               
-            },
-        ],
-        "annotations": [
-            {
-                "id": 0,
-                "image_id": 0,
-                "category_id": 1,
-                "area": 156.0,
-                "bbox": [653.0, 950.0, 15.0, 10.0],
-                "iscrowd": 0,
-                "score": 1,
-            },
-            {
-                "id": 1,
-                "image_id": 1,
-                "category_id": 1,
-                "area": 143.0,
-                "bbox": [231.0, 200.0, 10.0, 10.0],
-                "iscrowd": 0,
-                "score": 1,
-            },
-            {
-                "id": 2,
-                "image_id": 1,
-                "category_id": 1,
-                "area": 143.0,
-                "bbox": [600.0, 674.0, 30.0, 30.0],
-                "iscrowd": 0,
-                "score": 1,
-            },
-        ],
-        "licenses": [],
-        "categories": [{"id": 1, "name": "drone", "supercategory": "object"}],
-    }
-    with open(tmp_path / "test_annotation.json", "w") as json_file:
-        json.dump(annotations_file, json_file)
-
-
-def create_images(tmp_path):
-
-    with open(tmp_path / "test_annotation.json", "r") as json_file:
-        annotations = json.loads(json_file.read())
-
-    image_data = annotations["images"]
-    bbox_data = []
-    for ann in annotations["annotations"]:
-        bbox_data.append(ann["bbox"])
+def test_image_annotations(tmp_path):
 
     images_folder = tmp_path / "images"
     Path(images_folder).mkdir(exist_ok=True, parents=True)
@@ -85,67 +16,56 @@ def create_images(tmp_path):
     output_folder = tmp_path / "test_result"
     Path(output_folder).mkdir(exist_ok=True, parents=True)
 
-    image_0 = np.full(
-        (image_data[0]["height"], image_data[0]["width"], 3), 255, dtype=np.uint8
-    )
+    images = [
+        {"id": 0, "width": 10, "height": 10, "file_name": "test_0.png"},
+        {"id": 1, "width": 10, "height": 10, "file_name": "test_1.png"},
+        {"id": 2, "width": 10, "height": 10, "file_name": "test_2.png"},
+    ]
 
-    (
-        image_0_bbox_left,
-        image_0_bbox_top,
-        image_0_bbox_width,
-        image_0_bbox_height,
-    ) = bbox_data[0]
-    image_0[
-        int(image_0_bbox_top) : int(image_0_bbox_top + image_0_bbox_height),
-        int(image_0_bbox_left) : int(image_0_bbox_left + image_0_bbox_width),
-    ] = 0
-    Image.fromarray(image_0).save(images_folder / "test_0.png")
+    annotations = [
+        {"image_id": 0, "category_id": 0, "bbox": [0, 0, 2, 2], "score": 1},
+        {"image_id": 1, "category_id": 0, "bbox": [0, 0, 2, 2], "score": 1},
+        {"image_id": 1, "category_id": 1, "bbox": [3, 3, 2, 2], "score": 1},
+    ]
 
-    image_1 = np.full(
-        (image_data[1]["height"], image_data[1]["width"], 3), 255, dtype=np.uint8
-    )
+    categories = [
+        {"id": 0, "name": "", "supercategory": "object"},
+        {"id": 1, "name": "", "supercategory": "object"},
+    ]
 
-    (
-        image_1_bbox_left_a,
-        image_1_bbox_top_a,
-        image_1_bbox_width_a,
-        image_1_bbox_height_a,
-    ) = bbox_data[1]
+    coco_data = dict(images=images, annotations=annotations, categories=categories)
 
-    (
-        image_1_bbox_left_b,
-        image_1_bbox_top_b,
-        image_1_bbox_width_b,
-        image_1_bbox_height_b,
-    ) = bbox_data[2]
-    image_1[
-        int(image_1_bbox_top_a) : int(image_1_bbox_top_a + image_1_bbox_height_a),
-        int(image_1_bbox_left_a) : int(image_1_bbox_left_a + image_1_bbox_width_a),
-    ] = 0
-    image_1[
-        int(image_1_bbox_top_b) : int(image_1_bbox_top_b + image_1_bbox_height_b),
-        int(image_1_bbox_left_b) : int(image_1_bbox_left_b + image_1_bbox_width_b),
-    ] = 0
-    Image.fromarray(image_1).save(images_folder / "test_1.png")
+    n_categories = len(categories)
+    colormap = cm.rainbow(np.linspace(0, 1, n_categories))
 
-    image_2 = np.full(
-        (image_data[1]["height"], image_data[1]["width"], 3), 255, dtype=np.uint8
-    )
-    Image.fromarray(image_2).save(images_folder / "test_2.png")
+    color_1 = np.round(colormap[0] * 255)
+    color_2 = np.round(colormap[1] * 255)
 
+    num_image = 0
+    for image_data in images:
 
-def test_image_annotations(tmp_path):
+        image = np.zeros((image_data["height"], image_data["width"], 3), dtype=np.uint8)
+        Image.fromarray(image).save(images_folder / f"test_{num_image}.png")
+        num_image += 1
 
-    create_annotations(tmp_path)
-
-    create_images(tmp_path)
+    with open(tmp_path / "test_annotation.json", "w") as json_file:
+        json.dump(coco_data, json_file)
 
     paint_annotations(
-        tmp_path / "test_annotation.json", tmp_path / "images", tmp_path / "test_result"
+        tmp_path / "test_annotation.json",
+        images_folder,
+        output_folder,
+        show_label=False,
     )
 
-    assert Path(tmp_path / "test_annotation.json").is_file()
+    result_image_0 = np.asarray(Image.open(output_folder / "test_0_result.png"))
+    result_image_1 = np.asarray(Image.open(output_folder / "test_1_result.png"))
 
-    assert Path(tmp_path / "images").is_dir()
+    assert np.array_equal(result_image_0[0, 1], color_1)
+    assert np.array_equal(result_image_0[2, 3], color_1)
 
-    assert Path(tmp_path / "test_result").is_dir()
+    assert np.array_equal(result_image_1[0, 1], color_1)
+    assert np.array_equal(result_image_1[2, 3], color_1)
+
+    assert np.array_equal(result_image_1[3, 4], color_2)
+    assert np.array_equal(result_image_1[5, 6], color_2)
