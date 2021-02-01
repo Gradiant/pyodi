@@ -41,12 +41,10 @@ def test_image_annotations(tmp_path):
     color_1 = np.round(colormap[0] * 255)
     color_2 = np.round(colormap[1] * 255)
 
-    num_image = 0
-    for image_data in images:
+    for i, image_data in enumerate(images):
 
         image = np.zeros((image_data["height"], image_data["width"], 3), dtype=np.uint8)
-        Image.fromarray(image).save(images_folder / f"test_{num_image}.png")
-        num_image += 1
+        Image.fromarray(image).save(images_folder / f"test_{i}.png")
 
     with open(tmp_path / "test_annotation.json", "w") as json_file:
         json.dump(coco_data, json_file)

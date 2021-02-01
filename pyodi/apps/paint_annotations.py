@@ -38,7 +38,7 @@ def paint_annotations(
         show_score_thr: Detections bellow this threshold will not be painted.
             Default 0.0.
         color_key: Choose the key in annotations on which the color will depend. Defaults to 'category_id'.
-        show_label: Choose wether to show the label in the annotation file or not.
+        show_label: Choose whether to show label and score threshold on image. Default True.
     """
     Path(output_folder).mkdir(exist_ok=True, parents=True)
 
