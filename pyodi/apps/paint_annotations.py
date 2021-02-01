@@ -24,6 +24,7 @@ def paint_annotations(
     predictions_file: Optional[str] = None,
     show_score_thr: float = 0.0,
     color_key: str = "category_id",
+    show_label: bool = True,
 ) -> None:
     """Paint `ground_truth_file` or `predictions_file` annotations on `image_folder` images.
 
@@ -37,6 +38,7 @@ def paint_annotations(
         show_score_thr: Detections bellow this threshold will not be painted.
             Default 0.0.
         color_key: Choose the key in annotations on which the color will depend. Defaults to 'category_id'.
+        show_label: Choose whether to show label and score threshold on image. Default True.
     """
     Path(output_folder).mkdir(exist_ok=True, parents=True)
 
@@ -49,7 +51,6 @@ def paint_annotations(
         cat["id"]: cat["name"] for cat in ground_truth["categories"]
     }
     image_id_to_annotations: Dict = defaultdict(list)
-
     if predictions_file is not None:
         annotations = json.load(open(predictions_file))
     else:
@@ -61,68 +62,82 @@ def paint_annotations(
     for annotation in annotations:
         image_id_to_annotations[annotation["image_id"]].append(annotation)
 
-    for image in Path(image_folder).glob("**/*"):
-        logger.info(f"Loading {image}")
+    image_data = ground_truth["images"]
 
-        if image.stem not in image_name_to_id:
-            logger.warning(f"{image.stem} not in ground_truth_file")
-            continue
+    for image in image_data:
 
-        image_pil = Image.open(image)
+        image_filename = image["file_name"]
+        image_id = image["id"]
+        image_path = Path(image_folder) / image_filename
 
-        width, height = image_pil.size
-        fig = plt.figure(frameon=False, figsize=(width / 80, height / 80))
+        logger.info(f"Loading {image_filename}")
 
-        ax = plt.Axes(fig, [0.0, 0.0, 1.0, 1.0])
-        ax.set_axis_off()
-        fig.add_axes(ax)
+        if image_filename not in image_name_to_id:
+            logger.warning(f"{image_filename} not in ground_truth_file")
 
-        ax.imshow(image_pil, aspect="auto")
+        if image_path.is_file():
+            image_pil = Image.open(image_path)
 
-        polygons = []
-        colors = []
-        image_id = image_name_to_id[image.stem]
-        annotations = image_id_to_annotations[image_id]
-        for annotation in annotations:
-            if annotation["score"] < show_score_thr:
+            width, height = image_pil.size
+            fig = plt.figure(frameon=False, figsize=(width / 96, height / 96))
+
+            ax = plt.Axes(fig, [0.0, 0.0, 1.0, 1.0])
+            ax.set_axis_off()
+            fig.add_axes(ax)
+            ax.imshow(image_pil, aspect="auto")
+
+            polygons = []
+            colors = []
+
+            if image_id not in image_id_to_annotations:
+                logger.warning(f"No bbox found at {image_filename}")
                 continue
 
-            bbox_left, bbox_top, bbox_width, bbox_height = annotation["bbox"]
-            cat_id = annotation["category_id"]
-            label = category_id_to_label[cat_id]
-            color_id = annotation[color_key]
-            color = colormap[color_id % len(colormap)]
-            score = annotation["score"]
+            for annotation in image_id_to_annotations[image_id]:
 
-            poly = [
-                [bbox_left, bbox_top],
-                [bbox_left, bbox_top + bbox_height],
-                [bbox_left + bbox_width, bbox_top + bbox_height],
-                [bbox_left + bbox_width, bbox_top],
-            ]
+                bbox_left, bbox_top, bbox_width, bbox_height = annotation["bbox"]
 
-            ax.text(
-                bbox_left,
-                bbox_top,
-                f"{label}: {score:.2f}",
-                va="top",
-                ha="left",
-                bbox=dict(facecolor="white", edgecolor=color, alpha=0.5, pad=0),
+                cat_id = annotation["category_id"]
+                label = category_id_to_label[cat_id]
+                color_id = annotation[color_key]
+                color = colormap[color_id % len(colormap)]
+                score = annotation["score"]
+
+                poly = [
+                    [bbox_left, bbox_top],
+                    [bbox_left, bbox_top + bbox_height],
+                    [bbox_left + bbox_width, bbox_top + bbox_height],
+                    [bbox_left + bbox_width, bbox_top],
+                ]
+                if show_label:
+                    ax.text(
+                        bbox_left,
+                        bbox_top,
+                        f"{label}: {score:.2f}",
+                        va="top",
+                        ha="left",
+                        bbox=dict(facecolor="white", edgecolor=color, alpha=0.5, pad=0),
+                    )
+
+                np_poly = np.array(poly).reshape((4, 2))
+                polygons.append(Polygon(np_poly))
+                colors.append(color)
+
+            p = PatchCollection(polygons, facecolor=colors, linewidths=0, alpha=0.3)
+            ax.add_collection(p)
+
+            p = PatchCollection(
+                polygons, facecolor="none", edgecolors=colors, linewidths=1
             )
+            ax.add_collection(p)
 
-            np_poly = np.array(poly).reshape((4, 2))
-            polygons.append(Polygon(np_poly))
-            colors.append(color)
+            filename = Path(image_filename).stem
+            file_extension = Path(image_filename).suffix
+            output_file = Path(output_folder) / f"{filename}_result{file_extension}"
+            logger.info(f"Saving {output_file}")
 
-        p = PatchCollection(polygons, facecolor=colors, linewidths=0, alpha=0.3)
-        ax.add_collection(p)
-
-        p = PatchCollection(polygons, facecolor="none", edgecolors=colors, linewidths=1)
-        ax.add_collection(p)
-
-        output_file = Path(output_folder) / f"{image.stem}_result{image.suffix}"
-        logger.info(f"Saving {output_file}")
-        plt.savefig(output_file)
+            plt.savefig(output_file)
+            plt.close()
 
 
 if __name__ == "__main__":
