@@ -34,8 +34,10 @@ See [Contributing guide](.github/CONTRIBUTING.md) for more info.
 
 Pyodi includes different applications that can help you to extract the most from your dataset. A classic flow could follow the following steps:
 
-#### 1. Ground truth visualization
-When dealing with a computer vision dataset, one of the first things one must do is to have a look at how data looks and pyodi `paint_annotations` is perfect for this.
+#### 1. Annotation visualization
+
+With pyodi `paint_annotations` you can easily visualize in a beautiful format your object detection dataset. You can also use this function to visualize model predictions if they are in COCO predictions format.
+
 ```bash
 pyodi paint-annotations \
   ../tiny_coco/annotations/instances_train2017.json \
@@ -44,3 +46,19 @@ pyodi paint-annotations \
 ```
 
 ![COCO image with painted annotations](resources/coco_sample_174482.jpg)
+
+#### 2. Ground truth exploration
+
+It is very recommended to intensively explore your dataset before starting training. The analysis of your images and annotation will allow you to optimize aspects as the optimum image input size for your network or the shape distribution of the bounding boxes. You can use `ground_truth` for this task:
+
+```bash
+pyodi ground-truth ../tiny_coco/annotations/instances_train2017.json
+```
+
+The output of this command shows three different kinds of plots. The first of them contains information related with the shape of the images present in the dataset. **ADD IMAGE DESCRIPTION WHEN FINAL IMAGE IS SELECTED**
+![Image shape distribution](resources/gt_img_shapes.png)
+We can also observe bounding box distribution, with the possibility of enabling filters by class or sets of classes. **This dataset shows a clear tendency to  rectangular bounding boxes with larger width than height and where most of them embrace areas below the 20% of the total image.**
+![Bbox distribution](resources/gt_bb_shapes.png)
+
+Finally, we can also check where the centers of bounding boxes are most commonly found with respect to the image, which can help us distinguish ROIs in input images. In this case we observe that the objects usually appear in the upper half of the images.
+![Bbox center distribution](resources/gt_bb_centers.png)
