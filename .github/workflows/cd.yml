@@ -1,5 +1,5 @@
 
-name: pyodi C.D.
+name: Continuous Delivery
 
 on:
   release:
