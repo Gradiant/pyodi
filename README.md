@@ -43,5 +43,4 @@ pyodi paint-annotations \
   ./painted_ground_truth
 ```
 
-[ADD_IMAGE]
-
+![COCO image with painted annotations](resources/coco_sample_174482.jpg)
