@@ -109,8 +109,7 @@ def paint_annotations(
                     [bbox_left + bbox_width, bbox_top + bbox_height],
                     [bbox_left + bbox_width, bbox_top],
                 ]
-                np_poly = np.array(poly).reshape((4, 2))
-                polygons.append(Polygon(np_poly))
+                polygons.append(Polygon(poly))
                 colors.append(color)
 
                 if show_label:
