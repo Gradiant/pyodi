@@ -22,7 +22,7 @@ def paint_annotations(
     image_folder: str,
     output_folder: str,
     predictions_file: Optional[str] = None,
-    show_score_thr: float = 0.0,
+    score_thr: float = 0.0,
     color_key: str = "category_id",
     show_label: bool = True,
 ) -> None:
@@ -35,8 +35,9 @@ def paint_annotations(
             It will be created if it does not exist.
         predictions_file: Path to COCO predictions file.
             If not None, the annotations of predictions_file will be painted instead of ground_truth_file's.
-        show_score_thr: Detections bellow this threshold will not be painted.
+        score_thr: Detections bellow this threshold will not be painted.
             Default 0.0.
+        show_score
         color_key: Choose the key in annotations on which the color will depend. Defaults to 'category_id'.
         show_label: Choose whether to show label and score threshold on image. Default True.
     """
@@ -60,6 +61,7 @@ def paint_annotations(
     colormap = cm.rainbow(np.linspace(0, 1, n_colors))
 
     for annotation in annotations:
+
         image_id_to_annotations[annotation["image_id"]].append(annotation)
 
     image_data = ground_truth["images"]
@@ -72,7 +74,7 @@ def paint_annotations(
 
         logger.info(f"Loading {image_filename}")
 
-        if image_filename not in image_name_to_id:
+        if Path(image_filename).stem not in image_name_to_id:
             logger.warning(f"{image_filename} not in ground_truth_file")
 
         if image_path.is_file():
@@ -89,19 +91,17 @@ def paint_annotations(
             polygons = []
             colors = []
 
-            if image_id not in image_id_to_annotations:
-                logger.warning(f"No bbox found at {image_filename}")
-                continue
-
             for annotation in image_id_to_annotations[image_id]:
 
+                score = annotation.get("score", 1)
+                if score < score_thr:
+                    continue
                 bbox_left, bbox_top, bbox_width, bbox_height = annotation["bbox"]
 
                 cat_id = annotation["category_id"]
                 label = category_id_to_label[cat_id]
                 color_id = annotation[color_key]
                 color = colormap[color_id % len(colormap)]
-                score = annotation["score"]
 
                 poly = [
                     [bbox_left, bbox_top],
@@ -109,19 +109,23 @@ def paint_annotations(
                     [bbox_left + bbox_width, bbox_top + bbox_height],
                     [bbox_left + bbox_width, bbox_top],
                 ]
+                np_poly = np.array(poly).reshape((4, 2))
+                polygons.append(Polygon(np_poly))
+                colors.append(color)
+
                 if show_label:
+                    label_text = f"{label}"
+                    if predictions_file is not None:
+                        label_text += f": {score:.2f}"
+
                     ax.text(
                         bbox_left,
                         bbox_top,
-                        f"{label}: {score:.2f}",
+                        label_text,
                         va="top",
                         ha="left",
                         bbox=dict(facecolor="white", edgecolor=color, alpha=0.5, pad=0),
                     )
-
-                np_poly = np.array(poly).reshape((4, 2))
-                polygons.append(Polygon(np_poly))
-                colors.append(color)
 
             p = PatchCollection(polygons, facecolor=colors, linewidths=0, alpha=0.3)
             ax.add_collection(p)
