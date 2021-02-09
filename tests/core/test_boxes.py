@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from pyodi.coco.utils import (
+from pyodi.core.boxes import (
     add_centroids,
     coco_to_corners,
     corners_to_coco,
