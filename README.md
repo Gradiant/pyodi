@@ -55,40 +55,42 @@ It is very recommended to intensively explore your dataset before starting train
 pyodi ground-truth ../tiny_coco/annotations/instances_train2017.json
 ```
 
-The output of this command shows three different kinds of plots. The first of them contains information related with the shape of the images present in the dataset. **ADD IMAGE DESCRIPTION WHEN FINAL IMAGE IS SELECTED**
+The output of this command shows three different kinds of plots. The first of them contains information related with the shape of the images present in the dataset. In this case we can clearly identify two main patterns in this dataset and if we have a look at the histogram, we can see how most of images have 640 pixels width, while as height is more distributed between different values.
+
 ![Image shape distribution](resources/gt_img_shapes.png)
-We can also observe bounding box distribution, with the possibility of enabling filters by class or sets of classes. **This dataset shows a clear tendency to  rectangular bounding boxes with larger width than height and where most of them embrace areas below the 20% of the total image.**
+
+We can also observe bounding box distribution, with the possibility of enabling filters by class or sets of classes. This dataset shows a tendency to  rectangular bounding boxes with larger width than height and where most of them embrace areas below the 20% of the total image.
 ![Bbox distribution](resources/gt_bb_shapes.png)
 
-Finally, we can also check where the centers of bounding boxes are most commonly found with respect to the image, which can help us distinguish ROIs in input images. In this case we observe that the objects usually appear in the upper half of the images.
+Finally, we can also check where the centers of bounding boxes are most commonly found with respect to the image, which can help us distinguish ROIs in input images. In this case we observe that the objects usually appear in the center of the image.
 ![Bbox center distribution](resources/gt_bb_centers.png)
 
 #### 3. Train config generation
 
-The design of anchors is critical for the performance of one-stage detectors. Usually, published models such [RetinaNet](https://arxiv.org/abs/1708.02002) include default anchors which has been designed to work with general object detection purpose as COCO dataset. Sometimes you work with data which contains only a few different classes that share similar properties as the bounding box shape, this would be the case for a drone detection dataset such [Drone vs Bird](https://wosdetc2020.wordpress.com/). You can exploit this by designing anchors that specially fit the distribution of your data, optimizing the probability of matching ground truth bounding boxes with generated anchors, which can result in an increase in the performance of your model. At the same time, you can reduce the number of anchors you use to boost inference and training time.
+The design of anchors is critical for the performance of one-stage detectors. Usually, published models such [Faster R-CNN](https://arxiv.org/abs/1506.01497) or [RetinaNet](https://arxiv.org/abs/1708.02002) include default anchors which has been designed to work with general object detection purpose as COCO dataset. Nevertheless, you might be envolved in different problems which data contains only a few different classes that share similar properties, as the object sizes or shapes, this would be the case for a drone detection dataset such [Drone vs Bird](https://wosdetc2020.wordpress.com/). You can exploit this knowledge by designing anchors that specially fit the distribution of your data, optimizing the probability of matching ground truth bounding boxes with generated anchors, which can result in an increase in the performance of your model. At the same time, you can reduce the number of anchors you use to boost inference and training time.
 
-With pyodi `train-config generation` you can automatically find a set of anchors that fit your data distribution. We can adjust the number of scales and ratios we want and the starting anchor base size for each pyramid level. The input size determines the model input size and automatically adjusts images and annotations shapes to it.
+With pyodi `train-config generation` you can automatically find a set of anchors that fit your data distribution. For this we can adjust the number of scales and ratios the strides of anchors in the multiple feature levels and even the anchor base size for each level. The input size parameter determines the model input size and automatically reshapes images and annotations sizes to it.
 
 ```bash
 pyodi train-config generation \
-  ../tiny_coco/annotations/instances_train2017.json \
+  ../TINY_COCO_ANIMAL/annotations/instances_train2017.json \
   --input-size 1280 70 \
   --n-ratios 3 \
-  --n-scales 3 \
-  --output ./resources
+  --n-scales 3
 ```
 
-Result of this command shows two different plots. The left plot log scale vs log ratio of bounding boxes and proposed anchors and the right one compares scaled widths and heights. It is easy to observe how proposed anchors follow original data distribution.
+Result of this command shows two different plots. In the left side we can visualize a comparison between objects and their assigned base anchor. Each object is assigned to one pyramid level depending on its size. The x axis shows the log scale between the object and the base anchor that represents that pyramid level and the y axis represents the ratio between scale ratios. We use log scale to ease visualization. The 9 different centroids that we observe in the graph are all combinations between the three scales and the three ratios found. The plot in the right contains the same information but with respect to bounding boxes width and heights. There, the centroids are the result of applying the previous 9 configurations to each base anchor of the feature levels.
 
 ![Anchor clustering plot](resources/clusters.png)
 
 Proposed anchors are also attached in a Json file that follows [mmdetection anchors](https://github.com/open-mmlab/mmdetection/blob/master/mmdet/core/anchor/anchor_generator.py#L10) format:
+
 ```python
 anchor_config=dict(
     type='AnchorGenerator',
-    scales=[0.14, 0.42, 0.91],
-    ratios=[0.03, 0.10, 0.22],
+    scales=[1.12, 3.15, 8.12],
+    ratios=[0.33, 0.67, 1.40],
     strides=[4, 8, 16, 32, 64],
-    base_sizes=[32, 64, 128, 256, 512],
+    base_sizes=[4, 8, 16, 32, 64],
 )
 ```
