@@ -274,7 +274,7 @@ def get_df_from_bboxes(
         convert = globals()[f"{input_bbox_format}_to_{output_bbox_format}"]
         bboxes = convert(bboxes)
 
-    return pd.pd.DataFrame(bboxes, columns=get_bbox_column_names(output_bbox_format))
+    return pd.DataFrame(bboxes, columns=get_bbox_column_names(output_bbox_format))
 
 
 def filter_zero_area_bboxes(df: pd.DataFrame) -> pd.DataFrame:

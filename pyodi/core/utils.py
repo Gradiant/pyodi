@@ -66,7 +66,7 @@ def coco_ground_truth_to_dfs(
             dict_images[k].append(v)
         image_id_to_name[image["id"]] = image["file_name"]
 
-    df_images = pd.pd.DataFrame(dict_images)
+    df_images = pd.DataFrame(dict_images)
 
     df_images["ratio"] = df_images["height"] / df_images["width"]
     df_images["scale"] = np.sqrt(df_images["height"] * df_images["width"])
@@ -88,7 +88,7 @@ def coco_ground_truth_to_dfs(
 
     df_images["bounding_box_count"] = image_id_to_count.values()
 
-    df_annotations = pd.pd.DataFrame(dict_annotations)
+    df_annotations = pd.DataFrame(dict_annotations)
 
     return df_images, df_annotations
 
