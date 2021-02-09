@@ -5,7 +5,7 @@ import ensemble_boxes
 import numpy as np
 from loguru import logger
 
-from pyodi.coco.utils import coco_to_corners, corners_to_coco, denormalize, normalize
+from pyodi.core.boxes import coco_to_corners, corners_to_coco, denormalize, normalize
 
 
 def nms_predictions(
