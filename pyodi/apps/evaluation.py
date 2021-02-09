@@ -51,7 +51,7 @@ import typer
 from loguru import logger
 
 from pycocotools.cocoeval import COCOeval
-from pyodi.coco.utils import load_coco_ground_truth_from_StringIO
+from pyodi.core.utils import load_coco_ground_truth_from_StringIO
 
 app = typer.Typer()
 

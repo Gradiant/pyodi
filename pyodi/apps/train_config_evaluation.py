@@ -84,14 +84,16 @@ import numpy as np
 import typer
 from loguru import logger
 
-from pyodi.coco.utils import (
-    coco_ground_truth_to_dfs,
+from pyodi.core.boxes import (
     filter_zero_area_bboxes,
     get_bbox_array,
     get_scale_and_ratio,
+    scale_bbox_dimensions
+)
+from pyodi.core.utils import (
+    coco_ground_truth_to_dfs,
     join_annotations_with_image_sizes,
-    load_ground_truth_file,
-    scale_bbox_dimensions,
+    load_ground_truth_file
 )
 from pyodi.core.anchor_generator import AnchorGenerator
 from pyodi.core.clustering import get_max_overlap

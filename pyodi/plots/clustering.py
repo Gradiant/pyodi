@@ -6,7 +6,7 @@ from plotly import graph_objects as go
 from plotly.colors import DEFAULT_PLOTLY_COLORS as COLORS
 from plotly.subplots import make_subplots
 
-from pyodi.coco.utils import get_df_from_bboxes
+from pyodi.core.boxes import get_df_from_bboxes
 from pyodi.core.anchor_generator import AnchorGenerator
 from pyodi.plots.common import plot_scatter_with_histograms, save_figure
 
