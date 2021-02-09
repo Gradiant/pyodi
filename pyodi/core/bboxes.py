@@ -1,120 +1,8 @@
-import json
-from collections import defaultdict
-from typing import Any, Dict, List, Optional, TextIO, Tuple
+from typing import Any, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
 from loguru import logger
-from numpy import ndarray
-from pandas.core.frame import DataFrame
-from pycocotools.coco import COCO
-
-
-def load_coco_ground_truth_from_StringIO(string_io: TextIO) -> COCO:
-    """Returns COCO object from StringIO.
-
-    Args:
-        string_io: IO stream in text mode.
-
-    Returns:
-        COCO object.
-
-    """
-    coco_ground_truth = COCO()
-    coco_ground_truth.dataset = json.load(string_io)
-    coco_ground_truth.createIndex()
-    return coco_ground_truth
-
-
-def load_ground_truth_file(ground_truth_file: str) -> Dict:
-    """Loads ground truth file.
-
-    Args:
-        ground_truth_file: Path of ground truth file.
-
-    Returns:
-        Dictionary with the ground truth data.
-
-    """
-    logger.info("Loading Ground Truth File")
-    coco_ground_truth = json.load(open(ground_truth_file))
-    return coco_ground_truth
-
-
-def coco_ground_truth_to_dfs(
-    coco_ground_truth: Dict, max_images: int = 200000
-) -> Tuple[DataFrame, DataFrame]:
-    """Transforms COCO ground truth data to DataFrame objects.
-
-    Args:
-        coco_ground_truth: COCO ground truth data.
-        max_images: Maximum number of images to process.
-
-    Returns:
-        Images and annotations DataFrames.
-
-    """
-    logger.info("Converting COCO Ground Truth to DataFrame")
-    dict_images: Dict[str, Any] = defaultdict(list)
-    categories = {x["id"]: x["name"] for x in coco_ground_truth["categories"]}
-    image_id_to_name = {}
-    if len(coco_ground_truth["images"]) > max_images:
-        logger.warning(
-            f"Number of images {len(coco_ground_truth['images'])} exceeds maximum: "
-            f"{max_images}.\nAll the exceeding images will be ignored."
-        )
-    for image in coco_ground_truth["images"][:max_images]:
-        for k, v in image.items():
-            dict_images[k].append(v)
-        image_id_to_name[image["id"]] = image["file_name"]
-
-    df_images = pd.DataFrame(dict_images)
-
-    df_images["ratio"] = df_images["height"] / df_images["width"]
-    df_images["scale"] = np.sqrt(df_images["height"] * df_images["width"])
-
-    image_id_to_count = {x: 0 for x in df_images["id"]}
-    dict_annotations: Dict[str, Any] = defaultdict(list)
-    for annotation in coco_ground_truth["annotations"]:
-        if annotation["image_id"] not in image_id_to_name:
-            # Annotation of one of the exceeding images
-            continue
-        image_id_to_count[annotation["image_id"]] += 1
-        dict_annotations["file_name"].append(image_id_to_name[annotation["image_id"]])
-        dict_annotations["category"].append(categories[annotation["category_id"]])
-        dict_annotations["area"].append(annotation["area"])
-        dict_annotations["col_left"].append(int(annotation["bbox"][0]))
-        dict_annotations["row_top"].append(int(annotation["bbox"][1]))
-        dict_annotations["width"].append(int(annotation["bbox"][2]))
-        dict_annotations["height"].append(int(annotation["bbox"][3]))
-
-    df_images["bounding_box_count"] = image_id_to_count.values()
-
-    df_annotations = pd.DataFrame(dict_annotations)
-
-    return df_images, df_annotations
-
-
-def join_annotations_with_image_sizes(
-    df_annotations: DataFrame, df_images: DataFrame
-) -> DataFrame:
-    """Left join between annotations dataframe and images.
-
-    It only keeps df_annotations keys and image sizes.
-
-    Args:
-        df_annotations: DataFrame with COCO annotations.
-        df_images: DataFrame with images.
-
-    Returns:
-        DataFrame with df_annotations keys and image sizes.
-
-    """
-    column_names = list(df_annotations.columns) + ["img_width", "img_height"]
-    df_images = df_images.add_prefix("img_")
-    return df_annotations.join(df_images.set_index("img_file_name"), on="file_name")[
-        column_names
-    ]
 
 
 def check_bbox_formats(*args: Any) -> None:
@@ -127,17 +15,17 @@ def check_bbox_formats(*args: Any) -> None:
 
 
 def scale_bbox_dimensions(
-    df: DataFrame, input_size: Tuple[int, int] = (1280, 720), keep_ratio: bool = False,
-) -> DataFrame:
+    df: pd.DataFrame, input_size: Tuple[int, int] = (1280, 720), keep_ratio: bool = False,
+) -> pd.DataFrame:
     """Resizes bboxes dimensions to model input size.
 
     Args:
-        df: DataFrame with COCO annotations.
+        df: pd.DataFrame with COCO annotations.
         input_size: Model input size. Defaults to (1280, 720).
         keep_ratio: Whether to keep the aspect ratio or not. Defaults to False.
 
     Returns:
-        DataFrame with COCO annotations and scaled image sizes.
+        pd.DataFrame with COCO annotations and scaled image sizes.
 
     """
     if keep_ratio:
@@ -162,15 +50,15 @@ def scale_bbox_dimensions(
     return df
 
 
-def get_scale_and_ratio(df: DataFrame, prefix: str = None) -> DataFrame:
+def get_scale_and_ratio(df: pd.DataFrame, prefix: str = None) -> pd.DataFrame:
     """Returns df with area and ratio per bbox measurements.
 
     Args:
-        df: DataFrame with COCO annotations.
+        df: pd.DataFrame with COCO annotations.
         prefix: Prefix to apply to column names, use for scaled data.
 
     Returns:
-        DataFrame with new columns [prefix_]area/ratio
+        pd.DataFrame with new columns [prefix_]area/ratio
 
     """
     columns = ["width", "height", "scale", "ratio"]
@@ -185,12 +73,12 @@ def get_scale_and_ratio(df: DataFrame, prefix: str = None) -> DataFrame:
 
 
 def add_centroids(
-    df: DataFrame, prefix: str = None, input_bbox_format: str = "coco"
-) -> DataFrame:
+    df: pd.DataFrame, prefix: str = None, input_bbox_format: str = "coco"
+) -> pd.DataFrame:
     """Computes bbox centroids.
 
     Args:
-        df: DataFrame with COCO annotations.
+        df: pd.DataFrame with COCO annotations.
         prefix: Prefix to apply to column names, use for scaled data. Defaults to None.
         input_bbox_format: Input bounding box format. Can be "coco" or "corners".
             "coco" ["col_left", "row_top", "width", "height"]
@@ -198,7 +86,7 @@ def add_centroids(
             Defaults to "coco".
 
     Returns:
-        DataFrame with new columns [prefix_]row_centroid/col_centroid
+        pd.DataFrame with new columns [prefix_]row_centroid/col_centroid
 
     """
     columns = ["col_centroid", "row_centroid"]
@@ -213,7 +101,7 @@ def add_centroids(
     return df
 
 
-def corners_to_coco(bboxes: ndarray) -> ndarray:
+def corners_to_coco(bboxes: np.ndarray) -> np.ndarray:
     """Transforms bboxes array from corners format to coco.
 
     Args:
@@ -230,7 +118,7 @@ def corners_to_coco(bboxes: ndarray) -> ndarray:
     return bboxes
 
 
-def coco_to_corners(bboxes: ndarray) -> ndarray:
+def coco_to_corners(bboxes: np.ndarray) -> np.ndarray:
     """Transforms bboxes array from coco format to corners.
 
     Args:
@@ -251,7 +139,7 @@ def coco_to_corners(bboxes: ndarray) -> ndarray:
     return bboxes
 
 
-def normalize(bboxes: ndarray, image_width: int, image_height: int) -> ndarray:
+def normalize(bboxes: np.ndarray, image_width: int, image_height: int) -> np.ndarray:
     """Transforms bboxes array from pixels to (0, 1) range.
 
     Bboxes can be in both formats:
@@ -272,7 +160,7 @@ def normalize(bboxes: ndarray, image_width: int, image_height: int) -> ndarray:
     return bboxes
 
 
-def denormalize(bboxes: ndarray, image_width: int, image_height: int) -> ndarray:
+def denormalize(bboxes: np.ndarray, image_width: int, image_height: int) -> np.ndarray:
     """Transforms bboxes array from (0, 1) range to pixels.
 
     Bboxes can be in both formats:
@@ -322,15 +210,15 @@ def get_bbox_column_names(bbox_format: str, prefix: Optional[str] = None) -> Lis
 
 
 def get_bbox_array(
-    df: DataFrame,
+    df: pd.DataFrame,
     prefix: Optional[str] = None,
     input_bbox_format: str = "coco",
     output_bbox_format: str = "coco",
-) -> ndarray:
+) -> np.ndarray:
     """Returns array with bbox coordinates.
 
     Args:
-        df: DataFrame with COCO annotations.
+        df: pd.DataFrame with COCO annotations.
         prefix: Prefix to apply to column names, use for scaled data. Defaults to None.
         input_bbox_format: Input bounding box format. Can be "coco" or "corners".
             Defaults to "coco".
@@ -361,11 +249,11 @@ def get_bbox_array(
 
 
 def get_df_from_bboxes(
-    bboxes: ndarray,
+    bboxes: np.ndarray,
     input_bbox_format: str = "coco",
     output_bbox_format: str = "corners",
-) -> DataFrame:
-    """Creates DataFrame of annotations in Coco format from array of bboxes.
+) -> pd.DataFrame:
+    """Creates pd.DataFrame of annotations in Coco format from array of bboxes.
 
     Args:
         bboxes: Array of bboxes of shape [n, 4].
@@ -375,7 +263,7 @@ def get_df_from_bboxes(
             Defaults to "corners".
 
     Returns:
-        DataFrame with Coco annotations.
+        pd.DataFrame with Coco annotations.
 
     """
     check_bbox_formats(input_bbox_format, output_bbox_format)
@@ -384,17 +272,17 @@ def get_df_from_bboxes(
         convert = globals()[f"{input_bbox_format}_to_{output_bbox_format}"]
         bboxes = convert(bboxes)
 
-    return pd.DataFrame(bboxes, columns=get_bbox_column_names(output_bbox_format))
+    return pd.pd.DataFrame(bboxes, columns=get_bbox_column_names(output_bbox_format))
 
 
-def filter_zero_area_bboxes(df: DataFrame) -> DataFrame:
+def filter_zero_area_bboxes(df: pd.DataFrame) -> pd.DataFrame:
     """Filters those bboxes with height or width equal to zero.
 
     Args:
-        df: DataFrame with COCO annotations.
+        df: pd.DataFrame with COCO annotations.
 
     Returns:
-        Filtered DataFrame with COCO annotations.
+        Filtered pd.DataFrame with COCO annotations.
 
     """
     cols = ["width", "height"]
