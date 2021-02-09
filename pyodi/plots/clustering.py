@@ -37,7 +37,7 @@ def plot_clustering_results(
         centroid_color = COLORS[len(df_annotations.category.unique()) % len(COLORS)]
 
     fig = make_subplots(
-        rows=1, cols=2, subplot_titles=["Relative Scale vs Ratio", "Width vs Height"]
+        rows=1, cols=2, subplot_titles=["Relative Log Scale vs Log Ratio", "Width vs Height"]
     )
 
     plot_scatter_with_histograms(
@@ -109,10 +109,10 @@ def plot_clustering_results(
 
     fig["layout"].update(
         title=title,
-        xaxis2=dict(title="Scaled width"),
-        xaxis=dict(title="Relative Scale"),
-        yaxis2=dict(title="Scaled height"),
-        yaxis=dict(title="Ratio"),
+        xaxis2=dict(title="Width"),
+        xaxis=dict(title="Log Relative Scale"),
+        yaxis2=dict(title="Height"),
+        yaxis=dict(title="Log Ratio"),
     )
 
     if show:
