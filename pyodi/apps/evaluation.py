@@ -31,7 +31,7 @@ Optimal LRP             @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.784
 Optimal LRP Loc         @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.206
 Optimal LRP FP          @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.363
 Optimal LRP FN          @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.579
-# Class-specific LRP-Optimal Thresholds # 
+# Class-specific LRP-Optimal Thresholds #
  [0.256 0.215 0.278 0.246 0.434 0.378 0.441 0.218 0.228 0.181 0.328 0.434
  0.28  0.315 0.181 0.277 0.405 0.288 0.304 0.324 0.342 0.48  0.325 0.355
  0.14  0.246 0.132 0.18  0.246 0.176 0.161 0.16  0.197 0.194 0.226 0.172
@@ -49,8 +49,8 @@ from typing import Optional
 
 import typer
 from loguru import logger
-
 from pycocotools.cocoeval import COCOeval
+
 from pyodi.core.utils import load_coco_ground_truth_from_StringIO
 
 app = typer.Typer()

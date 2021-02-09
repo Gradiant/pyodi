@@ -92,19 +92,19 @@ import typer
 from loguru import logger
 
 from pyodi.apps.train_config_evaluation import train_config_evaluation
+from pyodi.core.anchor_generator import AnchorGenerator
 from pyodi.core.boxes import (
     filter_zero_area_bboxes,
     get_bbox_array,
     get_scale_and_ratio,
-    scale_bbox_dimensions
+    scale_bbox_dimensions,
 )
+from pyodi.core.clustering import find_pyramid_level, kmeans_euclidean
 from pyodi.core.utils import (
     coco_ground_truth_to_dfs,
     join_annotations_with_image_sizes,
-    load_ground_truth_file
+    load_ground_truth_file,
 )
-from pyodi.core.anchor_generator import AnchorGenerator
-from pyodi.core.clustering import find_pyramid_level, kmeans_euclidean
 from pyodi.plots.clustering import plot_clustering_results
 
 app = typer.Typer()

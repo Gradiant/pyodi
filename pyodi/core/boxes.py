@@ -15,7 +15,9 @@ def check_bbox_formats(*args: Any) -> None:
 
 
 def scale_bbox_dimensions(
-    df: pd.DataFrame, input_size: Tuple[int, int] = (1280, 720), keep_ratio: bool = False,
+    df: pd.DataFrame,
+    input_size: Tuple[int, int] = (1280, 720),
+    keep_ratio: bool = False,
 ) -> pd.DataFrame:
     """Resizes bboxes dimensions to model input size.
 

@@ -45,7 +45,7 @@ from pyodi.core.boxes import add_centroids
 from pyodi.core.utils import (
     coco_ground_truth_to_dfs,
     join_annotations_with_image_sizes,
-    load_ground_truth_file
+    load_ground_truth_file,
 )
 from pyodi.plots.boxes import get_centroids_heatmap, plot_heatmap
 from pyodi.plots.common import plot_scatter_with_histograms
