@@ -211,7 +211,7 @@ def train_config_generation(
     )
 
     if output:
-        output_file = Path(output) / "result.json"
+        output_file = Path(output) / "anchor_config.py"
         with open(output_file, "w") as f:
             f.write(anchor_generator.to_string())
 
