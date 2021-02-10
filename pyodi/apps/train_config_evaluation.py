@@ -103,7 +103,7 @@ app = typer.Typer()
 
 
 def load_anchor_config_file(anchor_config_file: str) -> Dict[str, Any]:
-    """Loads the `load_anchor_config_file`.
+    """Loads the `anchor_config_file`.
 
     Args:
         anchor_config_file: File with the anchor configuration.
@@ -195,8 +195,6 @@ def train_config_evaluation(
     featmap_sizes = [
         (width // stride, height // stride) for stride in anchor_generator.strides
     ]
-    stride = anchor_generator.strides
-    print(height, stride[0], height // stride[0], height / stride[0])
     anchors_per_level = anchor_generator.grid_anchors(featmap_sizes=featmap_sizes)
 
     bboxes = get_bbox_array(
@@ -206,7 +204,6 @@ def train_config_evaluation(
     overlaps = np.zeros(bboxes.shape[0])
     max_overlap_level = np.zeros(bboxes.shape[0])
 
-    print(width, height, featmap_sizes, bboxes[:5], anchor_generator.strides)
     logger.info("Computing overlaps between anchors and ground truth")
     for i, anchor_level in enumerate(anchors_per_level):
         level_overlaps = get_max_overlap(
