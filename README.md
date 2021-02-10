@@ -74,9 +74,9 @@ With pyodi `train-config generation` you can automatically find a set of anchors
 ```bash
 pyodi train-config generation \
   ../TINY_COCO_ANIMAL/annotations/instances_train2017.json \
-  --input-size 1280 70 \
+  --input-size 1280 720 \
   --n-ratios 3 \
-  --n-scales 3 
+  --n-scales 3
 ```
 
 Result of this command shows two different plots. In the left side we can visualize a comparison between objects and their assigned base anchor. Each object is assigned to one pyramid level depending on its size. The x axis shows the log scale between the object and the base anchor that represents that pyramid level and the y axis represents the ratio between scale ratios. We use log scale to ease visualization. The 9 different centroids that we observe in the graph are all combinations between the three scales and the three ratios found. The plot in the right contains the same information but with respect to bounding boxes width and heights. There, the centroids are the result of applying the previous 9 configurations to each base anchor of the feature levels.
@@ -86,10 +86,10 @@ Result of this command shows two different plots. In the left side we can visual
 Proposed anchors are also attached in a Json file that follows [mmdetection anchors](https://github.com/open-mmlab/mmdetection/blob/master/mmdet/core/anchor/anchor_generator.py#L10) format:
 
 ```python
-anchor_config=dict(
+anchor_generator=dict(
     type='AnchorGenerator',
-    scales=[1.12, 3.15, 8.12],
-    ratios=[0.33, 0.67, 1.40],
+    scales=[1.12, 3.13, 8.0],
+    ratios=[0.33, 0.67, 1.4],
     strides=[4, 8, 16, 32, 64],
     base_sizes=[4, 8, 16, 32, 64],
 )
@@ -97,11 +97,23 @@ anchor_config=dict(
 
 #### 4. Train config evaluation
 
-Pyodi evaluation app has been designed with the aim of providing a simple tool to understand how well are your anchors matching your dataset. It runs automatically by default when `train-config generation` is executed, to evaluted generated anchors by it can be also run independently. We can then evaluate previous anchors with:
+Pyodi evaluation app has been designed with the aim of providing a simple tool to understand how well are your anchors matching your dataset. It automatically runs by default after executing `train-config generation` but it can also be run independently with:
 
 ```bash
 pyodi train-config evaluation \
   ../TINY_COCO_ANIMAL/annotations/instances_train2017.json \
   resources/anchor_config.py \
-  --input-size 1280 70 
+  --input-size 1280 720
 ```
+
+Results show us 4 different plots useful to evaluate the match between our ground truth bounding boxes and generated anchors.
+
+- The **upper left** plot shows the cumulative overlap distribution. There we can see that almost 40% of the bounding boxes have a maximum overlap below 0.5 with some of the generated anchors.
+
+- The **upper right** plot helps us to understand if there are certain bounding boxes we migth be missing. In this case we observe that we are having problems to match large bounding boxes with proposed anchors.
+
+- The **bottom left** one is an histogram that is intended to show how mean overlap is distributed along the different bounding box scale values. Once again we observe that the overlap decreases for larger scale values.
+
+- The **bottom right** plot shows a similar histogram but in this case the x axis represents log ratio of the bounding boxes. Boxes with large ratios, this is, large differences between their width and height, are harder to match.
+
+![Anchor overlap plot](resources/overlap.png)
