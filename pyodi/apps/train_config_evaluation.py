@@ -102,11 +102,11 @@ from pyodi.plots.evaluation import plot_overlap_result
 app = typer.Typer()
 
 
-def load_train_config_file(train_config_file: str) -> Dict[str, Any]:
-    """Loads the `train_config_file`.
+def load_anchor_config_file(anchor_config_file: str) -> Dict[str, Any]:
+    """Loads the `anchor_config_file`.
 
     Args:
-        train_config_file: File with the training configuration.
+        anchor_config_file: File with the anchor configuration.
 
     Returns:
         Dictionary with the training configuration.
@@ -114,7 +114,7 @@ def load_train_config_file(train_config_file: str) -> Dict[str, Any]:
     """
     logger.info("Loading Train Config File")
     with TemporaryDirectory() as temp_config_dir:
-        copyfile(train_config_file, osp.join(temp_config_dir, "_tempconfig.py"))
+        copyfile(anchor_config_file, osp.join(temp_config_dir, "_tempconfig.py"))
         sys.path.insert(0, temp_config_dir)
         mod = import_module("_tempconfig")
         sys.path.pop(0)
@@ -132,18 +132,17 @@ def load_train_config_file(train_config_file: str) -> Dict[str, Any]:
 @app.command()
 def train_config_evaluation(
     ground_truth_file: str,
-    train_config: str,
+    anchor_config: str,
     input_size: Tuple[int, int] = (1333, 800),
     show: bool = True,
     output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),
 ) -> None:
-    """Evaluates the fitness between `ground_truth_file` and `train_config_file`.
+    """Evaluates the fitness between `ground_truth_file` and `anchor_config_file`.
 
     Args:
         ground_truth_file: Path to COCO ground truth file.
-        train_config: Path to MMDetection-like configuration file. Must contain
-            `train_pipeline` and `anchor_generator` sections. It can also be a
+        anchor_config: Path to MMDetection-like `anchor_generator` section. It can also be a
             dictionary with the required data.
         input_size: Model image input size. Defaults to (1333, 800).
         show: Show results or not. Defaults to True.
@@ -153,12 +152,6 @@ def train_config_evaluation(
     Examples:
         ```python
         # faster_rcnn_r50_fpn.py:
-
-        train_pipeline = [
-            dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
-            dict(type='RandomFlip', flip_ratio=0.5),
-            dict(type='Pad', size_divisor=32)
-        ]
         anchor_generator=dict(
             type='AnchorGenerator',
             scales=[8],
@@ -185,17 +178,17 @@ def train_config_evaluation(
 
     df_annotations["log_scaled_ratio"] = np.log(df_annotations["scaled_ratio"])
 
-    if isinstance(train_config, str):
-        train_config_data = load_train_config_file(train_config)
-    elif isinstance(train_config, dict):
-        train_config_data = train_config
+    if isinstance(anchor_config, str):
+        anchor_config_data = load_anchor_config_file(anchor_config)
+    elif isinstance(anchor_config, dict):
+        anchor_config_data = anchor_config
     else:
-        raise ValueError("train_config must be string or dictionary.")
+        raise ValueError("anchor_config must be string or dictionary.")
 
-    del train_config_data["anchor_generator"]["type"]
-    anchor_generator = AnchorGenerator(**train_config_data["anchor_generator"])
+    anchor_config_data["anchor_generator"].pop("type", None)
+    anchor_generator = AnchorGenerator(**anchor_config_data["anchor_generator"])
 
-    if isinstance(train_config, str):
+    if isinstance(anchor_config, str):
         logger.info(anchor_generator.to_string())
 
     width, height = input_size

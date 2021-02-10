@@ -57,10 +57,10 @@ In plot below we can observe the result for `n_ratios` equal to four.
 This plot is very useful to observe how the generated anchors fit you bounding box
 distribution. The number of anchors depends on:
 
- - The length of `anchor_base_sizes` which determines the number of FPN pyramid levels.
+ - The length of `base_sizes` which determines the number of FPN pyramid levels.
  - A total of `n_ratios` x `n_scales` anchors is generated per level
 
-Therefore the total amount of anchors will be `anchor_base_sizes` x `n_ratios` x `n_scales` .
+Therefore the total amount of anchors will be `base_sizes` x `n_ratios` x `n_scales` .
 
 In figure below, we show how the anchors we previously generated fit COCO bounding box distribution.
 
@@ -118,7 +118,7 @@ def train_config_generation(
     n_ratios: int = 3,
     n_scales: int = 3,
     strides: List[int] = [4, 8, 16, 32, 64],
-    anchor_base_sizes: List[int] = [32, 64, 128, 256, 512],
+    base_sizes: Optional[List[int]] = typer.Argument(None),
     show: bool = True,
     output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),
@@ -133,8 +133,8 @@ def train_config_generation(
         n_ratios: Number of ratios. Defaults to 3.
         n_scales: Number of scales. Defaults to 3.
         strides: List of strides. Defatults to [4, 8, 16, 32, 64].
-        anchor_base_sizes: Basic sizes of anchors in multiple levels. Defaults to
-            [32, 64, 128, 256, 512].
+        base_sizes: The basic sizes of anchors in multiple levels.
+            If None is given, strides will be used as base_sizes.
         show: Show results or not. Defaults to True.
         output: Output file where results are saved. Defaults to None.
         output_size: Size of saved images. Defaults to (1600, 900).
@@ -164,13 +164,16 @@ def train_config_generation(
 
     df_annotations = get_scale_and_ratio(df_annotations, prefix="scaled")
 
+    if not base_sizes:
+        base_sizes = strides
+
     # Assign fpn level
     df_annotations["fpn_level"] = find_pyramid_level(
-        get_bbox_array(df_annotations, prefix="scaled")[:, 2:], anchor_base_sizes
+        get_bbox_array(df_annotations, prefix="scaled")[:, 2:], base_sizes
     )
 
     df_annotations["fpn_level_scale"] = df_annotations["fpn_level"].replace(
-        {i: scale for i, scale in enumerate(anchor_base_sizes)}
+        {i: scale for i, scale in enumerate(base_sizes)}
     )
 
     df_annotations["level_scale"] = (
@@ -183,22 +186,21 @@ def train_config_generation(
 
     # Cluster bboxes by scale and ratio independently
     clustering_results = [
-        kmeans_euclidean(df_annotations[value], n_clusters=n_clusters)
+        kmeans_euclidean(df_annotations[value].to_numpy(), n_clusters=n_clusters)
         for i, (value, n_clusters) in enumerate(
             zip(["log_level_scale", "log_ratio"], [n_scales, n_ratios])
         )
     ]
 
-    # Bring back
+    # Bring back from log scale
     scales = np.e ** clustering_results[0]["centroids"]
     ratios = np.e ** clustering_results[1]["centroids"]
 
     anchor_generator = AnchorGenerator(
-        strides=strides, ratios=ratios, scales=scales, base_sizes=anchor_base_sizes,
+        strides=strides, ratios=ratios, scales=scales, base_sizes=base_sizes,
     )
     logger.info(f"Anchor configuration: \n{anchor_generator.to_string()}")
 
-    # Plot results
     plot_clustering_results(
         df_annotations,
         anchor_generator,
@@ -209,16 +211,16 @@ def train_config_generation(
     )
 
     if output:
-        output_file = Path(output) / "result.json"
+        output_file = Path(output) / "anchor_config.py"
         with open(output_file, "w") as f:
             f.write(anchor_generator.to_string())
 
     if evaluate:
 
-        train_config = dict(anchor_generator=anchor_generator.to_dict())
+        anchor_config = dict(anchor_generator=anchor_generator.to_dict())
         train_config_evaluation(
             ground_truth_file=ground_truth_file,
-            train_config=train_config,  # type: ignore
+            anchor_config=anchor_config,  # type: ignore
             input_size=input_size,
             show=show,
             output=output,
