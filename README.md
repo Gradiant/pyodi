@@ -76,7 +76,7 @@ pyodi train-config generation \
   ../TINY_COCO_ANIMAL/annotations/instances_train2017.json \
   --input-size 1280 70 \
   --n-ratios 3 \
-  --n-scales 3
+  --n-scales 3 
 ```
 
 Result of this command shows two different plots. In the left side we can visualize a comparison between objects and their assigned base anchor. Each object is assigned to one pyramid level depending on its size. The x axis shows the log scale between the object and the base anchor that represents that pyramid level and the y axis represents the ratio between scale ratios. We use log scale to ease visualization. The 9 different centroids that we observe in the graph are all combinations between the three scales and the three ratios found. The plot in the right contains the same information but with respect to bounding boxes width and heights. There, the centroids are the result of applying the previous 9 configurations to each base anchor of the feature levels.
@@ -93,4 +93,15 @@ anchor_config=dict(
     strides=[4, 8, 16, 32, 64],
     base_sizes=[4, 8, 16, 32, 64],
 )
+```
+
+#### 4. Train config evaluation
+
+Pyodi evaluation app has been designed with the aim of providing a simple tool to understand how well are your anchors matching your dataset. It runs automatically by default when `train-config generation` is executed, to evaluted generated anchors by it can be also run independently. We can then evaluate previous anchors with:
+
+```bash
+pyodi train-config evaluation \
+  ../TINY_COCO_ANIMAL/annotations/instances_train2017.json \
+  resources/anchor_config.py \
+  --input-size 1280 70 
 ```
