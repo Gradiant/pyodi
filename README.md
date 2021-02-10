@@ -132,3 +132,11 @@ Results show us 4 different plots useful to evaluate the match between our groun
 - The **bottom right** plot shows a similar histogram but in this case the x axis represents log ratio of the bounding boxes. Boxes with large ratios, this is, large differences between their width and height, are harder to match.
 
 ![Anchor overlap plot](resources/overlap.png)
+
+
+## Tests
+
+The test suite can be run using pytest:
+```bash
+pytest tests
+```
