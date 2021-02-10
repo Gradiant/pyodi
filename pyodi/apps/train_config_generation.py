@@ -189,7 +189,7 @@ def train_config_generation(
         )
     ]
 
-    # Bring back
+    # Bring back from log scale
     scales = np.e ** clustering_results[0]["centroids"]
     ratios = np.e ** clustering_results[1]["centroids"]
 
@@ -198,7 +198,6 @@ def train_config_generation(
     )
     logger.info(f"Anchor configuration: \n{anchor_generator.to_string()}")
 
-    # Plot results
     plot_clustering_results(
         df_annotations,
         anchor_generator,
@@ -215,10 +214,10 @@ def train_config_generation(
 
     if evaluate:
 
-        train_config = dict(anchor_generator=anchor_generator.to_dict())
+        anchor_config = dict(anchor_generator=anchor_generator.to_dict())
         train_config_evaluation(
             ground_truth_file=ground_truth_file,
-            train_config=train_config,  # type: ignore
+            anchor_config=anchor_config,  # type: ignore
             input_size=input_size,
             show=show,
             output=output,
