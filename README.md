@@ -60,7 +60,7 @@ pyodi paint-annotations \
   ./painted_ground_truth
 ```
 
-![COCO image with painted annotations](resources/coco_sample_174482.jpg)
+![COCO image with painted annotations](resources/coco_sample_82680.jpg)
 
 ### 2. Ground truth exploration
 
