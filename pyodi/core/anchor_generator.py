@@ -345,7 +345,7 @@ class AnchorGenerator(object):
         """
         anchor_config = self.to_dict()
 
-        string = "anchor_config=dict(\n"
+        string = "anchor_generator=dict(\n"
         for k, v in anchor_config.items():
             string += f"{' '* 4}{k}={v},\n"
         string += ")"
