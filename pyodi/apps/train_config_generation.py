@@ -232,4 +232,3 @@ def train_config_generation(
 
 if __name__ == "__main__":
     app()
-
