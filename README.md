@@ -18,23 +18,38 @@
     </a>
 </p>
 
+Documentation: https://docs-url.com
+## Introduction
 A simple tool for explore your object detection dataset. The goal of this library is to provide simple and intuitive visualizations from your dataset and automatically find the best parameters for generating a specific grid of anchors that can fit you data characteristics
 
-### Installation
+| Component  | Description  |
+|---|---|
+| [paint annotations]()  | paints COCO format annotations and predictions  |
+|  [ground-truth]() |  explore your dataset ground truth characteristics |
+| [train-config generation]()  | automatically generate anchors for your data  |
+| [train-config evaluation]()  | evaluate the fitness between you data and your anchors  |
+| [coco merge]()  | automatically merge COCO annotation files  |
+| [coco split]()  | automatically split COCO annotation files in train and val subsets |
+| [crops split]()  | creates a new dataset by splitting images into crops and adapting the annotations file |
+| [crops merge]()  | translate COCO ground truth or COCO predictions crops split into original image coordinates |
+
+
+## Installation
 ```bash
 git clone https://github.com/Gradiant/pyodi.git
 cd pyodi
 python setup.py install
 ```
 
-See [Contributing guide](.github/CONTRIBUTING.md) for more info.
+## Contributing
+We appreciate all contributions to improve Pyodi. Please refer to [Contributing guide](.github/CONTRIBUTING.md) for more info.
 
 
-### Usage
+## Usage
 
 Pyodi includes different applications that can help you to extract the most from your dataset. A classic flow could follow the following steps:
 
-#### 1. Annotation visualization
+### 1. Annotation visualization
 
 With pyodi `paint_annotations` you can easily visualize in a beautiful format your object detection dataset. You can also use this function to visualize model predictions if they are in COCO predictions format.
 
@@ -47,7 +62,7 @@ pyodi paint-annotations \
 
 ![COCO image with painted annotations](resources/coco_sample_174482.jpg)
 
-#### 2. Ground truth exploration
+### 2. Ground truth exploration
 
 It is very recommended to intensively explore your dataset before starting training. The analysis of your images and annotation will allow you to optimize aspects as the optimum image input size for your network or the shape distribution of the bounding boxes. You can use `ground_truth` for this task:
 
@@ -65,7 +80,7 @@ We can also observe bounding box distribution, with the possibility of enabling 
 Finally, we can also check where the centers of bounding boxes are most commonly found with respect to the image, which can help us distinguish ROIs in input images. In this case we observe that the objects usually appear in the center of the image.
 ![Bbox center distribution](resources/gt_bb_centers.png)
 
-#### 3. Train config generation
+### 3. Train config generation
 
 The design of anchors is critical for the performance of one-stage detectors. Usually, published models such [Faster R-CNN](https://arxiv.org/abs/1506.01497) or [RetinaNet](https://arxiv.org/abs/1708.02002) include default anchors which has been designed to work with general object detection purpose as COCO dataset. Nevertheless, you might be envolved in different problems which data contains only a few different classes that share similar properties, as the object sizes or shapes, this would be the case for a drone detection dataset such [Drone vs Bird](https://wosdetc2020.wordpress.com/). You can exploit this knowledge by designing anchors that specially fit the distribution of your data, optimizing the probability of matching ground truth bounding boxes with generated anchors, which can result in an increase in the performance of your model. At the same time, you can reduce the number of anchors you use to boost inference and training time.
 
@@ -95,7 +110,7 @@ anchor_generator=dict(
 )
 ```
 
-#### 4. Train config evaluation
+### 4. Train config evaluation
 
 Pyodi evaluation app has been designed with the aim of providing a simple tool to understand how well are your anchors matching your dataset. It automatically runs by default after executing `train-config generation` but it can also be run independently with:
 
