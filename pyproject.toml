@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools >= 40.9.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [tool.black]
 line-length = 88
 include = '\.pyi?$'
@@ -15,6 +19,7 @@ exclude = '''
   | dist
 )/
 '''
+
 [tool.isort]
 profile = "black"
 known_third_party = ["PIL", "ensemble_boxes", "loguru", "matplotlib", "numba", "numpy", "pandas", "plotly", "pycocotools", "pytest", "setuptools", "sklearn", "typer"]
