@@ -1,6 +1,11 @@
+
 <h1 align="center">
+  <div>
+    <img style="max-width: 65px" src="docs/images/logo.svg" >
+  </div>
   <b>Pyodi</b><br>
 </h1>
+
 
 <h3 align="center">
   <b>Python Object Detection Insights</b><br>
@@ -69,7 +74,7 @@ pyodi paint-annotations \
   ./painted_ground_truth
 ```
 
-![COCO image with painted annotations](resources/coco_sample_82680.jpg)
+![COCO image with painted annotations](docs/images/coco_sample_82680.jpg)
 
 ### 2. Ground truth exploration
 
@@ -81,13 +86,13 @@ pyodi ground-truth ../tiny_coco/annotations/instances_train2017.json
 
 The output of this command shows three different kinds of plots. The first of them contains information related with the shape of the images present in the dataset. In this case we can clearly identify two main patterns in this dataset and if we have a look at the histogram, we can see how most of images have 640 pixels width, while as height is more distributed between different values.
 
-![Image shape distribution](resources/gt_img_shapes.png)
+![Image shape distribution](docs/images/ground_truth/gt_bb_centers.png)
 
 We can also observe bounding box distribution, with the possibility of enabling filters by class or sets of classes. This dataset shows a tendency to  rectangular bounding boxes with larger width than height and where most of them embrace areas below the 20% of the total image.
-![Bbox distribution](resources/gt_bb_shapes.png)
+![Bbox distribution](docs/images/ground_truth/gt_bb_shapes.png)
 
 Finally, we can also check where the centers of bounding boxes are most commonly found with respect to the image, which can help us distinguish ROIs in input images. In this case we observe that the objects usually appear in the center of the image.
-![Bbox center distribution](resources/gt_bb_centers.png)
+![Bbox center distribution](docs/images/ground_truth/gt_bb_centers.png)
 
 ### 3. Train config generation
 
@@ -105,7 +110,7 @@ pyodi train-config generation \
 
 Result of this command shows two different plots. In the left side we can visualize a comparison between objects and their assigned base anchor. Each object is assigned to one pyramid level depending on its size. The x axis shows the log scale between the object and the base anchor that represents that pyramid level and the y axis represents the ratio between scale ratios. We use log scale to ease visualization. The 9 different centroids that we observe in the graph are all combinations between the three scales and the three ratios found. The plot in the right contains the same information but with respect to bounding boxes width and heights. There, the centroids are the result of applying the previous 9 configurations to each base anchor of the feature levels.
 
-![Anchor clustering plot](resources/clusters.png)
+![Anchor clustering plot](docs/images/train-config-generation/clusters.png)
 
 Proposed anchors are also attached in a Json file that follows [mmdetection anchors](https://github.com/open-mmlab/mmdetection/blob/master/mmdet/core/anchor/anchor_generator.py#L10) format:
 
