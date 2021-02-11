@@ -35,10 +35,17 @@ A simple tool for explore your object detection dataset. The goal of this librar
 
 
 ## Installation
+
+### From pypi
+```bash
+pip install pyodi
+```
+
+### From source
 ```bash
 git clone https://github.com/Gradiant/pyodi.git
-cd pyodi
-python setup.py install
+cd pyodi/
+pip install .  # or "python setup.py install"
 ```
 
 ## Contributing

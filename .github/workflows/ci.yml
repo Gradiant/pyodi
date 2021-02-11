@@ -30,12 +30,9 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.7
-      - name: Install build requirements
-        shell: bash -l {0}
-        run: pip install -r requirements/build.txt
       - name: Install pyodi
         shell: bash -l {0}
-        run: rm -rf .eggs && pip install -e .[all]
+        run: rm -rf .eggs && pip install .[dev]
       - name: Test with pytest
         shell: bash -l {0}
         run: pytest
