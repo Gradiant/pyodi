@@ -5,25 +5,27 @@ app can be used to evaluate a given [mmdetection](https://github.com/open-mmlab/
 Anchor Generator Configuration to train your model using a specific training pipeline.
 
 ## Procedure
+
 Training performance of object detection model depends on how well generated anchors
 match with ground truth bounding boxes. This simple application provides intuitions
 about this, by recreating train preprocessing conditions such as image resizing or
-padding, and computing different metrics based on the  largest Intersection over Union
+padding, and computing different metrics based on the largest Intersection over Union
 (IoU) between ground truth boxes and the provided anchors.
 
 Each bounding box is assigned with the anchor that shares a largest IoU with it. We call
 overlap, to the maximum IoU each ground truth box has with the generated anchor set.
 
 Example usage:
-``` bash
-pyodi train-config evaluation "data/COCO/COCO_train2017.json" "example_config_file.py
+```bash
+pyodi train-config evaluation \
+  ../TINY_COCO_ANIMAL/annotations/instances_train2017.json \
+  resources/anchor_config.py \
+  --input-size 1280 720
 ```
-
-The next examples are based on default COCO input pipeline used in
-[mmdetection](https://github.com/open-mmlab/mmdetection) and with Faster R-CNN default
-anchors.
-
 The app provides four different plots:
+
+![COCO scale_ratio](../../images/train-config-evaluation/overlap.png#center)
+
 
 ## Cumulative Overlap
 
@@ -35,30 +37,18 @@ It can be very useful to determine positive and negative thresholds for your tra
 these are the values that determine is a ground truth bounding box will is going to be
 taken into account in the loss function or discarded and considered as background.
 
-![COCO scale_ratio](../../images/train-config-evaluation/cumulative_overlap.png#center)
-
-In this case, setting the positive threshold at 0.5 results in discarding almost the
-half of ground truth boxes. So we could consider
-
 ## Bounding Box Distribution
 
 It shows a scatter plot of bounding box width vs height. The color of each point
-represent the overlap value assigned to that bounding box. Thanks to this plot it is
-really easy to observe patterns such as those boxes that have large width and height
-obtain very low overlaps. We could have this into account and generate larger anchors
-to improve this matching.
-
-![COCO scale_ratio](../../images/train-config-evaluation/bbox_distribution.png#center)
+represent the overlap value assigned to that bounding box. Thanks to this plot we
+can easily observe pattern such low overlap values for large bounding boxes.
+We could have this into account and generate larger anchors to improve this matching.
 
 ## Scale and Mean Overlap
 
 This plot contains a simple histogram with bins of similar scales and its mean overlap
 value. It help us to visualize how overlap decays when scale increases, as we said
-before. Furthermore, we can also distinguish that very small boxes, with scale below 50,
-have low overlap values. This might result in a bad performance of the model identifying
-small objects.
-
-![COCO scale_ratio](../../images/train-config-evaluation/scale_overlap.png#center)
+before.
 
 ## Log Ratio and Mean Overlap
 
@@ -68,8 +58,6 @@ ratios might be having problems to match with generated anchors. In this example
 with negative log ratios, where width is much larger than height, overlaps are very
 small. See how this matches with patterns observed in bounding box distribution plot,
 where all boxes placed near to x axis, have low overlaps.
-
-![COCO scale_ratio](../../images/train-config-evaluation/log_ratio_overlap.png#center)
 
 """  # noqa: E501
 import sys
