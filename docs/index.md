@@ -2,6 +2,7 @@
 
 ## Commands
 
+* [`paint_annotations`](reference/apps/paint-annotations.md) - Paint COCO format annotations and predictions
 * [`pyodi evaluation`](reference/apps/evaluation.md) - Evaluate the predictions of your model against your ground truth.
 * [`pyodi ground-truth`](reference/apps/ground-truth.md) - Explore the ground truth of your dataset.
 * [`pyodi train-config generation`](reference/apps/train-config-generation.md) - Automatically generate a `train_config_file` using `ground_truth_file`.
