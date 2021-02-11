@@ -4,7 +4,19 @@ The [`pyodi train-config generation`][pyodi.apps.train_config_generation.train_c
 app can be used to automatically generate a [mmdetection](https://github.com/open-mmlab/mmdetection)
 anchor configuration to train your model.
 
+The design of anchors is critical for the performance of one-stage detectors. Usually, published models
+such [Faster R-CNN](https://arxiv.org/abs/1506.01497) or [RetinaNet](https://arxiv.org/abs/1708.02002)
+include default anchors which has been designed to work with general object detection purpose as COCO dataset.
+Nevertheless, you might be envolved in different problems which data contains only a few different classes that
+share similar properties, as the object sizes or shapes, this would be the case for a drone detection dataset
+such [Drone vs Bird](https://wosdetc2020.wordpress.com/). You can exploit this knowledge by designing anchors
+that specially fit the distribution of your data, optimizing the probability of matching ground truth bounding
+boxes with generated anchors, which can result in an increase in the performance of your model. At the same time,
+you can reduce the number of anchors you use to boost inference and training time.
+
 ## Procedure
+
+The input size parameter determines the model input size and automatically reshapes images and annotations sizes to it.
 Ground truth boxes are assigned to the anchor base size that has highest Intersection
 over Union (IoU) score with them. This step, allow us to locate each ground truth
 bounding box in a feature level of the FPN pyramid.
@@ -65,6 +77,20 @@ distribution. The number of anchors depends on:
 We can now increase the number of `n_scales` and observe the effect on the bounding box distribution plot.
 
 ![Anchor clustering plot 4 scales](../../images/train-config-generation/clusters_4_scales.png#center)
+
+
+Proposed anchors are also attached in a Json file that follows
+[mmdetection anchors](https://github.com/open-mmlab/mmdetection/blob/master/mmdet/core/anchor/anchor_generator.py#L10) format:
+
+```python
+anchor_generator=dict(
+    type='AnchorGenerator',
+    scales=[1.12, 3.13, 8.0],
+    ratios=[0.33, 0.67, 1.4],
+    strides=[4, 8, 16, 32, 64],
+    base_sizes=[4, 8, 16, 32, 64],
+)
+```
 
 By default, [`pyodi train-config evaluation`][pyodi.apps.train_config_evaluation.train_config_evaluation] is
 used after the generation of anchors in order to compare which generated anchor config suits better your data.
