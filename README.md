@@ -61,17 +61,14 @@ We appreciate all contributions to improve Pyodi. Please refer to [Contributing 
 
 ## Usage
 
-Pyodi includes different applications that can help you to extract the most from your dataset. A classic flow could follow the following steps:
+Pyodi includes different applications that can help you to extract the most from your dataset. You can download our `TINY_COCO_ANIMAL` dataset from the [releases page](https://github.com/Gradiant/pyodi/releases) in order to test the example commands. A classic flow could follow the following steps:
 
 ### 1. Annotation visualization
 
 With pyodi `paint_annotations` you can easily visualize in a beautiful format your object detection dataset. You can also use this function to visualize model predictions if they are in COCO predictions format.
 
 ```bash
-pyodi paint-annotations \
-  ../tiny_coco/annotations/instances_train2017.json \
-  ../tiny_coco/images/train2017 \
-  ./painted_ground_truth
+pyodi paint-annotations annotations/train.json sample_images/ painted_images/
 ```
 
 ![COCO image with painted annotations](docs/images/coco_sample_82680.jpg)
@@ -81,7 +78,7 @@ pyodi paint-annotations \
 It is very recommended to intensively explore your dataset before starting training. The analysis of your images and annotation will allow you to optimize aspects as the optimum image input size for your network or the shape distribution of the bounding boxes. You can use `ground_truth` for this task:
 
 ```bash
-pyodi ground-truth ../tiny_coco/annotations/instances_train2017.json
+pyodi ground-truth annotations/train.json
 ```
 
 The output of this command shows three different kinds of plots. The first of them contains information related with the shape of the images present in the dataset. In this case we can clearly identify two main patterns in this dataset and if we have a look at the histogram, we can see how most of images have 640 pixels width, while as height is more distributed between different values.
@@ -101,11 +98,8 @@ The design of anchors is critical for the performance of one-stage detectors. Us
 With pyodi `train-config generation` you can automatically find a set of anchors that fit your data distribution. For this we can adjust the number of scales and ratios the strides of anchors in the multiple feature levels and even the anchor base size for each level. The input size parameter determines the model input size and automatically reshapes images and annotations sizes to it.
 
 ```bash
-pyodi train-config generation \
-  ../TINY_COCO_ANIMAL/annotations/instances_train2017.json \
-  --input-size 1280 720 \
-  --n-ratios 3 \
-  --n-scales 3
+pyodi train-config generation annotations/train.json --input-size 1280 720 \
+  --n-ratios 3 --n-scales 3
 ```
 
 Result of this command shows two different plots. In the left side we can visualize a comparison between objects and their assigned base anchor. Each object is assigned to one pyramid level depending on its size. The x axis shows the log scale between the object and the base anchor that represents that pyramid level and the y axis represents the ratio between scale ratios. We use log scale to ease visualization. The 9 different centroids that we observe in the graph are all combinations between the three scales and the three ratios found. The plot in the right contains the same information but with respect to bounding boxes width and heights. There, the centroids are the result of applying the previous 9 configurations to each base anchor of the feature levels.
@@ -129,9 +123,7 @@ anchor_generator=dict(
 Pyodi evaluation app has been designed with the aim of providing a simple tool to understand how well are your anchors matching your dataset. It automatically runs by default after executing `train-config generation` but it can also be run independently with:
 
 ```bash
-pyodi train-config evaluation \
-  ../TINY_COCO_ANIMAL/annotations/instances_train2017.json \
-  resources/anchor_config.py \
+pyodi train-config evaluation annotations/train.json resources/anchor_config.py \
   --input-size 1280 720
 ```
 
@@ -145,12 +137,12 @@ Results show us 4 different plots useful to evaluate the match between our groun
 
 - The **bottom right** plot shows a similar histogram but in this case the x axis represents log ratio of the bounding boxes. Boxes with large ratios, this is, large differences between their width and height, are harder to match.
 
-![Anchor overlap plot](resources/overlap.png)
+![Anchor overlap plot](docs/images/train-config-evaluation/overlap.png)
 
 
 ## Tests
 
 The test suite can be run using pytest:
 ```bash
-pytest tests
+pytest tests/
 ```
