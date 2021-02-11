@@ -1,4 +1,4 @@
-"""# Ground Truth App.
+r"""# Ground Truth App.
 
 The [`pyodi ground-truth`][pyodi.apps.ground_truth.ground_truth] app can be used to
 explore the images and bounding boxes that compose an object detection dataset.
@@ -9,7 +9,8 @@ aspects to take in account when setting your training configuration.
 Example usage:
 
 ```bash
-pyodi ground-truth annotations/train.json
+pyodi ground-truth \\
+$TINY_COCO_ANIMAL/annotations/train.json
 ```
 
 The app is divided in three different sections:
@@ -40,6 +41,7 @@ In this case we observe that the objects usually appear in the center of the ima
 
 ![Bbox center distribution](../../images/ground_truth/gt_bb_centers.png)
 
+---
 
 # API REFERENCE
 """  # noqa: E501

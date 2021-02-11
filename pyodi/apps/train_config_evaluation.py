@@ -1,4 +1,4 @@
-"""# Train Config Evaluation App.
+r"""# Train Config Evaluation App.
 
 The [`pyodi train-config evaluation`][pyodi.apps.train_config_evaluation.train_config_evaluation]
 app can be used to evaluate a given [mmdetection](https://github.com/open-mmlab/mmdetection)
@@ -16,9 +16,14 @@ Each bounding box is assigned with the anchor that shares a largest IoU with it.
 overlap, to the maximum IoU each ground truth box has with the generated anchor set.
 
 Example usage:
+
 ```bash
-pyodi train-config evaluation annotations/train.json resources/anchor_config.py --input-size 1280 720
+pyodi train-config evaluation \\
+$TINY_COCO_ANIMAL/annotations/train.json \\
+$TINY_COCO_ANIMAL/resources/anchor_config.py \\
+--input-size 1280 720
 ```
+
 The app provides four different plots:
 
 ![COCO scale_ratio](../../images/train-config-evaluation/overlap.png#center)
@@ -56,6 +61,9 @@ with negative log ratios, where width is much larger than height, overlaps are v
 small. See how this matches with patterns observed in bounding box distribution plot,
 where all boxes placed near to x axis, have low overlaps.
 
+---
+
+# API REFERENCE
 """  # noqa: E501
 import sys
 from importlib import import_module

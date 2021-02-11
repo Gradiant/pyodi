@@ -25,3 +25,7 @@ jobs:
       run: |
         python setup.py sdist bdist_wheel
         twine upload --repository testpypi dist/*
+    - name: Publish docs
+      run: |
+        pip install .[dev]
+        mkdocs gh-deploy

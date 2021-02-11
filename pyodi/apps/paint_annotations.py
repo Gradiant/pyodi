@@ -1,4 +1,4 @@
-"""# Paint Annotations App.
+r"""# Paint Annotations App.
 
 The [`pyodi paint-annotations`][pyodi.apps.paint_annotations.paint_annotations]
 helps you to easily visualize in a beautiful format your object detection dataset.
@@ -7,11 +7,17 @@ You can also use this function to visualize model predictions if they are in COC
 Example usage:
 
 ```bash
-pyodi paint-annotations annotations/train.json sample_images/ painted_images/
+pyodi paint-annotations \\
+$TINY_COCO_ANIMAL/annotations/train.json \\
+$TINY_COCO_ANIMAL/sample_images/ \\
+$TINY_COCO_ANIMAL/painted_images/
 ```
 
 ![COCO image with painted annotations](../../images/coco_sample_82680.jpg)
 
+---
+
+# API REFERENCE
 """  # noqa: E501
 
 import json
@@ -53,7 +59,6 @@ def paint_annotations(
             If not None, the annotations of predictions_file will be painted instead of ground_truth_file's.
         score_thr: Detections bellow this threshold will not be painted.
             Default 0.0.
-        show_score
         color_key: Choose the key in annotations on which the color will depend. Defaults to 'category_id'.
         show_label: Choose whether to show label and score threshold on image. Default True.
     """

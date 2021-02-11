@@ -11,6 +11,8 @@ pyodi coco merge coco_1.json coco_2.json output.json
 This app merges COCO annotation files by replacing original image and annotations ids with new ones
 and adding all existent categories.
 
+---
+
 # API REFERENCE
 """  # noqa: E501
 import json

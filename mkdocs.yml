@@ -1,5 +1,5 @@
-site_name: Object Detection Insights
-site_url: "http://pyodi.org"
+site_name: Python Object Detection Insights
+site_url: "https://github.com/Gradiant/pyodi"
 
 theme:
   name: material
@@ -7,16 +7,34 @@ theme:
   favicon: images/logo.svg
 nav:
   - Home: index.md
+  - Installation: install.md
   - Reference:
       - apps:
+          - coco:
+              - merge: reference/apps/coco-merge.md
+              - split: reference/apps/coco-split.md
+          - crops:
+              - merge: reference/apps/crops-merge.md
+              - split: reference/apps/crops-split.md
           - evaluation: reference/apps/evaluation.md
           - ground-truth: reference/apps/ground-truth.md
+          - paint-annotations: reference/apps/paint-annotations.md
           - train-config:
               - evaluation: reference/apps/train-config-evaluation.md
               - generation: reference/apps/train-config-generation.md
+      - core:
+          - anchor_generator: reference/core/anchor_generator.md
+          - boxes: reference/core/boxes.md
+          - clustering: reference/core/clustering.md
+          - crops: reference/core/crops.md
+          - nms: reference/core/nms.md
+          - utils: reference/core/utils.md
       - plots:
-          - images: reference/plots/images.md
           - boxes: reference/plots/boxes.md
+          - clustering: reference/plots/clustering.md
+          - common: reference/plots/common.md
+          - evaluation: reference/plots/evaluation.md
+
 extra_css:
   - css/extra.css
 plugins:

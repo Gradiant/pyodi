@@ -1,3 +1,9 @@
+"""# Crops Merge App.
+
+---
+
+# API REFERENCE
+"""
 import json
 from pathlib import Path
 from typing import Optional
