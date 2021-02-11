@@ -3,38 +3,46 @@
 The [`pyodi ground-truth`][pyodi.apps.ground_truth.ground_truth] app can be used to
 explore the images and bounding boxes that compose an object detection dataset.
 
-The shape distribution of the images and bounding boxes is one of the key aspects to
-take in account when setting your training configuration.
+The shape distribution of the images and bounding boxes and their locations are the key
+aspects to take in account when setting your training configuration.
 
 Example usage:
 
-``` bash
-pyodi ground-truth "data/COCO/COCO_train2017.json"
+```bash
+pyodi ground-truth ../tiny_coco/annotations/instances_train2017.json
 ```
 
-The app is divided in two sections:
+The app is divided in three different sections:
 
-## Images
+## Images shape distribution
 
-[`Images Plots Reference`][pyodi.plots.images]
+Shows information related with the shape of the images present in the dataset.
+In this case we can clearly identify two main patterns in this dataset and if
+we have a look at the histogram, we can see how most of images have 640 pixels
+width, while as height is more distributed between different values.
 
-![COCO Image Shapes](../../images/COCO_image_shapes.png)
-![Drone-vs-Bird Image Shapes](../../images/Drone-vs-Bird_image_shapes.png)
-![TinyPerson Image Shapes](../../images/TinyPerson_image_shapes.png)
+![COCO Animals Image Shapes](../../images/ground_truth/gt_img_shapes.png)
 
+## Bounding Boxes shape distribution
 
-## Bounding Boxes
+We observe bounding box distribution, with the possibility of enabling
+filters by class or sets of classes. This dataset shows a tendency to  rectangular
+bounding boxes with larger width than height and where most of them embrace
+areas below the 20% of the total image.
 
-[`Bounding Boxes Plots Reference`][pyodi.plots.boxes]
+![Bbox distribution](../../images/ground_truth/gt_bb_shapes.png)
 
-![COCO Bounding Box Shapes](../../images/COCO_bounding_box_shapes.png)
-![Drone-vs-Bird Bounding Box Shapes](../../images/Drone-vs-Bird_bounding_box_shapes.png)
-![TinyPerson Boudning Box Shapes](../../images/TinyPerson_bounding_box_shapes.png)
+## Bounding Boxes center locations
 
+It is possible to check where centers of bounding boxes are most commonly
+found with respect to the image. This can help us distinguish ROIs in input images.
+In this case we observe that the objects usually appear in the center of the image.
+
+![Bbox center distribution](../../images/ground_truth/gt_bb_centers.png)
 
 
 # API REFERENCE
-"""
+"""  # noqa: E501
 from pathlib import Path
 from typing import Optional, Tuple
 

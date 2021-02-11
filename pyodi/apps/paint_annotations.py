@@ -15,7 +15,7 @@ pyodi paint-annotations \
 
 ![COCO image with painted annotations](../../images/coco_sample_82680.jpg)
 
-"""
+"""  # noqa: E501
 
 import json
 from collections import defaultdict
