@@ -45,3 +45,10 @@ pre-commit install
 ```
 
 After this on every commit check code linters and formatter will be enforced.
+
+## Tests
+
+The test suite can be run using pytest:
+```bash
+pytest tests/
+```
