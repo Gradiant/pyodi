@@ -9,7 +9,7 @@ aspects to take in account when setting your training configuration.
 Example usage:
 
 ```bash
-pyodi ground-truth ../tiny_coco/annotations/instances_train2017.json
+pyodi ground-truth annotations/train.json
 ```
 
 The app is divided in three different sections:

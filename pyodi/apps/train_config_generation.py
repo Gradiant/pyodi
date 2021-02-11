@@ -31,11 +31,7 @@ clusters equal to `n_ratios`.
 
 Example usage:
 ```bash
-pyodi train-config generation \
-  ../TINY_COCO_ANIMAL/annotations/instances_train2017.json \
-  --input-size 1280 720 \
-  --n-ratios 3 \
-  --n-scales 3
+pyodi train-config generation annotations/train.json --input-size 1280 720 --n-ratios 3 --n-scales 3
 ```
 
 The app shows two different plots:
@@ -55,11 +51,7 @@ We could increase the value of `n_ratios` from three to four, having into accoun
 the number of anchors is goint to increase, which will influence training computational cost.
 
 ```bash
-pyodi train-config generation \
-  ../TINY_COCO_ANIMAL/annotations/instances_train2017.json \
-  --input-size 1280 720 \
-  --n-ratios 4 \
-  --n-scales 3
+pyodi train-config generation annotations/train.json --input-size 1280 720 --n-ratios 4 --n-scales 3
 ```
 
 In plot below we can observe the result for `n_ratios` equal to four.

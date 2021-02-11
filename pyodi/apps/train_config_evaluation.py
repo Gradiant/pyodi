@@ -17,10 +17,7 @@ overlap, to the maximum IoU each ground truth box has with the generated anchor 
 
 Example usage:
 ```bash
-pyodi train-config evaluation \
-  ../TINY_COCO_ANIMAL/annotations/instances_train2017.json \
-  resources/anchor_config.py \
-  --input-size 1280 720
+pyodi train-config evaluation annotations/train.json resources/anchor_config.py --input-size 1280 720
 ```
 The app provides four different plots:
 

@@ -9,14 +9,14 @@
 
 a. Create a conda virtual environment and activate it.
 
-```shell
+```bash
 conda create -n pyodi python=3.7 -y
 conda activate pyodi
 ```
 
 b. Clone the pyodi repository.
 
-```shell
+```bash
 git clone https://github.com/pyodi/pyodi.git
 cd pyodi
 ```
@@ -25,7 +25,7 @@ c. Install build requirements and then install pyodi.
 (We install a forked version of pycocotools via the github repo instead of pypi
 for better compatibility with our repo.)
 
-```shell
+```bash
 pip install -r requirements/build.txt
 pip install -v -e .  # or "python setup.py develop"
 ```

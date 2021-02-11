@@ -7,10 +7,7 @@ You can also use this function to visualize model predictions if they are in COC
 Example usage:
 
 ```bash
-pyodi paint-annotations \
-  ../tiny_coco/annotations/instances_train2017.json \
-  ../tiny_coco/images/train2017 \
-  ./painted_ground_truth
+pyodi paint-annotations annotations/train.json sample_images/ painted_images/
 ```
 
 ![COCO image with painted annotations](../../images/coco_sample_82680.jpg)
