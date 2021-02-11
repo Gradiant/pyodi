@@ -26,15 +26,21 @@ We use the following tools for linting and formatting:
 - [black](https://github.com/psf/black): formatter
 - [isort](https://github.com/timothycrosley/isort): sort imports
 
-Style configurations of black and isort can be found in [pyproject.toml](../.pyproject.toml) and [.isort.cfg](../.isort.cfg).
+Style configurations of black and isort can be found in [pyproject.toml](../.pyproject.toml).
 
 We use [pre-commit hook](https://pre-commit.com/) that checks and formats for `flake8`, `yapf`, `isort`,
  fixes `end-of-files`, automatically on every commit.
 The config for a pre-commit hook is stored in [.pre-commit-config](../.pre-commit-config.yaml).
 
-After you clone the repository and installed cond environment, you will need to install initialize pre-commit hook.
+After you clone the repository, install pyodi and development requirements with:
 
+```bash
+pip install -e .[dev]
 ```
+
+Then, you will need to install initialize pre-commit hook:
+
+```bash
 pre-commit install
 ```
 
