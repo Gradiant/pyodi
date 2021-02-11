@@ -25,7 +25,8 @@ A simple tool for explore your object detection dataset. The goal of this librar
 | Component  | Description  |
 |---|---|
 | [paint annotations]()  | paints COCO format annotations and predictions  |
-|  [ground-truth]() |  explore your dataset ground truth characteristics |
+| [ground-truth]() |  explore your dataset ground truth characteristics |
+| [evaluation]()  | evaluates AP and AR for between predictions and ground truth |
 | [train-config generation]()  | automatically generate anchors for your data  |
 | [train-config evaluation]()  | evaluate the fitness between you data and your anchors  |
 | [coco merge]()  | automatically merge COCO annotation files  |
@@ -42,6 +43,7 @@ python setup.py install
 ```
 
 ## Contributing
+
 We appreciate all contributions to improve Pyodi. Please refer to [Contributing guide](.github/CONTRIBUTING.md) for more info.
 
 
