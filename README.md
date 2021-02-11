@@ -1,6 +1,11 @@
+
 <h1 align="center">
+  <div>
+    <img style="max-width: 65px" src="docs/images/logo.svg" >
+  </div>
   <b>Pyodi</b><br>
 </h1>
+
 
 <h3 align="center">
   <b>Python Object Detection Insights</b><br>
@@ -98,7 +103,7 @@ pyodi train-config generation \
 
 Result of this command shows two different plots. In the left side we can visualize a comparison between objects and their assigned base anchor. Each object is assigned to one pyramid level depending on its size. The x axis shows the log scale between the object and the base anchor that represents that pyramid level and the y axis represents the ratio between scale ratios. We use log scale to ease visualization. The 9 different centroids that we observe in the graph are all combinations between the three scales and the three ratios found. The plot in the right contains the same information but with respect to bounding boxes width and heights. There, the centroids are the result of applying the previous 9 configurations to each base anchor of the feature levels.
 
-![Anchor clustering plot](resources/clusters.png)
+![Anchor clustering plot](docs/images/train-config-generation/clusters.png)
 
 Proposed anchors are also attached in a Json file that follows [mmdetection anchors](https://github.com/open-mmlab/mmdetection/blob/master/mmdet/core/anchor/anchor_generator.py#L10) format:
 
