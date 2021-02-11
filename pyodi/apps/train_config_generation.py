@@ -4,53 +4,62 @@ The [`pyodi train-config generation`][pyodi.apps.train_config_generation.train_c
 app can be used to automatically generate a [mmdetection](https://github.com/open-mmlab/mmdetection)
 anchor configuration to train your model.
 
+The design of anchors is critical for the performance of one-stage detectors. Usually, published models
+such [Faster R-CNN](https://arxiv.org/abs/1506.01497) or [RetinaNet](https://arxiv.org/abs/1708.02002)
+include default anchors which has been designed to work with general object detection purpose as COCO dataset.
+Nevertheless, you might be envolved in different problems which data contains only a few different classes that
+share similar properties, as the object sizes or shapes, this would be the case for a drone detection dataset
+such [Drone vs Bird](https://wosdetc2020.wordpress.com/). You can exploit this knowledge by designing anchors
+that specially fit the distribution of your data, optimizing the probability of matching ground truth bounding
+boxes with generated anchors, which can result in an increase in the performance of your model. At the same time,
+you can reduce the number of anchors you use to boost inference and training time.
+
 ## Procedure
+
+The input size parameter determines the model input size and automatically reshapes images and annotations sizes to it.
 Ground truth boxes are assigned to the anchor base size that has highest Intersection
 over Union (IoU) score with them. This step, allow us to locate each ground truth
 bounding box in a feature level of the FPN pyramid.
 
-Once this is done, a ratio between the scales of ground truth boxes and the scales of
-their associated anchors is computed. A log transform is applied to this ratio between
-scales and they are clustered using kmeans algorithm, where the number of obtained
-clusters depends on `n_scales` input parameter.
+Once this is done, the ratio between the scales of ground truth boxes and the scales of
+their associated anchors is computed. A log transform is applied to it and they are clustered
+using kmeans algorithm, where the number of obtained clusters depends on `n_scales` input parameter.
 
-Then a similar procedure is followed to obtain the reference scale ratios of the
+After this step, a similar procedure is followed to obtain the reference scale ratios of the
 dataset, computing log scales ratios of each box and clustering them with number of
 clusters equal to `n_ratios`.
 
 Example usage:
-``` bash
-pyodi train-config generation "data/COCO/COCO_train2017.json"
+```bash
+pyodi train-config generation \\
+$TINY_COCO_ANIMAL/annotations/train.json \\
+--input-size 1280 720 \\
+--n-ratios 3 --n-scales 3
 ```
 
-The app allows you to observe two different plots:
+The app shows two different plots:
 
-## Scale vs Ratio
+![Anchor clustering plot](../../images/train-config-generation/clusters.png#center)
 
-In this graphic you can distinguish how your bounding boxes log scales and ratios are
+
+## Log Relative Scale vs Log Ratio
+
+In this graphic you can distinguish how your bounding boxes scales and ratios are
 distributed. The x axis represent the log scale of the ratio between the bounding box
 scales and the scale of their matched anchor base size. The y axis contains the bounding
 box log ratios. Centroids are the result of combinating the obtained scales and ratios
-obtained with kmeans.
-
-
-![COCO scale_ratio](../../images/train-config-generation/COCO_scale_vs_ratio.png#center)
-
-See how clusters appear in those areas where box distribution is more dense. For COCO
-dataset, most of objects have log relative scales between (-.5, .5). Nevertheless,
-aspect ratio log distribution looks quite different and their values are more spread.
+obtained with kmeans. We can see how clusters appear in those areas where box distribution is more dense.
 
 We could increase the value of `n_ratios` from three to four, having into account that
-this would result in a larger number of anchors that would result in an increase of the
-training computational cost.
+the number of anchors is goint to increase, which will influence training computational cost.
 
-``` bash
-pyodi train-config generation "data/COCO/COCO_train2017.json" --n-ratios 4
+```bash
+pyodi train-config generation annotations/train.json --input-size 1280 720 --n-ratios 4 --n-scales 3
 ```
 
 In plot below we can observe the result for `n_ratios` equal to four.
 
-![COCO scale_ratio](../../images/train-config-generation/COCO_scale_vs_ratio_4.png#center)
+![Anchor clustering plot 4 ratios](../../images/train-config-generation/clusters_4_ratios.png#center)
 
 ## Bounding Box Distribution
 
@@ -60,29 +69,33 @@ distribution. The number of anchors depends on:
  - The length of `base_sizes` which determines the number of FPN pyramid levels.
  - A total of `n_ratios` x `n_scales` anchors is generated per level
 
-Therefore the total amount of anchors will be `base_sizes` x `n_ratios` x `n_scales` .
+We can now increase the number of `n_scales` and observe the effect on the bounding box distribution plot.
 
-In figure below, we show how the anchors we previously generated fit COCO bounding box distribution.
+![Anchor clustering plot 4 scales](../../images/train-config-generation/clusters_4_scales.png#center)
 
-![COCO width_height](../../images/train-config-generation/COCO_width_vs_height.png#center)
 
-Note that, although most anchors follow boxes distribution, there is one that lies
-outside the allowed sizes. This is due to the meshgrid we create after applying kmeans,
-the combination of scale and ratio for that pyramid level result in anchor that is too
-large for our actual image input size. This could be solved of multiple ways like
-playing with the actual parameter configuration, changing the input image size or using
-diferent combination of scales and ratios per pyramid level, which is still not supported.
+Proposed anchors are also attached in a Json file that follows
+[mmdetection anchors](https://github.com/open-mmlab/mmdetection/blob/master/mmdet/core/anchor/anchor_generator.py#L10) format:
 
-If we increase once again the number of `n_ratios` we would see how the number of
-anchors increase and adapts to the bounding box distribution.
-
-![COCO width_height](../../images/train-config-generation/COCO_width_vs_height.png#center)
+```python
+anchor_generator=dict(
+    type='AnchorGenerator',
+    scales=[1.12, 3.13, 8.0],
+    ratios=[0.33, 0.67, 1.4],
+    strides=[4, 8, 16, 32, 64],
+    base_sizes=[4, 8, 16, 32, 64],
+)
+```
 
 By default, [`pyodi train-config evaluation`][pyodi.apps.train_config_evaluation.train_config_evaluation] is
 used after the generation of anchors in order to compare which generated anchor config suits better your data.
 You can disable this evaluation by setting to False the `evaluate` argument, but it is strongly advised to
 use the anchor evaluation module.
 
+
+---
+
+# API REFERENCE
 """  # noqa: E501
 from pathlib import Path
 from typing import List, Optional, Tuple

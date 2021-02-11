@@ -1,6 +1,11 @@
+
 <h1 align="center">
+  <div>
+    <img style="max-width: 65px" src="docs/images/logo.svg" >
+  </div>
   <b>Pyodi</b><br>
 </h1>
+
 
 <h3 align="center">
   <b>Python Object Detection Insights</b><br>
@@ -36,7 +41,7 @@ $TINY_COCO_ANIMAL/sample_images/ \
 $TINY_COCO_ANIMAL/painted_images/
 ```
 
-![COCO image with painted annotations](resources/coco_sample_82680.jpg)
+![COCO image with painted annotations](docs/images/coco_sample_82680.jpg)
 
 ```bash
 pyodi ground-truth \

@@ -37,6 +37,9 @@ Split config example:
     }
 }
 ```
+---
+
+# API REFERENCE
 """  # noqa: E501
 import json
 import re

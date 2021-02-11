@@ -1,3 +1,25 @@
+"""# Paint Annotations App.
+
+The [`pyodi paint-annotations`][pyodi.apps.paint_annotations.paint_annotations]
+helps you to easily visualize in a beautiful format your object detection dataset.
+You can also use this function to visualize model predictions if they are in COCO predictions format.
+
+Example usage:
+
+```bash
+pyodi paint-annotations \\
+$TINY_COCO_ANIMAL/annotations/train.json \\
+$TINY_COCO_ANIMAL/sample_images/ \\
+$TINY_COCO_ANIMAL/painted_images/
+```
+
+![COCO image with painted annotations](../../images/coco_sample_82680.jpg)
+
+---
+
+# API REFERENCE
+"""  # noqa: E501
+
 import json
 from collections import defaultdict
 from pathlib import Path
