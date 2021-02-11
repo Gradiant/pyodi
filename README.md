@@ -31,7 +31,7 @@ pip install pyodi
 
 ## Quickstart
 
-`pyodi` includes different applications that can help you to extract the most from your dataset. You can download our `TINY_COCO_ANIMAL` dataset from the [releases page](https://github.com/Gradiant/pyodi/releases) in order to test the example commands. A classic flow could follow the following steps:
+`pyodi` includes different applications that can help you to extract the most from your dataset. You can download our `TINY_COCO_ANIMAL` dataset from the [releases page](https://github.com/Gradiant/pyodi/releases/tag/v0.1.0) in order to test the example commands. A classic flow could follow the following steps:
 
 
 ```bash
