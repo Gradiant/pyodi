@@ -59,7 +59,6 @@ def paint_annotations(
             If not None, the annotations of predictions_file will be painted instead of ground_truth_file's.
         score_thr: Detections bellow this threshold will not be painted.
             Default 0.0.
-        show_score
         color_key: Choose the key in annotations on which the color will depend. Defaults to 'category_id'.
         show_label: Choose whether to show label and score threshold on image. Default True.
     """

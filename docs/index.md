@@ -1,6 +1,6 @@
 # Welcome to Python Object Detection Insights
 
-A simple tool for explore your object detection dataset. The goal of this library is to provide simple and intuitive visualizations from your dataset and automatically find the best parameters for generating a specific grid of anchors that can fit you data characteristics
+A library for exploring your object detection dataset. The goal of this library is to provide simple and intuitive visualizations from your dataset and automatically find the best parameters for generating a specific grid of anchors that can fit you data characteristics
 ## Commands
 
 * [`pyodi paint-annotations`](reference/apps/paint-annotations.md) - Paint COCO format annotations and predictions
