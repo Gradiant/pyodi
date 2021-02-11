@@ -10,8 +10,7 @@ pyodi evaluation "data/COCO/COCO_val2017.json" "data/COCO/COCO_val2017_predictio
 ```
 
 This app shows the Average Precision for different IoU values and different areas, the
-Average Recall for different IoU values and differents maximum detections, and the
-Optimal LRP values for IoU 0.5.
+Average Recall for different IoU values and differents maximum detections.
 
 An example of the result of executing this app:
 ```
@@ -27,18 +26,6 @@ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.375
 Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.122
 Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.416
 Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.586
-Optimal LRP             @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.784
-Optimal LRP Loc         @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.206
-Optimal LRP FP          @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.363
-Optimal LRP FN          @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.579
-# Class-specific LRP-Optimal Thresholds #
- [0.256 0.215 0.278 0.246 0.434 0.378 0.441 0.218 0.228 0.181 0.328 0.434
- 0.28  0.315 0.181 0.277 0.405 0.288 0.304 0.324 0.342 0.48  0.325 0.355
- 0.14  0.246 0.132 0.18  0.246 0.176 0.161 0.16  0.197 0.194 0.226 0.172
- 0.244 0.205 0.269 0.177 0.146 0.242 0.148 0.13  0.136 0.208 0.23  0.197
- 0.194 0.255 0.221 0.18  0.179 0.316 0.196 0.187 0.206 0.344 0.206 0.262
- 0.357 0.473 0.337 0.432 0.286 0.192 0.346 0.137 0.272 0.305 0.038 0.243
- 0.295 0.162 0.329 0.199 0.237 0.366   nan 0.139]
 ```
 
 # API REFERENCE
