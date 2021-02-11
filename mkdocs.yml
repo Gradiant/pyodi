@@ -1,5 +1,5 @@
-site_name: Object Detection Insights
-site_url: "http://pyodi.org"
+site_name: Python Object Detection Insights
+site_url: "https://github.com/Gradiant/pyodi"
 
 theme:
   name: material
@@ -7,6 +7,7 @@ theme:
   favicon: images/logo.svg
 nav:
   - Home: index.md
+  - Installation: install.md
   - Reference:
       - apps:
           - evaluation: reference/apps/evaluation.md
