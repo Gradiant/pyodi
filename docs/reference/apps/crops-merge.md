@@ -1,1 +1,1 @@
-::: pyodi.apps.crops_split
+::: pyodi.apps.crops_merge
