@@ -9,7 +9,8 @@ aspects to take in account when setting your training configuration.
 Example usage:
 
 ```bash
-pyodi ground-truth annotations/train.json
+pyodi ground-truth \\
+$TINY_COCO_ANIMAL/annotations/train.json
 ```
 
 The app is divided in three different sections:
@@ -40,6 +41,7 @@ In this case we observe that the objects usually appear in the center of the ima
 
 ![Bbox center distribution](../../images/ground_truth/gt_bb_centers.png)
 
+---
 
 # API REFERENCE
 """  # noqa: E501

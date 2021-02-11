@@ -7,11 +7,17 @@ You can also use this function to visualize model predictions if they are in COC
 Example usage:
 
 ```bash
-pyodi paint-annotations annotations/train.json sample_images/ painted_images/
+pyodi paint-annotations \\
+$TINY_COCO_ANIMAL/annotations/train.json \\
+$TINY_COCO_ANIMAL/sample_images/ \\
+$TINY_COCO_ANIMAL/painted_images/
 ```
 
 ![COCO image with painted annotations](../../images/coco_sample_82680.jpg)
 
+---
+
+# API REFERENCE
 """  # noqa: E501
 
 import json

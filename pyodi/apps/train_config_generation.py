@@ -31,7 +31,10 @@ clusters equal to `n_ratios`.
 
 Example usage:
 ```bash
-pyodi train-config generation annotations/train.json --input-size 1280 720 --n-ratios 3 --n-scales 3
+pyodi train-config generation \\
+$TINY_COCO_ANIMAL/annotations/train.json \\
+--input-size 1280 720 \\
+--n-ratios 3 --n-scales 3
 ```
 
 The app shows two different plots:
@@ -89,6 +92,10 @@ used after the generation of anchors in order to compare which generated anchor 
 You can disable this evaluation by setting to False the `evaluate` argument, but it is strongly advised to
 use the anchor evaluation module.
 
+
+---
+
+# API REFERENCE
 """  # noqa: E501
 from pathlib import Path
 from typing import List, Optional, Tuple
