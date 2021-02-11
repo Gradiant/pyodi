@@ -1,4 +1,4 @@
-"""# Ground Truth App.
+r"""# Ground Truth App.
 
 The [`pyodi ground-truth`][pyodi.apps.ground_truth.ground_truth] app can be used to
 explore the images and bounding boxes that compose an object detection dataset.

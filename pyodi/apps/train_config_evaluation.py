@@ -1,4 +1,4 @@
-"""# Train Config Evaluation App.
+r"""# Train Config Evaluation App.
 
 The [`pyodi train-config evaluation`][pyodi.apps.train_config_evaluation.train_config_evaluation]
 app can be used to evaluate a given [mmdetection](https://github.com/open-mmlab/mmdetection)

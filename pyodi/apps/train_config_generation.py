@@ -1,4 +1,4 @@
-"""# Train Config Generation App.
+r"""# Train Config Generation App.
 
 The [`pyodi train-config generation`][pyodi.apps.train_config_generation.train_config_generation]
 app can be used to automatically generate a [mmdetection](https://github.com/open-mmlab/mmdetection)

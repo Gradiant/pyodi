@@ -27,5 +27,5 @@ jobs:
         twine upload --repository testpypi dist/*
     - name: Publish docs
       run: |
-      pip install .[dev]
-      mkdocs gh-deploy 
+        pip install .[dev]
+        mkdocs gh-deploy

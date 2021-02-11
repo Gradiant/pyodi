@@ -1,4 +1,4 @@
-"""# Paint Annotations App.
+r"""# Paint Annotations App.
 
 The [`pyodi paint-annotations`][pyodi.apps.paint_annotations.paint_annotations]
 helps you to easily visualize in a beautiful format your object detection dataset.
