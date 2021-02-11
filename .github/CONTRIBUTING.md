@@ -32,10 +32,15 @@ We use [pre-commit hook](https://pre-commit.com/) that checks and formats for `f
  fixes `end-of-files`, automatically on every commit.
 The config for a pre-commit hook is stored in [.pre-commit-config](../.pre-commit-config.yaml).
 
-After you clone the repository and installed pyodi (if you use the `dev` extras require `pre-commit` and all the necessary packages for development will be installed), you will need to install initialize pre-commit hook.
+After you clone the repository, install pyodi and development requirements with:
 
 ```bash
 pip install -e .[dev]
+```
+
+Then, you will need to install initialize pre-commit hook:
+
+```bash
 pre-commit install
 ```
 
