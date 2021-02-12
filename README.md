@@ -18,8 +18,8 @@
     <a href="https://github.com/Gradiant/pyodi/actions?query=workflow%3A%22Continuous+Integration%22">
         <img src="https://github.com/pyodi/pyodi/workflows/Continuous%20Integration/badge.svg?branch=master" />
     </a>
-    <a href= "https://github.com/AntixK/PyTorch-VAE/blob/master/LICENSE.md">
-        <img src="https://img.shields.io/badge/license-Apache2.0-blue.svg" />
+    <a href= "https://github.com/Gradiant/pyodi/blob/master/LICENSE">
+        <img src="https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg" />
     </a>
 </p>
 
