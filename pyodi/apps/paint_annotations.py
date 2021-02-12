@@ -47,6 +47,7 @@ def paint_annotations(
     score_thr: float = 0.0,
     color_key: str = "category_id",
     show_label: bool = True,
+    filter_crowd: bool = True,
 ) -> None:
     """Paint `ground_truth_file` or `predictions_file` annotations on `image_folder` images.
 
@@ -61,6 +62,7 @@ def paint_annotations(
             Default 0.0.
         color_key: Choose the key in annotations on which the color will depend. Defaults to 'category_id'.
         show_label: Choose whether to show label and score threshold on image. Default True.
+        filter_crowd: Filter out crowd annotations or not. Default True.
     """
     Path(output_folder).mkdir(exist_ok=True, parents=True)
 
@@ -82,8 +84,8 @@ def paint_annotations(
     colormap = cm.rainbow(np.linspace(0, 1, n_colors))
 
     for annotation in annotations:
-
-        image_id_to_annotations[annotation["image_id"]].append(annotation)
+        if not (filter_crowd and annotation.get("iscrowd", False)):
+            image_id_to_annotations[annotation["image_id"]].append(annotation)
 
     image_data = ground_truth["images"]
 
