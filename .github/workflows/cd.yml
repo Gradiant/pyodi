@@ -3,7 +3,7 @@ name: Continuous Delivery
 
 on:
   release:
-    types: [created]
+    types: [created, prereleased]
 
 jobs:
   deploy:
