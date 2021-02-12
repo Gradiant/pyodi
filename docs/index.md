@@ -11,4 +11,4 @@ A library for exploring your object detection dataset. The goal of this library 
 * [`pyodi coco merge`](reference/apps/coco-merge.md) - Automatically merge COCO annotation files.
 * [`pyodi coco split`](reference/apps/coco-split.md) - Creates a new dataset by splitting images into crops and adapting the annotations file
 * [`pyodi crops split`](reference/apps/crops-split.md) - Creates a new dataset by splitting images into crops and adapting the annotations file
-* [`pyodi crops merge`](reference/apps/crops-split.md) - Translate COCO ground truth or COCO predictions crops split into original image coordinates
+* [`pyodi crops merge`](reference/apps/crops-merge.md) - Translate COCO ground truth or COCO predictions crops split into original image coordinates
