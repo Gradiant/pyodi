@@ -84,7 +84,7 @@ def paint_annotations(
     colormap = cm.rainbow(np.linspace(0, 1, n_colors))
 
     for annotation in annotations:
-        if filter_crowd and "iscrowd" in annotation and annotation["iscrowd"]:
+        if filter_crowd and annotation.get("iscrowd", False):
             continue
         image_id_to_annotations[annotation["image_id"]].append(annotation)
 
