@@ -80,7 +80,7 @@ def crops_split(
             crop_file_name = (
                 output_image_folder_path
                 / f"{Path(file_name).stem}_{crop_corners[0]}_{crop_corners[1]}{Path(file_name).suffix}"
-            )
+            )  # TODO define the filename in other variable to avoid splitting line?
             crop.save(crop_file_name)
 
             crop_id = len(new_images)

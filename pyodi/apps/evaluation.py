@@ -58,7 +58,7 @@ def evaluation(
             will be evaluated.
 
     """
-    coco_ground_truth = load_coco_ground_truth_from_StringIO(open(ground_truth_file))
+    coco_ground_truth = load_coco_ground_truth_from_StringIO(open(ground_truth_file))  # TODO open objects not closed (it's a command though?)
     coco_predictions = coco_ground_truth.loadRes(json.load(open(predictions_file)))
 
     coco_eval = COCOeval(coco_ground_truth, coco_predictions, "bbox")

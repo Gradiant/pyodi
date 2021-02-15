@@ -76,7 +76,7 @@ def paint_annotations(
     }
     image_id_to_annotations: Dict = defaultdict(list)
     if predictions_file is not None:
-        annotations = json.load(open(predictions_file))
+        annotations = json.load(open(predictions_file))  # TODO with open() ? Helper functions for loading/writing json files?
     else:
         annotations = ground_truth["annotations"]
 

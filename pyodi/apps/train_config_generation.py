@@ -130,8 +130,8 @@ def train_config_generation(
     input_size: Tuple[int, int] = (1280, 720),
     n_ratios: int = 3,
     n_scales: int = 3,
-    strides: List[int] = [4, 8, 16, 32, 64],
-    base_sizes: Optional[List[int]] = typer.Argument(None),
+    strides: List[int] = [4, 8, 16, 32, 64],  # TODO mutable argument
+    base_sizes: Optional[List[int]] = typer.Argument(None),  # TODO QUESTION ¿typer.Argument(None) vs None?
     show: bool = True,
     output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),

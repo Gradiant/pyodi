@@ -22,7 +22,7 @@ def plot_scatter_with_histograms(
     fig: Optional[go.Figure] = None,
     row: int = 1,
     col: int = 1,
-    xaxis_range: Optional[Tuple[float, float]] = None,
+    xaxis_range: Optional[Tuple[float, float]] = None,  # TODO Missing parameters in docstring
     yaxis_range: Optional[Tuple[float, float]] = None,
     histogram_xbins: Optional[Dict[str, Any]] = None,
     histogram_ybins: Optional[Dict[str, Any]] = None,

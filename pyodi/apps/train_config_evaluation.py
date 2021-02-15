@@ -125,7 +125,7 @@ def load_anchor_config_file(anchor_config_file: str) -> Dict[str, Any]:
 @app.command()
 def train_config_evaluation(
     ground_truth_file: str,
-    anchor_config: str,
+    anchor_config: str,  # TODO Union[str, dict]
     input_size: Tuple[int, int] = (1333, 800),
     show: bool = True,
     output: Optional[str] = None,
@@ -197,7 +197,7 @@ def train_config_evaluation(
     overlaps = np.zeros(bboxes.shape[0])
     max_overlap_level = np.zeros(bboxes.shape[0])
 
-    logger.info("Computing overlaps between anchors and ground truth")
+    logger.info("Computing overlaps between anchors and ground truth")  # TODO might be interesting to add "..." at the end of "-ing" verbs in logging records
     for i, anchor_level in enumerate(anchors_per_level):
         level_overlaps = get_max_overlap(
             bboxes.astype(np.float32), anchor_level.astype(np.float32)
