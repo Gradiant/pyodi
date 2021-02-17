@@ -70,13 +70,15 @@ def coco_merge(input_extend: str, input_add: str, output_file: str,) -> str:
                 output["categories"].append(new_cat)
 
         img_id_map = {}
-        for n_imgs, image in enumerate(data["images"]):
+        for image in data["images"]:
+            n_imgs = len(output["images"])
             img_id_map[image["id"]] = n_imgs
             image["id"] = n_imgs
 
             output["images"].append(image)
 
-        for n_anns, annotation in enumerate(data["annotations"]):
+        for annotation in data["annotations"]:
+            n_anns = len(output["annotations"])
             annotation["id"] = n_anns
             annotation["image_id"] = img_id_map[annotation["image_id"]]
             annotation["category_id"] = cat_id_map[annotation["category_id"]]

@@ -1,11 +1,9 @@
 import json
-from pathlib import Path
 
 from pyodi.apps.coco_merge import coco_merge
 
 
-def test_coco_merge(tmpdir):
-    tmpdir = Path(tmpdir)
+def test_coco_merge(tmp_path):
     images = [{"id": 0, "file_name": "0.jpg"}, {"id": 2, "file_name": "1.jpg"}]
 
     anns1 = [
@@ -31,19 +29,19 @@ def test_coco_merge(tmpdir):
 
     tmp_files = []
     for i, coco_data in enumerate([coco1, coco2, coco3]):
-        tmp_files.append(tmpdir / f"{i}.json")
+        tmp_files.append(tmp_path / f"{i}.json")
         with open(tmp_files[-1], "w") as f:
             json.dump(coco_data, f)
 
     result_file = coco_merge(
-        input_extend=tmpdir / "0.json",
-        input_add=tmpdir / "1.json",
-        output_file=tmpdir / "result.json",
+        input_extend=tmp_path / "0.json",
+        input_add=tmp_path / "1.json",
+        output_file=tmp_path / "result.json",
     )
     result_file = coco_merge(
-        input_extend=tmpdir / "result.json",
-        input_add=tmpdir / "2.json",
-        output_file=tmpdir / "result.json",
+        input_extend=tmp_path / "result.json",
+        input_add=tmp_path / "2.json",
+        output_file=tmp_path / "result.json",
     )
 
     data = json.load(open(result_file))
