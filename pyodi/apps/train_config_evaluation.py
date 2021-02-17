@@ -71,7 +71,7 @@ from os import path as osp
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple, Union
 
 import numpy as np
 import typer
@@ -125,7 +125,7 @@ def load_anchor_config_file(anchor_config_file: str) -> Dict[str, Any]:
 @app.command()
 def train_config_evaluation(
     ground_truth_file: str,
-    anchor_config: str,  # TODO Union[str, dict]
+    anchor_config: Union[str, dict],
     input_size: Tuple[int, int] = (1333, 800),
     show: bool = True,
     output: Optional[str] = None,
@@ -197,7 +197,7 @@ def train_config_evaluation(
     overlaps = np.zeros(bboxes.shape[0])
     max_overlap_level = np.zeros(bboxes.shape[0])
 
-    logger.info("Computing overlaps between anchors and ground truth")  # TODO might be interesting to add "..." at the end of "-ing" verbs in logging records
+    logger.info("Computing overlaps between anchors and ground truth ...")
     for i, anchor_level in enumerate(anchors_per_level):
         level_overlaps = get_max_overlap(
             bboxes.astype(np.float32), anchor_level.astype(np.float32)
@@ -208,7 +208,7 @@ def train_config_evaluation(
     df_annotations["overlaps"] = overlaps
     df_annotations["max_overlap_level"] = max_overlap_level
 
-    logger.info("Plotting results")
+    logger.info("Plotting results ...")
     plot_overlap_result(
         df_annotations, show=show, output=output, output_size=output_size
     )
