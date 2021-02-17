@@ -56,9 +56,9 @@ class AnchorGenerator(object):
         scales: Optional[List[float]] = None,
         base_sizes: Optional[List[int]] = None,
         scale_major: bool = True,
-        octave_base_scale: None = None,  # TODO Missing types, using None?
-        scales_per_octave: None = None,
-        centers: None = None,
+        octave_base_scale: Optional[int] = None,
+        scales_per_octave: Optional[int] = None,
+        centers: Optional[List[Tuple[float, float]]] = None,
         center_offset: float = 0.0,
     ) -> None:
         # check center and center_offset
