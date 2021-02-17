@@ -16,7 +16,6 @@ and adding all existent categories.
 # API REFERENCE
 """  # noqa: E501
 import json
-from collections import defaultdict
 from typing import Any, Dict
 
 import typer
@@ -32,22 +31,21 @@ def coco_merge(input_extend: str, input_add: str, output_file: str,) -> str:
 
     Args:
         input_extend: Path to input file to be extended.
-        input_file_2: Path to input file to be added.
+        input_add: Path to input file to be added.
         output_file : Path to output file with merged annotations.
     """
-    n_imgs, n_anns = 0, 0
-    output: Dict[str, Any] = defaultdict()  # TODO se podría quitar
-
     with open(input_extend, "r") as f:
-        data_1 = json.load(f)
+        data_extend = json.load(f)
     with open(input_add, "r") as f:
-        data_2 = json.load(f)
+        data_add = json.load(f)
 
-    output = {k: data_1[k] for k in data_1 if k not in ("images", "annotations")}
+    output: Dict[str, Any] = {
+        k: data_extend[k] for k in data_extend if k not in ("images", "annotations")
+    }
 
     output["images"], output["annotations"] = [], []
 
-    for i, data in enumerate([data_1, data_2]):
+    for i, data in enumerate([data_extend, data_add]):
 
         logger.info(
             "Input {}: {} images, {} annotations".format(
@@ -72,19 +70,17 @@ def coco_merge(input_extend: str, input_add: str, output_file: str,) -> str:
                 output["categories"].append(new_cat)
 
         img_id_map = {}
-        for image in data["images"]:
+        for n_imgs, image in enumerate(data["images"]):
             img_id_map[image["id"]] = n_imgs
             image["id"] = n_imgs
 
-            n_imgs += 1
             output["images"].append(image)
 
-        for annotation in data["annotations"]:
+        for n_anns, annotation in enumerate(data["annotations"]):
             annotation["id"] = n_anns
             annotation["image_id"] = img_id_map[annotation["image_id"]]
             annotation["category_id"] = cat_id_map[annotation["category_id"]]
 
-            n_anns += 1
             output["annotations"].append(annotation)
 
     logger.info(
