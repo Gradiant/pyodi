@@ -130,8 +130,8 @@ def train_config_generation(
     input_size: Tuple[int, int] = (1280, 720),
     n_ratios: int = 3,
     n_scales: int = 3,
-    strides: List[int] = [4, 8, 16, 32, 64],  # TODO mutable argument
-    base_sizes: Optional[List[int]] = typer.Argument(None),  # TODO QUESTION ¿typer.Argument(None) vs None?
+    strides: Optional[List[int]] = typer.Argument(None),
+    base_sizes: Optional[List[int]] = typer.Argument(None),
     show: bool = True,
     output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),
@@ -177,7 +177,9 @@ def train_config_generation(
 
     df_annotations = get_scale_and_ratio(df_annotations, prefix="scaled")
 
-    if not base_sizes:
+    if strides is None:
+        strides = [4, 8, 16, 32, 64]
+    if base_sizes is None:
         base_sizes = strides
 
     # Assign fpn level
