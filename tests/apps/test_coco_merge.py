@@ -36,13 +36,13 @@ def test_coco_merge(tmpdir):
             json.dump(coco_data, f)
 
     result_file = coco_merge(
-        input_file_1=tmpdir / "0.json",
-        input_file_2=tmpdir / "1.json",
+        input_extend=tmpdir / "0.json",
+        input_add=tmpdir / "1.json",
         output_file=tmpdir / "result.json",
     )
     result_file = coco_merge(
-        input_file_1=tmpdir / "result.json",
-        input_file_2=tmpdir / "2.json",
+        input_extend=tmpdir / "result.json",
+        input_add=tmpdir / "2.json",
         output_file=tmpdir / "result.json",
     )
 

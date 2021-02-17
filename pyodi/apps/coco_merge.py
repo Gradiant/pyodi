@@ -27,20 +27,20 @@ app = typer.Typer()
 
 @logger.catch
 @app.command()
-def coco_merge(input_file_1: str, input_file_2: str, output_file: str,) -> str:  # TODO More descriptive input names? ("input_extend", "input_add" ?)
+def coco_merge(input_extend: str, input_add: str, output_file: str,) -> str:
     """Merge COCO annotation files.
 
     Args:
-        input_file_1: Path to input file to be extended.
+        input_extend: Path to input file to be extended.
         input_file_2: Path to input file to be added.
         output_file : Path to output file with merged annotations.
     """
     n_imgs, n_anns = 0, 0
     output: Dict[str, Any] = defaultdict()  # TODO se podría quitar
 
-    with open(input_file_1, "r") as f:
+    with open(input_extend, "r") as f:
         data_1 = json.load(f)
-    with open(input_file_2, "r") as f:
+    with open(input_add, "r") as f:
         data_2 = json.load(f)
 
     output = {k: data_1[k] for k in data_1 if k not in ("images", "annotations")}
