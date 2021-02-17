@@ -22,7 +22,7 @@ def plot_scatter_with_histograms(
     fig: Optional[go.Figure] = None,
     row: int = 1,
     col: int = 1,
-    xaxis_range: Optional[Tuple[float, float]] = None,  # TODO Missing parameters in docstring
+    xaxis_range: Optional[Tuple[float, float]] = None,
     yaxis_range: Optional[Tuple[float, float]] = None,
     histogram_xbins: Optional[Dict[str, Any]] = None,
     histogram_ybins: Optional[Dict[str, Any]] = None,
@@ -50,7 +50,10 @@ def plot_scatter_with_histograms(
             None.
         row: Subplot row to use when fig is provided. Defaults to 1.
         col: Subplot col to use when fig is provided. Defaults to 1.
-
+        xaxis_range: range of values for the histogram's horizontal axis
+        yaxis_range: range of values for the histogram's vertical axis
+        histogram_xbins: number of bins for the histogram's horizontal axis
+        histogram_ybins: number of bins for the histogram's vertical axis
     Returns:
         Plotly figure.
 
