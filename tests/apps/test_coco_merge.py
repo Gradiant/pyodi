@@ -1,6 +1,6 @@
 import json
 
-from pyodi.apps.coco_merge import coco_merge
+from pyodi.apps.coco.coco_merge import coco_merge
 
 
 def test_coco_merge(tmp_path):

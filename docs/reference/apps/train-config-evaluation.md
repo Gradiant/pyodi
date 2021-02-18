@@ -1,1 +1,1 @@
-::: pyodi.apps.train_config_evaluation
+::: pyodi.apps.train_config.train_config_evaluation

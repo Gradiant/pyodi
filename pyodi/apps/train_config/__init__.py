@@ -1,7 +1,7 @@
 import typer
 
-from pyodi.apps.train_config_evaluation import train_config_evaluation
-from pyodi.apps.train_config_generation import train_config_generation
+from pyodi.apps.train_config.train_config_evaluation import train_config_evaluation
+from pyodi.apps.train_config.train_config_generation import train_config_generation
 
 train_config_app = typer.Typer()
 train_config_app.command("evaluation")(train_config_evaluation)

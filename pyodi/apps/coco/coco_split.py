@@ -1,6 +1,6 @@
 """# Coco Split App.
 
-The [`pyodi coco split`][pyodi.apps.coco_split] app can be used to split COCO
+The [`pyodi coco split`][pyodi.apps.coco.coco_split] app can be used to split COCO
 annotation files in train and val annotations files.
 
 There are two modes: 'random' or 'property'. The 'random' mode splits randomly the COCO file, while

@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-from pyodi.apps.crops_split import crops_split
+from pyodi.apps.crops.crops_split import crops_split
 
 
 def create_image() -> Image:

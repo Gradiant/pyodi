@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from pyodi.apps.coco_split import property_split, random_split
+from pyodi.apps.coco.coco_split import property_split, random_split
 
 
 def get_coco_data():

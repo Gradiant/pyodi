@@ -1,1 +1,1 @@
-::: pyodi.apps.coco_split
+::: pyodi.apps.coco.coco_split
