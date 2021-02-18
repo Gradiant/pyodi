@@ -3,7 +3,7 @@ from pathlib import Path
 
 import numpy as np
 
-from pyodi.apps.crops_merge import crops_merge
+from pyodi.apps.crops.crops_merge import crops_merge
 
 
 def test_crops_merge(tmpdir):

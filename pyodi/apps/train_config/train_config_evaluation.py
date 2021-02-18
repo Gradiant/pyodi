@@ -1,6 +1,6 @@
 r"""# Train Config Evaluation App.
 
-The [`pyodi train-config evaluation`][pyodi.apps.train_config_evaluation.train_config_evaluation]
+The [`pyodi train-config evaluation`][pyodi.apps.train_config.train_config_evaluation.train_config_evaluation]
 app can be used to evaluate a given [mmdetection](https://github.com/open-mmlab/mmdetection)
 Anchor Generator Configuration to train your model using a specific training pipeline.
 

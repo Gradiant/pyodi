@@ -1,1 +1,1 @@
-::: pyodi.apps.coco_merge
+::: pyodi.apps.coco.coco_merge

@@ -1,7 +1,7 @@
 import typer
 
-from pyodi.apps.crops_merge import crops_merge
-from pyodi.apps.crops_split import crops_split
+from pyodi.apps.crops.crops_merge import crops_merge
+from pyodi.apps.crops.crops_split import crops_split
 
 crops_app = typer.Typer()
 crops_app.command("merge")(crops_merge)

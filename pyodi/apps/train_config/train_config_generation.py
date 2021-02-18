@@ -1,6 +1,6 @@
 r"""# Train Config Generation App.
 
-The [`pyodi train-config generation`][pyodi.apps.train_config_generation.train_config_generation]
+The [`pyodi train-config generation`][pyodi.apps.train_config.train_config_generation.train_config_generation]
 app can be used to automatically generate a [mmdetection](https://github.com/open-mmlab/mmdetection)
 anchor configuration to train your model.
 
@@ -87,7 +87,7 @@ anchor_generator=dict(
 )
 ```
 
-By default, [`pyodi train-config evaluation`][pyodi.apps.train_config_evaluation.train_config_evaluation] is
+By default, [`pyodi train-config evaluation`][pyodi.apps.train_config.train_config_evaluation.train_config_evaluation] is
 used after the generation of anchors in order to compare which generated anchor config suits better your data.
 You can disable this evaluation by setting to False the `evaluate` argument, but it is strongly advised to
 use the anchor evaluation module.
@@ -104,7 +104,7 @@ import numpy as np
 import typer
 from loguru import logger
 
-from pyodi.apps.train_config_evaluation import train_config_evaluation
+from pyodi.apps.train_config.train_config_evaluation import train_config_evaluation
 from pyodi.core.anchor_generator import AnchorGenerator
 from pyodi.core.boxes import (
     filter_zero_area_bboxes,
@@ -153,7 +153,7 @@ def train_config_generation(
         output_size: Size of saved images. Defaults to (1600, 900).
         keep_ratio: Whether to keep the aspect ratio or not. Defaults to False.
         evaluate: Whether to evaluate or not the anchors. Check
-            [`pyodi train-config evaluation`][pyodi.apps.train_config_evaluation.train_config_evaluation]
+            [`pyodi train-config evaluation`][pyodi.apps.train_config.train_config_evaluation.train_config_evaluation]
             for more information.
 
     Returns:

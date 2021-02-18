@@ -1,6 +1,6 @@
 """# Coco Merge App.
 
-The [`pyodi coco`][pyodi.apps.coco_merge.coco_merge] app can be used to merge COCO annotation files.
+The [`pyodi coco`][pyodi.apps.coco.coco_merge.coco_merge] app can be used to merge COCO annotation files.
 
 Example usage:
 
