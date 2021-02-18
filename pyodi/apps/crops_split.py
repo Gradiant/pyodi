@@ -65,9 +65,9 @@ def crops_split(
 
     for image in ground_truth["images"]:
 
-        file_name = Path(image["file_name"]).name
+        file_name = Path(image["file_name"])
         logger.info(file_name)
-        image_pil = Image.open(Path(image_folder) / file_name)
+        image_pil = Image.open(Path(image_folder) / file_name.name)
 
         crops_corners = get_crops_corners(
             image_pil, crop_height, crop_width, row_overlap, col_overlap
@@ -77,16 +77,15 @@ def crops_split(
             logger.info(crop_corners)
             crop = image_pil.crop(crop_corners)
 
-            crop_file_name = (
-                output_image_folder_path
-                / f"{Path(file_name).stem}_{crop_corners[0]}_{crop_corners[1]}{Path(file_name).suffix}"
-            )
-            crop.save(crop_file_name)
+            crop_suffixes = "_".join(map(str, crop_corners))
+            crop_file_name = f"{file_name.stem}_{crop_suffixes}{file_name.suffix}"
+
+            crop.save(output_image_folder_path / crop_file_name)
 
             crop_id = len(new_images)
             new_images.append(
                 {
-                    "file_name": str(crop_file_name.name),
+                    "file_name": Path(crop_file_name).name,
                     "height": int(crop_height),
                     "width": int(crop_width),
                     "id": int(crop_id),

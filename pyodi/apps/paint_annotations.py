@@ -76,7 +76,8 @@ def paint_annotations(
     }
     image_id_to_annotations: Dict = defaultdict(list)
     if predictions_file is not None:
-        annotations = json.load(open(predictions_file))
+        with open(predictions_file) as pred:
+            annotations = json.load(pred)
     else:
         annotations = ground_truth["annotations"]
 
