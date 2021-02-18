@@ -71,7 +71,7 @@ from os import path as osp
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
 import typer
@@ -125,7 +125,7 @@ def load_anchor_config_file(anchor_config_file: str) -> Dict[str, Any]:
 @app.command()
 def train_config_evaluation(
     ground_truth_file: str,
-    anchor_config: Union[str, dict],
+    anchor_config: str,
     input_size: Tuple[int, int] = (1333, 800),
     show: bool = True,
     output: Optional[str] = None,
