@@ -157,7 +157,7 @@ def train_config_generation(
     if output is not None:
         output = str(Path(output) / Path(ground_truth_file).stem)
         Path(output).mkdir(parents=True, exist_ok=True)
-    print(input_size, type(input_size), type(input_size[0]))
+
     coco_ground_truth = load_ground_truth_file(ground_truth_file)
 
     df_images, df_annotations = coco_ground_truth_to_dfs(coco_ground_truth)
