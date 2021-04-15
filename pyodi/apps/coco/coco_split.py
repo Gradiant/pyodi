@@ -48,14 +48,10 @@ from pathlib import Path
 from typing import List
 
 import numpy as np
-import typer
 from loguru import logger
-
-app = typer.Typer()
 
 
 @logger.catch  # noqa: C901
-@app.command()
 def property_split(
     annotations_file: str, output_filename: str, split_config_file: str,
 ) -> List[str]:
@@ -160,7 +156,6 @@ def property_split(
 
 
 @logger.catch
-@app.command()
 def random_split(
     annotations_file: str,
     output_filename: str,

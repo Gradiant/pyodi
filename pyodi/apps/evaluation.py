@@ -35,17 +35,13 @@ import json
 import re
 from typing import Optional
 
-import typer
 from loguru import logger
 from pycocotools.cocoeval import COCOeval
 
 from pyodi.core.utils import load_coco_ground_truth_from_StringIO
 
-app = typer.Typer()
-
 
 @logger.catch
-@app.command()
 def evaluation(
     ground_truth_file: str, predictions_file: str, string_to_match: Optional[str] = None
 ) -> None:
@@ -79,7 +75,3 @@ def evaluation(
     coco_eval.evaluate()
     coco_eval.accumulate()
     coco_eval.summarize()
-
-
-if __name__ == "__main__":
-    app()

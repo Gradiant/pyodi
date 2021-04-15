@@ -18,14 +18,10 @@ and adding all existent categories.
 import json
 from typing import Any, Dict
 
-import typer
 from loguru import logger
-
-app = typer.Typer()
 
 
 @logger.catch
-@app.command()
 def coco_merge(input_extend: str, input_add: str, output_file: str,) -> str:
     """Merge COCO annotation files.
 

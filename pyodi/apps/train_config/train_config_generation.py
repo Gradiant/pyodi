@@ -33,7 +33,7 @@ Example usage:
 ```bash
 pyodi train-config generation \\
 $TINY_COCO_ANIMAL/annotations/train.json \\
---input-size 1280 720 \\
+--input-size [1280,720] \\
 --n-ratios 3 --n-scales 3
 ```
 
@@ -54,7 +54,7 @@ We could increase the value of `n_ratios` from three to four, having into accoun
 the number of anchors is goint to increase, which will influence training computational cost.
 
 ```bash
-pyodi train-config generation annotations/train.json --input-size 1280 720 --n-ratios 4 --n-scales 3
+pyodi train-config generation annotations/train.json --input-size [1280,720] --n-ratios 4 --n-scales 3
 ```
 
 In plot below we can observe the result for `n_ratios` equal to four.
@@ -101,10 +101,8 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 import numpy as np
-import typer
 from loguru import logger
 
-from pyodi.apps.train_config.train_config_evaluation import train_config_evaluation
 from pyodi.core.anchor_generator import AnchorGenerator
 from pyodi.core.boxes import (
     filter_zero_area_bboxes,
@@ -120,18 +118,15 @@ from pyodi.core.utils import (
 )
 from pyodi.plots.clustering import plot_clustering_results
 
-app = typer.Typer()
-
 
 @logger.catch
-@app.command()
 def train_config_generation(
     ground_truth_file: str,
     input_size: Tuple[int, int] = (1280, 720),
     n_ratios: int = 3,
     n_scales: int = 3,
-    strides: Optional[List[int]] = typer.Argument(None),
-    base_sizes: Optional[List[int]] = typer.Argument(None),
+    strides: Optional[List[int]] = None,
+    base_sizes: Optional[List[int]] = None,
     show: bool = True,
     output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),
@@ -162,7 +157,7 @@ def train_config_generation(
     if output is not None:
         output = str(Path(output) / Path(ground_truth_file).stem)
         Path(output).mkdir(parents=True, exist_ok=True)
-
+    print(input_size, type(input_size), type(input_size[0]))
     coco_ground_truth = load_ground_truth_file(ground_truth_file)
 
     df_images, df_annotations = coco_ground_truth_to_dfs(coco_ground_truth)
@@ -230,20 +225,4 @@ def train_config_generation(
         with open(output_file, "w") as f:
             f.write(anchor_generator.to_string())
 
-    if evaluate:
-
-        anchor_config = dict(anchor_generator=anchor_generator.to_dict())
-        train_config_evaluation(
-            ground_truth_file=ground_truth_file,
-            anchor_config=anchor_config,  # type: ignore
-            input_size=input_size,
-            show=show,
-            output=output,
-            output_size=output_size,
-        )
-
     return anchor_generator
-
-
-if __name__ == "__main__":
-    app()

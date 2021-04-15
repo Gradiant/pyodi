@@ -48,7 +48,6 @@ In this case we observe that the objects usually appear in the center of the ima
 from pathlib import Path
 from typing import Optional, Tuple
 
-import typer
 from loguru import logger
 
 from pyodi.core.boxes import add_centroids
@@ -60,11 +59,8 @@ from pyodi.core.utils import (
 from pyodi.plots.boxes import get_centroids_heatmap, plot_heatmap
 from pyodi.plots.common import plot_scatter_with_histograms
 
-app = typer.Typer()
-
 
 @logger.catch
-@app.command()
 def ground_truth(
     ground_truth_file: str,
     show: bool = True,
@@ -131,7 +127,3 @@ def ground_truth(
         output=output,
         output_size=output_size,
     )
-
-
-if __name__ == "__main__":
-    app()
