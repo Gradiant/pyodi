@@ -131,7 +131,6 @@ def train_config_generation(
     output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),
     keep_ratio: bool = False,
-    evaluate: bool = True,
 ) -> AnchorGenerator:
     """Computes optimal anchors for a given COCO dataset based on iou clustering.
 
@@ -147,9 +146,6 @@ def train_config_generation(
         output: Output file where results are saved. Defaults to None.
         output_size: Size of saved images. Defaults to (1600, 900).
         keep_ratio: Whether to keep the aspect ratio or not. Defaults to False.
-        evaluate: Whether to evaluate or not the anchors. Check
-            [`pyodi train-config evaluation`][pyodi.apps.train_config.train_config_evaluation.train_config_evaluation]
-            for more information.
 
     Returns:
         Anchor generator instance.
