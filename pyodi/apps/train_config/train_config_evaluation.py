@@ -21,7 +21,7 @@ Example usage:
 pyodi train-config evaluation \\
 $TINY_COCO_ANIMAL/annotations/train.json \\
 $TINY_COCO_ANIMAL/resources/anchor_config.py \\
---input-size 1280 720
+--input-size [1280,720]
 ```
 
 The app provides four different plots:
@@ -74,7 +74,6 @@ from tempfile import TemporaryDirectory
 from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
-import typer
 from loguru import logger
 
 from pyodi.core.anchor_generator import AnchorGenerator
@@ -91,8 +90,6 @@ from pyodi.core.utils import (
     load_ground_truth_file,
 )
 from pyodi.plots.evaluation import plot_overlap_result
-
-app = typer.Typer()
 
 
 def load_anchor_config_file(anchor_config_file: str) -> Dict[str, Any]:
@@ -122,11 +119,10 @@ def load_anchor_config_file(anchor_config_file: str) -> Dict[str, Any]:
 
 
 @logger.catch
-@app.command()
 def train_config_evaluation(
     ground_truth_file: str,
     anchor_config: str,
-    input_size: Tuple[int, int] = (1333, 800),
+    input_size: Tuple[int, int] = (1280, 720),
     show: bool = True,
     output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),
@@ -212,7 +208,3 @@ def train_config_evaluation(
     plot_overlap_result(
         df_annotations, show=show, output=output, output_size=output_size
     )
-
-
-if __name__ == "__main__":
-    app()

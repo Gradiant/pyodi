@@ -9,7 +9,6 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List
 
-import typer
 from loguru import logger
 from PIL import Image
 
@@ -20,11 +19,8 @@ from pyodi.core.crops import (
     get_crops_corners,
 )
 
-app = typer.Typer()
-
 
 @logger.catch
-@app.command()
 def crops_split(
     ground_truth_file: str,
     image_folder: str,
@@ -114,7 +110,3 @@ def crops_split(
 
     with open(output_file, "w") as f:
         json.dump(new_ground_truth, f, indent=2)
-
-
-if __name__ == "__main__":
-    app()

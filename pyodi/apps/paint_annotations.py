@@ -26,7 +26,6 @@ from pathlib import Path
 from typing import Dict, Optional
 
 import numpy as np
-import typer
 from loguru import logger
 from matplotlib import cm as cm
 from matplotlib import pyplot as plt
@@ -34,11 +33,8 @@ from matplotlib.collections import PatchCollection
 from matplotlib.patches import Polygon
 from PIL import Image
 
-app = typer.Typer()
-
 
 @logger.catch
-@app.command()
 def paint_annotations(
     ground_truth_file: str,
     image_folder: str,
@@ -165,7 +161,3 @@ def paint_annotations(
 
             plt.savefig(output_file)
             plt.close()
-
-
-if __name__ == "__main__":
-    app()

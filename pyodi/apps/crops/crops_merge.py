@@ -8,16 +8,12 @@ import json
 from pathlib import Path
 from typing import Optional
 
-import typer
 from loguru import logger
 
 from pyodi.core.nms import nms_predictions
 
-app = typer.Typer()
-
 
 @logger.catch
-@app.command()
 def crops_merge(
     ground_truth_file: str,
     output_file: str,
@@ -103,7 +99,3 @@ def crops_merge(
         json.dump(new_ground_truth, f, indent=2)
 
     return output_file
-
-
-if __name__ == "__main__":
-    app()

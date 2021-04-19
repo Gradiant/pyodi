@@ -87,7 +87,7 @@ The design of anchors is critical for the performance of one-stage detectors. Py
 ```bash
 pyodi train-config generation \
   $TINY_COCO_ANIMAL/annotations/train.json \
-  --input-size 1280 720 \
+  --input-size [1280,720] \
   --n-ratios 3 --n-scales 3
 ```
 
@@ -101,7 +101,7 @@ Pyodi evaluation app has been designed with the aim of providing a simple tool t
 pyodi train-config evaluation \
   $TINY_COCO_ANIMAL/annotations/train.json \
   $TINY_COCO_ANIMAL/resources/anchor_config.py \
-  --input-size 1280 720
+  --input-size [1280,720]
 ```
 
 ![Anchor overlap plot](docs/images/train-config-evaluation/overlap.png)
