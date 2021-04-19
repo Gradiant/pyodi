@@ -116,16 +116,6 @@ class AnchorGenerator(object):
         self.base_anchors = self.gen_base_anchors()
 
     @property
-    def num_base_anchors(self) -> List[int]:
-        """Returns the number of anchors per level.
-
-        Returns:
-            List with number of anchors per level.
-
-        """
-        return [base_anchors.size(0) for base_anchors in self.base_anchors]
-
-    @property
     def num_levels(self) -> int:
         """Returns the number of levels.
 
@@ -263,59 +253,6 @@ class AnchorGenerator(object):
         # first A rows correspond to A anchors of (0, 0) in feature map,
         # then (0, 1), (0, 2), ...
         return all_anchors
-
-    # todo: this function depends on the following commented function
-    # def valid_flags(
-    #     self,
-    #     featmap_sizes: List[Tuple[int, int]],
-    #     pad_shape: Tuple[int, int],
-    #     device: str = "cuda",
-    # ) -> List:
-    #     """Generate valid flags of anchors in multiple feature levels
-    #
-    #     Args:
-    #         featmap_sizes: List of feature map sizes in multiple feature levels.
-    #         pad_shape: The padded shape of the image.
-    #         device: Device where the anchors will be put on. Defaults to "cuda".
-    #
-    #     Returns:
-    #         Valid flags of anchors in multiple levels (List[torch.Tensor]).
-    #     """
-    #     assert self.num_levels == len(featmap_sizes)
-    #     multi_level_flags = []
-    #     for i in range(self.num_levels):
-    #         anchor_stride = self.strides[i]
-    #         feat_h, feat_w = featmap_sizes[i]
-    #         h, w = pad_shape[:2]
-    #         valid_feat_h = min(int(np.ceil(h / anchor_stride)), feat_h)
-    #         valid_feat_w = min(int(np.ceil(w / anchor_stride)), feat_w)
-    #         flags = self.single_level_valid_flags(
-    #             (feat_h, feat_w),
-    #             (valid_feat_h, valid_feat_w),
-    #             self.num_base_anchors[i],
-    #             device=device,
-    #         )
-    #         multi_level_flags.append(flags)
-    #     return multi_level_flags
-
-    # todo: update with numpy if necessary
-    # def single_level_valid_flags(
-    #     self, featmap_size, valid_size, num_base_anchors, device="cuda"
-    # ):
-    #     feat_h, feat_w = featmap_size
-    #     valid_h, valid_w = valid_size
-    #     assert valid_h <= feat_h and valid_w <= feat_w
-    #     valid_x = torch.zeros(feat_w, dtype=torch.uint8, device=device)
-    #     valid_y = torch.zeros(feat_h, dtype=torch.uint8, device=device)
-    #     valid_x[:valid_w] = 1
-    #     valid_y[:valid_h] = 1
-    #     valid_xx, valid_yy = self._meshgrid(valid_x, valid_y)
-    #     valid = valid_xx & valid_yy
-    #     valid = (
-    #         valid[:, None]
-    #         .expand(valid.size(0), num_base_anchors).contiguous().view(-1)
-    #     )
-    #     return valid
 
     def __repr__(self) -> str:
         indent_str = "    "
