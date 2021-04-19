@@ -103,6 +103,7 @@ from typing import List, Optional, Tuple
 import numpy as np
 from loguru import logger
 
+from pyodi.apps.train_config.train_config_evaluation import train_config_evaluation
 from pyodi.core.anchor_generator import AnchorGenerator
 from pyodi.core.boxes import (
     filter_zero_area_bboxes,
@@ -131,7 +132,8 @@ def train_config_generation(
     output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),
     keep_ratio: bool = False,
-) -> AnchorGenerator:
+    evaluate: bool = True,
+) -> None:
     """Computes optimal anchors for a given COCO dataset based on iou clustering.
 
     Args:
@@ -143,15 +145,17 @@ def train_config_generation(
         base_sizes: The basic sizes of anchors in multiple levels.
             If None is given, strides will be used as base_sizes.
         show: Show results or not. Defaults to True.
-        output: Output file where results are saved. Defaults to None.
+        output: Output directory where results going to be saved. Defaults to None.
         output_size: Size of saved images. Defaults to (1600, 900).
         keep_ratio: Whether to keep the aspect ratio or not. Defaults to False.
+        evaluate: Whether to evaluate or not the anchors. Check
+            [`pyodi train-config evaluation`][pyodi.apps.train_config.train_config_evaluation.train_config_evaluation]
+            for more information.
 
     Returns:
         Anchor generator instance.
     """
     if output is not None:
-        output = str(Path(output) / Path(ground_truth_file).stem)
         Path(output).mkdir(parents=True, exist_ok=True)
 
     coco_ground_truth = load_ground_truth_file(ground_truth_file)
@@ -216,9 +220,18 @@ def train_config_generation(
         title="COCO_anchor_generation",
     )
 
+    if evaluate:
+        anchor_config = dict(anchor_generator=anchor_generator.to_dict())
+        train_config_evaluation(
+            ground_truth_file=df_annotations,
+            anchor_config=anchor_config,  # type: ignore
+            input_size=input_size,
+            show=show,
+            output=output,
+            output_size=output_size,
+        )
+
     if output:
         output_file = Path(output) / "anchor_config.py"
         with open(output_file, "w") as f:
             f.write(anchor_generator.to_string())
-
-    return anchor_generator
