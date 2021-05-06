@@ -71,9 +71,10 @@ from os import path as osp
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple, Union
 
 import numpy as np
+import pandas as pd
 from loguru import logger
 
 from pyodi.core.anchor_generator import AnchorGenerator
@@ -120,23 +121,27 @@ def load_anchor_config_file(anchor_config_file: str) -> Dict[str, Any]:
 
 @logger.catch
 def train_config_evaluation(
-    ground_truth_file: str,
+    ground_truth_file: Union[str, pd.DataFrame],
     anchor_config: str,
     input_size: Tuple[int, int] = (1280, 720),
     show: bool = True,
     output: Optional[str] = None,
     output_size: Tuple[int, int] = (1600, 900),
+    keep_ratio: bool = False,
 ) -> None:
     """Evaluates the fitness between `ground_truth_file` and `anchor_config_file`.
 
     Args:
-        ground_truth_file: Path to COCO ground truth file.
+        ground_truth_file: Path to COCO ground truth file or coco df_annotations DataFrame
+            to be used from
+            [`pyodi train-config generation`][pyodi.apps.train_config.train_config_generation.train_config_generation]
         anchor_config: Path to MMDetection-like `anchor_generator` section. It can also be a
             dictionary with the required data.
         input_size: Model image input size. Defaults to (1333, 800).
         show: Show results or not. Defaults to True.
-        output: Output file where results are saved. Defaults to None.
+        output: Output directory where results going to be saved. Defaults to None.
         output_size: Size of saved images. Defaults to (1600, 900).
+        keep_ratio: Whether to keep the aspect ratio or not. Defaults to False.
 
     Examples:
         ```python
@@ -150,20 +155,25 @@ def train_config_evaluation(
         ```
     """
     if output is not None:
-        output = str(Path(output) / Path(ground_truth_file).stem)
         Path(output).mkdir(parents=True, exist_ok=True)
 
-    coco_ground_truth = load_ground_truth_file(ground_truth_file)
+    if isinstance(ground_truth_file, str):
+        coco_ground_truth = load_ground_truth_file(ground_truth_file)
 
-    df_images, df_annotations = coco_ground_truth_to_dfs(coco_ground_truth)
+        df_images, df_annotations = coco_ground_truth_to_dfs(coco_ground_truth)
 
-    df_annotations = join_annotations_with_image_sizes(df_annotations, df_images)
+        df_annotations = join_annotations_with_image_sizes(df_annotations, df_images)
 
-    df_annotations = filter_zero_area_bboxes(df_annotations)
+        df_annotations = filter_zero_area_bboxes(df_annotations)
 
-    df_annotations = scale_bbox_dimensions(df_annotations, input_size=input_size)
+        df_annotations = scale_bbox_dimensions(
+            df_annotations, input_size=input_size, keep_ratio=keep_ratio
+        )
 
-    df_annotations = get_scale_and_ratio(df_annotations, prefix="scaled")
+        df_annotations = get_scale_and_ratio(df_annotations, prefix="scaled")
+
+    else:
+        df_annotations = ground_truth_file
 
     df_annotations["log_scaled_ratio"] = np.log(df_annotations["scaled_ratio"])
 
