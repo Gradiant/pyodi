@@ -51,11 +51,7 @@ from typing import Optional, Tuple
 from loguru import logger
 
 from pyodi.core.boxes import add_centroids
-from pyodi.core.utils import (
-    coco_ground_truth_to_dfs,
-    join_annotations_with_image_sizes,
-    load_ground_truth_file,
-)
+from pyodi.core.utils import coco_ground_truth_to_df
 from pyodi.plots.boxes import get_centroids_heatmap, plot_heatmap
 from pyodi.plots.common import plot_scatter_with_histograms
 
@@ -81,12 +77,12 @@ def ground_truth(
         output = str(Path(output) / Path(ground_truth_file).stem)
         Path(output).mkdir(parents=True, exist_ok=True)
 
-    coco_ground_truth = load_ground_truth_file(ground_truth_file)
-
-    df_images, df_annotations = coco_ground_truth_to_dfs(coco_ground_truth)
+    df_annotations = coco_ground_truth_to_df(ground_truth_file)
 
     plot_scatter_with_histograms(
-        df_images,
+        df_annotations[["img_width", "img_height", "id"]].drop_duplicates(),
+        x="img_widht",
+        y="img_height",
         title=f"{Path(ground_truth_file).stem}: Image Shapes",
         show=show,
         output=output,
@@ -94,8 +90,6 @@ def ground_truth(
         histogram_xbins=dict(size=10),
         histogram_ybins=dict(size=10),
     )
-
-    df_annotations = join_annotations_with_image_sizes(df_annotations, df_images)
 
     df_annotations = add_centroids(df_annotations)
 

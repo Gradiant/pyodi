@@ -112,11 +112,7 @@ from pyodi.core.boxes import (
     scale_bbox_dimensions,
 )
 from pyodi.core.clustering import find_pyramid_level, kmeans_euclidean
-from pyodi.core.utils import (
-    coco_ground_truth_to_dfs,
-    join_annotations_with_image_sizes,
-    load_ground_truth_file,
-)
+from pyodi.core.utils import coco_ground_truth_to_df
 from pyodi.plots.clustering import plot_clustering_results
 
 
@@ -158,11 +154,7 @@ def train_config_generation(
     if output is not None:
         Path(output).mkdir(parents=True, exist_ok=True)
 
-    coco_ground_truth = load_ground_truth_file(ground_truth_file)
-
-    df_images, df_annotations = coco_ground_truth_to_dfs(coco_ground_truth)
-
-    df_annotations = join_annotations_with_image_sizes(df_annotations, df_images)
+    df_annotations = coco_ground_truth_to_df(ground_truth_file)
 
     df_annotations = filter_zero_area_bboxes(df_annotations)
 
