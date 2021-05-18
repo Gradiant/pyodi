@@ -66,7 +66,7 @@ def coco_ground_truth_to_df(
     # Filter columns by name
     column_names = ["image_id", "area", "id", "category"] + bbox_columns
     if "iscrowd" in df_annotations.columns:
-        column_names += "iscrowd"
+        column_names.append("iscrowd")
 
     # Join with images
     df_annotations = df_annotations[column_names].join(

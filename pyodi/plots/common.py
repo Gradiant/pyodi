@@ -76,7 +76,7 @@ def plot_scatter_with_histograms(
             y=filtered_df[y],
             mode="markers",
             name=str(c or "Images Shape"),
-            text=filtered_df["file_name"],
+            text=filtered_df["img_file_name"],
             marker=dict(color=colors[i % len(colors)] if colors else None),
             legendgroup=f"legendgroup_{i}" if legendgroup else None,
             **kwargs,

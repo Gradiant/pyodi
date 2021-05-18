@@ -79,9 +79,13 @@ def ground_truth(
 
     df_annotations = coco_ground_truth_to_df(ground_truth_file)
 
+    df_images = df_annotations.loc[
+        :, df_annotations.columns.str.startswith("img_")
+    ].drop_duplicates()
+
     plot_scatter_with_histograms(
-        df_annotations[["img_width", "img_height", "id"]].drop_duplicates(),
-        x="img_widht",
+        df_images,
+        x="img_width",
         y="img_height",
         title=f"{Path(ground_truth_file).stem}: Image Shapes",
         show=show,
