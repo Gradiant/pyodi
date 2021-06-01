@@ -85,11 +85,7 @@ from pyodi.core.boxes import (
     scale_bbox_dimensions,
 )
 from pyodi.core.clustering import get_max_overlap
-from pyodi.core.utils import (
-    coco_ground_truth_to_dfs,
-    join_annotations_with_image_sizes,
-    load_ground_truth_file,
-)
+from pyodi.core.utils import coco_ground_truth_to_df
 from pyodi.plots.evaluation import plot_overlap_result
 
 
@@ -158,11 +154,7 @@ def train_config_evaluation(
         Path(output).mkdir(parents=True, exist_ok=True)
 
     if isinstance(ground_truth_file, str):
-        coco_ground_truth = load_ground_truth_file(ground_truth_file)
-
-        df_images, df_annotations = coco_ground_truth_to_dfs(coco_ground_truth)
-
-        df_annotations = join_annotations_with_image_sizes(df_annotations, df_images)
+        df_annotations = coco_ground_truth_to_df(ground_truth_file)
 
         df_annotations = filter_zero_area_bboxes(df_annotations)
 
