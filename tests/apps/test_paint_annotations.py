@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+import pytest
 from matplotlib import cm
 from PIL import Image
 
@@ -141,3 +142,40 @@ def test_crowd_annotations_skipped_when_filter_crowd(tmp_path):
 
     assert np.array_equal(result_image_1[3, 4], color_2)
     assert np.array_equal(result_image_1[5, 6], color_2)
+
+
+@pytest.mark.parametrize("first_n", [1, 3, None])
+def test_first_n(tmp_path, first_n):
+
+    images_folder = tmp_path / "images"
+    Path(images_folder).mkdir(exist_ok=True, parents=True)
+
+    output_folder = tmp_path / "test_result"
+    Path(output_folder).mkdir(exist_ok=True, parents=True)
+
+    images, annotations = [], []
+    for i in range(5):
+        images.append(
+            {"id": 0, "width": 10, "height": 10, "file_name": f"test_{i}.png"}
+        )
+        image = np.zeros((10, 10, 3), dtype=np.uint8)
+        Image.fromarray(image).save(images_folder / f"test_{i}.png")
+
+        annotations.append(
+            {"image_id": i, "category_id": 0, "bbox": [0, 0, 2, 2], "score": 1}
+        )
+
+    categories = [{"id": 0, "name": "", "supercategory": "object"}]
+
+    coco_data = dict(images=images, annotations=annotations, categories=categories)
+
+    with open(tmp_path / "test_annotation.json", "w") as json_file:
+        json.dump(coco_data, json_file)
+
+    first_n = first_n or len(images)
+
+    paint_annotations(
+        tmp_path / "test_annotation.json", images_folder, output_folder, first_n=first_n
+    )
+
+    assert len(list(Path(output_folder).iterdir())) == first_n
