@@ -44,7 +44,7 @@ def paint_annotations(
     color_key: str = "category_id",
     show_label: bool = True,
     filter_crowd: bool = True,
-    first_n: int = None,
+    first_n: Optional[int] = None,
 ) -> None:
     """Paint `ground_truth_file` or `predictions_file` annotations on `image_folder` images.
 
