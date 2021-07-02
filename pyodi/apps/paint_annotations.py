@@ -44,6 +44,7 @@ def paint_annotations(
     color_key: str = "category_id",
     show_label: bool = True,
     filter_crowd: bool = True,
+    first_n: Optional[int] = None,
 ) -> None:
     """Paint `ground_truth_file` or `predictions_file` annotations on `image_folder` images.
 
@@ -59,6 +60,8 @@ def paint_annotations(
         color_key: Choose the key in annotations on which the color will depend. Defaults to 'category_id'.
         show_label: Choose whether to show label and score threshold on image. Default True.
         filter_crowd: Filter out crowd annotations or not. Default True.
+        first_n: Paint only first n annotations and stop after that.
+            If None, all images will be painted.
     """
     Path(output_folder).mkdir(exist_ok=True, parents=True)
 
@@ -85,8 +88,9 @@ def paint_annotations(
             image_id_to_annotations[annotation["image_id"]].append(annotation)
 
     image_data = ground_truth["images"]
+    first_n = first_n or len(image_data)
 
-    for image in image_data:
+    for image in image_data[:first_n]:
 
         image_filename = image["file_name"]
         image_id = image["id"]
