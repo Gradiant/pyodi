@@ -133,15 +133,15 @@ def property_split(
     train_split = {
         "images": train_images,
         "annotations": train_annotations,
-        "info": data["info"],
-        "licenses": data["licenses"],
+        "info": data.get("info", {}),
+        "licenses": data.get("licenses", []),
         "categories": data["categories"],
     }
     val_split = {
         "images": val_images,
         "annotations": val_annotations,
-        "info": data["info"],
-        "licenses": data["licenses"],
+        "info": data.get("info", {}),
+        "licenses": data.get("licenses", []),
         "categories": data["categories"],
     }
 
@@ -202,16 +202,16 @@ def random_split(
     train_split = {
         "images": train_images,
         "annotations": train_annotations,
-        "info": data["info"],
-        "licenses": data["licenses"],
+        "info": data.get("info", {}),
+        "licenses": data.get("licenses", []),
         "categories": data["categories"],
     }
 
     val_split = {
         "images": val_images,
         "annotations": val_annotations,
-        "info": data["info"],
-        "licenses": data["licenses"],
+        "info": data.get("info", {}),
+        "licenses": data.get("licenses", []),
         "categories": data["categories"],
     }
 
