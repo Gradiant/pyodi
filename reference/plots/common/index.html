@@ -1,0 +1,1416 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="https://github.com/Gradiant/pyodi/reference/plots/common/">
+      
+      <link rel="shortcut icon" href="../../../images/logo.svg">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
+    
+    
+      
+        <title>common - Python Object Detection Insights</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.cb6bc1d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.39b8e14a.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../../css/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#pyodi.plots.common" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://github.com/Gradiant/pyodi" title="Python Object Detection Insights" class="md-header-nav__button md-logo" aria-label="Python Object Detection Insights">
+      
+  <img src="../../../images/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            Python Object Detection Insights
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              common
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://github.com/Gradiant/pyodi" title="Python Object Detection Insights" class="md-nav__button md-logo" aria-label="Python Object Detection Insights">
+      
+  <img src="../../../images/logo.svg" alt="logo">
+
+    </a>
+    Python Object Detection Insights
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+      
+      <label class="md-nav__link" for="nav-3">
+        Reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="nav-3">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1" type="checkbox" id="nav-3-1" >
+      
+      <label class="md-nav__link" for="nav-3-1">
+        apps
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="apps" data-md-level="2">
+        <label class="md-nav__title" for="nav-3-1">
+          <span class="md-nav__icon md-icon"></span>
+          apps
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1-1" type="checkbox" id="nav-3-1-1" >
+      
+      <label class="md-nav__link" for="nav-3-1-1">
+        coco
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="coco" data-md-level="3">
+        <label class="md-nav__title" for="nav-3-1-1">
+          <span class="md-nav__icon md-icon"></span>
+          coco
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/coco-merge/" class="md-nav__link">
+        merge
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/coco-split/" class="md-nav__link">
+        split
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1-2" type="checkbox" id="nav-3-1-2" >
+      
+      <label class="md-nav__link" for="nav-3-1-2">
+        crops
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="crops" data-md-level="3">
+        <label class="md-nav__title" for="nav-3-1-2">
+          <span class="md-nav__icon md-icon"></span>
+          crops
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/crops-merge/" class="md-nav__link">
+        merge
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/crops-split/" class="md-nav__link">
+        split
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/evaluation/" class="md-nav__link">
+        evaluation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/ground-truth/" class="md-nav__link">
+        ground-truth
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/paint-annotations/" class="md-nav__link">
+        paint-annotations
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1-6" type="checkbox" id="nav-3-1-6" >
+      
+      <label class="md-nav__link" for="nav-3-1-6">
+        train-config
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="train-config" data-md-level="3">
+        <label class="md-nav__title" for="nav-3-1-6">
+          <span class="md-nav__icon md-icon"></span>
+          train-config
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/train-config-evaluation/" class="md-nav__link">
+        evaluation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/train-config-generation/" class="md-nav__link">
+        generation
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-2" type="checkbox" id="nav-3-2" >
+      
+      <label class="md-nav__link" for="nav-3-2">
+        core
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="core" data-md-level="2">
+        <label class="md-nav__title" for="nav-3-2">
+          <span class="md-nav__icon md-icon"></span>
+          core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/anchor_generator/" class="md-nav__link">
+        anchor_generator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/boxes/" class="md-nav__link">
+        boxes
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/clustering/" class="md-nav__link">
+        clustering
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/crops/" class="md-nav__link">
+        crops
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/nms/" class="md-nav__link">
+        nms
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/utils/" class="md-nav__link">
+        utils
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-3" type="checkbox" id="nav-3-3" checked>
+      
+      <label class="md-nav__link" for="nav-3-3">
+        plots
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="plots" data-md-level="2">
+        <label class="md-nav__title" for="nav-3-3">
+          <span class="md-nav__icon md-icon"></span>
+          plots
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../boxes/" class="md-nav__link">
+        boxes
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clustering/" class="md-nav__link">
+        clustering
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          common
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        common
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.plots.common" class="md-nav__link">
+    pyodi.plots.common
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.plots.common.plot_histogram" class="md-nav__link">
+    plot_histogram()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.plots.common.plot_scatter_with_histograms" class="md-nav__link">
+    plot_scatter_with_histograms()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.plots.common.save_figure" class="md-nav__link">
+    save_figure()
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../evaluation/" class="md-nav__link">
+        evaluation
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.plots.common" class="md-nav__link">
+    pyodi.plots.common
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.plots.common.plot_histogram" class="md-nav__link">
+    plot_histogram()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.plots.common.plot_scatter_with_histograms" class="md-nav__link">
+    plot_scatter_with_histograms()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.plots.common.save_figure" class="md-nav__link">
+    save_figure()
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>common</h1>
+                
+                <div class="doc doc-object doc-module">
+<h2 class="hidden-toc" id="pyodi.plots.common" style="visibility: hidden; position: absolute;">
+        </h2>
+<div class="doc doc-contents first">
+<div class="doc doc-children">
+<div class="doc doc-object doc-function">
+<h2 class="doc doc-heading" id="pyodi.plots.common.plot_histogram">
+
+<code class="highlight language-python"><span class="n">plot_histogram</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">yrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xbins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">histnorm</span><span class="o">=</span><span class="s1">'percent'</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_size</span><span class="o">=</span><span class="p">(</span><span class="mi">1600</span><span class="p">,</span> <span class="mi">900</span><span class="p">))</span></code>
+
+
+      </h2>
+<div class="doc doc-contents ">
+<p>Plot histogram figure.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>df</code></td>
+<td><code>DataFrame</code></td>
+<td>
+<p>Data to plot.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>column</code></td>
+<td><code>str</code></td>
+<td>
+<p>DataFrame column to plot.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td><code>Optional[str]</code></td>
+<td>
+<p>Title of figure. Defaults to None.</p>
+</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>xrange</code></td>
+<td><code>Optional[Tuple[int, int]]</code></td>
+<td>
+<p>Range in axis X. Defaults to None.</p>
+</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>yrange</code></td>
+<td><code>Optional[Tuple[int, int]]</code></td>
+<td>
+<p>Range in axis Y. Defaults to None.</p>
+</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>xbins</code></td>
+<td><code>Optional[Dict[str, Any]]</code></td>
+<td>
+<p>Width of X bins. Defaults to None.</p>
+</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>histnorm</code></td>
+<td><code>Optional[str]</code></td>
+<td>
+<p>Histnorm. Defaults to "percent".</p>
+</td>
+<td><code>'percent'</code></td>
+</tr>
+<tr>
+<td><code>show</code></td>
+<td><code>bool</code></td>
+<td>
+<p>Whether to show the figure or not. Defaults to False.</p>
+</td>
+<td><code>False</code></td>
+</tr>
+<tr>
+<td><code>output</code></td>
+<td><code>Optional[str]</code></td>
+<td>
+<p>Output path folder. Defaults to None.</p>
+</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>output_size</code></td>
+<td><code>Tuple[int, int]</code></td>
+<td>
+<p>Size of saved images. Defaults to (1600, 900).</p>
+</td>
+<td><code>(1600, 900)</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Figure</code></td>
+<td>
+<p>Histogram figure.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>pyodi/plots/common.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">plot_histogram</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">xrange</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">yrange</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">xbins</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">histnorm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"percent"</span><span class="p">,</span>
+    <span class="n">show</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">output</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">output_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1600</span><span class="p">,</span> <span class="mi">900</span><span class="p">),</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+    <span class="sd">"""Plot histogram figure.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df: Data to plot.</span>
+<span class="sd">        column: DataFrame column to plot.</span>
+<span class="sd">        title: Title of figure. Defaults to None.</span>
+<span class="sd">        xrange: Range in axis X. Defaults to None.</span>
+<span class="sd">        yrange: Range in axis Y. Defaults to None.</span>
+<span class="sd">        xbins: Width of X bins. Defaults to None.</span>
+<span class="sd">        histnorm: Histnorm. Defaults to "percent".</span>
+<span class="sd">        show: Whether to show the figure or not. Defaults to False.</span>
+<span class="sd">        output: Output path folder. Defaults to None.</span>
+<span class="sd">        output_size: Size of saved images. Defaults to (1600, 900).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Histogram figure.</span>
+
+<span class="sd">    """</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Plotting </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2"> Histogram"</span><span class="p">)</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">go</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">],</span> <span class="n">histnorm</span><span class="o">=</span><span class="n">histnorm</span><span class="p">,</span> <span class="n">hovertext</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s2">"file_name"</span><span class="p">],</span> <span class="n">xbins</span><span class="o">=</span><span class="n">xbins</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">xrange</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="n">xrange</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">yrange</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="n">yrange</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2"> histogram"</span>
+
+    <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">title_text</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">title_font_size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
+        <span class="n">save_figure</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fig</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-function">
+<h2 class="doc doc-heading" id="pyodi.plots.common.plot_scatter_with_histograms">
+
+<code class="highlight language-python"><span class="n">plot_scatter_with_histograms</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">'width'</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">'height'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_size</span><span class="o">=</span><span class="p">(</span><span class="mi">1600</span><span class="p">,</span> <span class="mi">900</span><span class="p">),</span> <span class="n">histogram</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'category'</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">legendgroup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">xaxis_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">yaxis_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">histogram_xbins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">histogram_ybins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+      </h2>
+<div class="doc doc-contents ">
+<p>Allows to compare the relation between two variables of your COCO dataset.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>df</code></td>
+<td><code>DataFrame</code></td>
+<td>
+<p>COCO annotations generated DataFrame.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>x</code></td>
+<td><code>str</code></td>
+<td>
+<p>Name of column that will be represented in x axis. Defaults to "width".</p>
+</td>
+<td><code>'width'</code></td>
+</tr>
+<tr>
+<td><code>y</code></td>
+<td><code>str</code></td>
+<td>
+<p>Name of column that will be represented in y axis. Defaults to "height".</p>
+</td>
+<td><code>'height'</code></td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td><code>Optional[str]</code></td>
+<td>
+<p>Plot name. Defaults to None.</p>
+</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>show</code></td>
+<td><code>bool</code></td>
+<td>
+<p>Whether to show the figure or not. Defaults to True.</p>
+</td>
+<td><code>True</code></td>
+</tr>
+<tr>
+<td><code>output</code></td>
+<td><code>Optional[str]</code></td>
+<td>
+<p>Output path folder. Defaults to None.</p>
+</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>output_size</code></td>
+<td><code>Tuple[int, int]</code></td>
+<td>
+<p>Size of saved images. Defaults to (1600, 900).</p>
+</td>
+<td><code>(1600, 900)</code></td>
+</tr>
+<tr>
+<td><code>histogram</code></td>
+<td><code>bool</code></td>
+<td>
+<p>Whether to draw a marginal histogram distribution of each axis or
+not. Defaults to True.</p>
+</td>
+<td><code>True</code></td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td><code>str</code></td>
+<td>
+<p>Name of the column with class information in df_annotations. Defaults
+to 'category'.</p>
+</td>
+<td><code>'category'</code></td>
+</tr>
+<tr>
+<td><code>colors</code></td>
+<td><code>Optional[List]</code></td>
+<td>
+<p>List of rgb colors to use. If None default plotly colors are used.
+Defaults to None.</p>
+</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>legendgroup</code></td>
+<td><code>Optional[str]</code></td>
+<td>
+<p>When present legend is grouped by different categories
+(see https://plotly.com/python/legend/).</p>
+</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>fig</code></td>
+<td><code>Optional[plotly.graph_objs._figure.Figure]</code></td>
+<td>
+<p>When figure is provided, trace is automatically added on it. Defaults to
+None.</p>
+</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>row</code></td>
+<td><code>int</code></td>
+<td>
+<p>Subplot row to use when fig is provided. Defaults to 1.</p>
+</td>
+<td><code>1</code></td>
+</tr>
+<tr>
+<td><code>col</code></td>
+<td><code>int</code></td>
+<td>
+<p>Subplot col to use when fig is provided. Defaults to 1.</p>
+</td>
+<td><code>1</code></td>
+</tr>
+<tr>
+<td><code>xaxis_range</code></td>
+<td><code>Optional[Tuple[float, float]]</code></td>
+<td>
+<p>range of values for the histogram's horizontal axis</p>
+</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>yaxis_range</code></td>
+<td><code>Optional[Tuple[float, float]]</code></td>
+<td>
+<p>range of values for the histogram's vertical axis</p>
+</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>histogram_xbins</code></td>
+<td><code>Optional[Dict[str, Any]]</code></td>
+<td>
+<p>number of bins for the histogram's horizontal axis</p>
+</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>histogram_ybins</code></td>
+<td><code>Optional[Dict[str, Any]]</code></td>
+<td>
+<p>number of bins for the histogram's vertical axis</p>
+</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Figure</code></td>
+<td>
+<p>Plotly figure.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>pyodi/plots/common.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">plot_scatter_with_histograms</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">x</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"width"</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"height"</span><span class="p">,</span>
+    <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">show</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">output</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">output_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1600</span><span class="p">,</span> <span class="mi">900</span><span class="p">),</span>
+    <span class="n">histogram</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"category"</span><span class="p">,</span>
+    <span class="n">colors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">legendgroup</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">fig</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">row</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">col</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">xaxis_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">yaxis_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">histogram_xbins</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">histogram_ybins</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+    <span class="sd">"""Allows to compare the relation between two variables of your COCO dataset.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df: COCO annotations generated DataFrame.</span>
+<span class="sd">        x: Name of column that will be represented in x axis. Defaults to "width".</span>
+<span class="sd">        y: Name of column that will be represented in y axis. Defaults to "height".</span>
+<span class="sd">        title: Plot name. Defaults to None.</span>
+<span class="sd">        show: Whether to show the figure or not. Defaults to True.</span>
+<span class="sd">        output: Output path folder. Defaults to None.</span>
+<span class="sd">        output_size: Size of saved images. Defaults to (1600, 900).</span>
+<span class="sd">        histogram: Whether to draw a marginal histogram distribution of each axis or</span>
+<span class="sd">            not. Defaults to True.</span>
+<span class="sd">        label: Name of the column with class information in df_annotations. Defaults</span>
+<span class="sd">            to 'category'.</span>
+<span class="sd">        colors: List of rgb colors to use. If None default plotly colors are used.</span>
+<span class="sd">            Defaults to None.</span>
+<span class="sd">        legendgroup: When present legend is grouped by different categories</span>
+<span class="sd">            (see https://plotly.com/python/legend/).</span>
+<span class="sd">        fig: When figure is provided, trace is automatically added on it. Defaults to</span>
+<span class="sd">            None.</span>
+<span class="sd">        row: Subplot row to use when fig is provided. Defaults to 1.</span>
+<span class="sd">        col: Subplot col to use when fig is provided. Defaults to 1.</span>
+<span class="sd">        xaxis_range: range of values for the histogram's horizontal axis</span>
+<span class="sd">        yaxis_range: range of values for the histogram's vertical axis</span>
+<span class="sd">        histogram_xbins: number of bins for the histogram's horizontal axis</span>
+<span class="sd">        histogram_ybins: number of bins for the histogram's vertical axis</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Plotly figure.</span>
+
+<span class="sd">    """</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Plotting Scatter with Histograms"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">fig</span><span class="p">:</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">make_subplots</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">classes</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">df</span><span class="p">:</span>
+        <span class="n">classes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())))</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">classes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">c</span><span class="p">:</span>
+            <span class="n">filtered_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">==</span> <span class="n">c</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">filtered_df</span> <span class="o">=</span> <span class="n">df</span>
+        <span class="n">scatter</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scattergl</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">filtered_df</span><span class="p">[</span><span class="n">x</span><span class="p">],</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">filtered_df</span><span class="p">[</span><span class="n">y</span><span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">"markers"</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span> <span class="ow">or</span> <span class="s2">"Images Shape"</span><span class="p">),</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">filtered_df</span><span class="p">[</span><span class="s2">"img_file_name"</span><span class="p">],</span>
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colors</span><span class="p">)]</span> <span class="k">if</span> <span class="n">colors</span> <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="n">legendgroup</span><span class="o">=</span><span class="sa">f</span><span class="s2">"legendgroup_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">legendgroup</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">scatter</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="n">col</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">histogram</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_histogram</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="n">x</span><span class="p">],</span>
+            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2"> distribution"</span><span class="p">,</span>
+            <span class="n">yaxis</span><span class="o">=</span><span class="s2">"y2"</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"rgb(246, 207, 113)"</span><span class="p">),</span>
+            <span class="n">histnorm</span><span class="o">=</span><span class="s2">"percent"</span><span class="p">,</span>
+            <span class="n">xbins</span><span class="o">=</span><span class="n">histogram_xbins</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_histogram</span><span class="p">(</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="n">y</span><span class="p">],</span>
+            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2"> distribution"</span><span class="p">,</span>
+            <span class="n">xaxis</span><span class="o">=</span><span class="s2">"x2"</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"rgb(102, 197, 204)"</span><span class="p">),</span>
+            <span class="n">histnorm</span><span class="o">=</span><span class="s2">"percent"</span><span class="p">,</span>
+            <span class="n">ybins</span><span class="o">=</span><span class="n">histogram_ybins</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">fig</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                <span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.84</span><span class="p">],</span> <span class="n">showgrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">zeroline</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">xaxis_range</span>
+            <span class="p">),</span>
+            <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                <span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.83</span><span class="p">],</span> <span class="n">showgrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">zeroline</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">yaxis_range</span>
+            <span class="p">),</span>
+            <span class="n">xaxis2</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                <span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.85</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">showgrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">zeroline</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="n">yaxis2</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                <span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.85</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">showgrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">zeroline</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+        <span class="n">title_text</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">xaxis_title</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">yaxis_title</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">title_font_size</span><span class="o">=</span><span class="mi">20</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
+        <span class="n">save_figure</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fig</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-function">
+<h2 class="doc doc-heading" id="pyodi.plots.common.save_figure">
+
+<code class="highlight language-python"><span class="n">save_figure</span><span class="p">(</span><span class="n">figure</span><span class="p">,</span> <span class="n">output_name</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span></code>
+
+
+      </h2>
+<div class="doc doc-contents ">
+<p>Saves figure into png image file.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>figure</code></td>
+<td><code>Figure</code></td>
+<td>
+<p>Figure to save.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>output_name</code></td>
+<td><code>str</code></td>
+<td>
+<p>Output filename.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>output_dir</code></td>
+<td><code>str</code></td>
+<td>
+<p>Output directory.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>output_size</code></td>
+<td><code>Tuple[int, int]</code></td>
+<td>
+<p>Size of saved image.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>pyodi/plots/common.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">save_figure</span><span class="p">(</span>
+    <span class="n">figure</span><span class="p">:</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">output_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">"""Saves figure into png image file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        figure: Figure to save.</span>
+<span class="sd">        output_name: Output filename.</span>
+<span class="sd">        output_dir: Output directory.</span>
+<span class="sd">        output_size: Size of saved image.</span>
+
+<span class="sd">    """</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">output_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">"_"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".png"</span><span class="p">))</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">output_size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="n">output_size</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">write_image</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">"kaleido"</span><span class="p">)</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+</div>
+</div>
+</div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../clustering/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                clustering
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../evaluation/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                evaluation
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../../assets/javascripts/worker/search.9c0e82ba.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1089 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="https://github.com/Gradiant/pyodi/reference/apps/paint-annotations/">
+      
+      <link rel="shortcut icon" href="../../../images/logo.svg">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
+    
+    
+      
+        <title>paint-annotations - Python Object Detection Insights</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.cb6bc1d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.39b8e14a.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../../css/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#pyodi.apps.paint_annotations" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://github.com/Gradiant/pyodi" title="Python Object Detection Insights" class="md-header-nav__button md-logo" aria-label="Python Object Detection Insights">
+      
+  <img src="../../../images/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            Python Object Detection Insights
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              paint-annotations
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://github.com/Gradiant/pyodi" title="Python Object Detection Insights" class="md-nav__button md-logo" aria-label="Python Object Detection Insights">
+      
+  <img src="../../../images/logo.svg" alt="logo">
+
+    </a>
+    Python Object Detection Insights
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+      
+      <label class="md-nav__link" for="nav-3">
+        Reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="nav-3">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1" type="checkbox" id="nav-3-1" checked>
+      
+      <label class="md-nav__link" for="nav-3-1">
+        apps
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="apps" data-md-level="2">
+        <label class="md-nav__title" for="nav-3-1">
+          <span class="md-nav__icon md-icon"></span>
+          apps
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1-1" type="checkbox" id="nav-3-1-1" >
+      
+      <label class="md-nav__link" for="nav-3-1-1">
+        coco
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="coco" data-md-level="3">
+        <label class="md-nav__title" for="nav-3-1-1">
+          <span class="md-nav__icon md-icon"></span>
+          coco
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../coco-merge/" class="md-nav__link">
+        merge
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../coco-split/" class="md-nav__link">
+        split
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1-2" type="checkbox" id="nav-3-1-2" >
+      
+      <label class="md-nav__link" for="nav-3-1-2">
+        crops
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="crops" data-md-level="3">
+        <label class="md-nav__title" for="nav-3-1-2">
+          <span class="md-nav__icon md-icon"></span>
+          crops
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crops-merge/" class="md-nav__link">
+        merge
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crops-split/" class="md-nav__link">
+        split
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../evaluation/" class="md-nav__link">
+        evaluation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ground-truth/" class="md-nav__link">
+        ground-truth
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          paint-annotations
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        paint-annotations
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.apps.paint_annotations" class="md-nav__link">
+    pyodi.apps.paint_annotations
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.apps.paint_annotations--paint-annotations-app" class="md-nav__link">
+    Paint Annotations App.
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.apps.paint_annotations--api-reference" class="md-nav__link">
+    API REFERENCE
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.apps.paint_annotations.paint_annotations" class="md-nav__link">
+    paint_annotations()
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1-6" type="checkbox" id="nav-3-1-6" >
+      
+      <label class="md-nav__link" for="nav-3-1-6">
+        train-config
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="train-config" data-md-level="3">
+        <label class="md-nav__title" for="nav-3-1-6">
+          <span class="md-nav__icon md-icon"></span>
+          train-config
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../train-config-evaluation/" class="md-nav__link">
+        evaluation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../train-config-generation/" class="md-nav__link">
+        generation
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-2" type="checkbox" id="nav-3-2" >
+      
+      <label class="md-nav__link" for="nav-3-2">
+        core
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="core" data-md-level="2">
+        <label class="md-nav__title" for="nav-3-2">
+          <span class="md-nav__icon md-icon"></span>
+          core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/anchor_generator/" class="md-nav__link">
+        anchor_generator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/boxes/" class="md-nav__link">
+        boxes
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/clustering/" class="md-nav__link">
+        clustering
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/crops/" class="md-nav__link">
+        crops
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/nms/" class="md-nav__link">
+        nms
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/utils/" class="md-nav__link">
+        utils
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-3" type="checkbox" id="nav-3-3" >
+      
+      <label class="md-nav__link" for="nav-3-3">
+        plots
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="plots" data-md-level="2">
+        <label class="md-nav__title" for="nav-3-3">
+          <span class="md-nav__icon md-icon"></span>
+          plots
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plots/boxes/" class="md-nav__link">
+        boxes
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plots/clustering/" class="md-nav__link">
+        clustering
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plots/common/" class="md-nav__link">
+        common
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plots/evaluation/" class="md-nav__link">
+        evaluation
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.apps.paint_annotations" class="md-nav__link">
+    pyodi.apps.paint_annotations
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.apps.paint_annotations--paint-annotations-app" class="md-nav__link">
+    Paint Annotations App.
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.apps.paint_annotations--api-reference" class="md-nav__link">
+    API REFERENCE
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.apps.paint_annotations.paint_annotations" class="md-nav__link">
+    paint_annotations()
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>paint-annotations</h1>
+                
+                <div class="doc doc-object doc-module">
+<h2 class="hidden-toc" id="pyodi.apps.paint_annotations" style="visibility: hidden; position: absolute;">
+        </h2>
+<div class="doc doc-contents first">
+<h2 id="pyodi.apps.paint_annotations--paint-annotations-app">Paint Annotations App.</h2>
+<p>The <a href="#pyodi.apps.paint_annotations.paint_annotations"><code>pyodi paint-annotations</code></a>
+helps you to easily visualize in a beautiful format your object detection dataset.
+You can also use this function to visualize model predictions if they are in COCO predictions format.</p>
+<p>Example usage:</p>
+<div class="codehilite">
+<pre><span></span><code>pyodi paint-annotations <span class="se">\\</span>
+<span class="nv">$TINY_COCO_ANIMAL</span>/annotations/train.json <span class="se">\\</span>
+<span class="nv">$TINY_COCO_ANIMAL</span>/sample_images/ <span class="se">\\</span>
+<span class="nv">$TINY_COCO_ANIMAL</span>/painted_images/
+</code></pre>
+</div>
+<p><img alt="COCO image with painted annotations" src="../../../images/coco_sample_82680.jpg" /></p>
+<hr />
+<h2 id="pyodi.apps.paint_annotations--api-reference">API REFERENCE</h2>
+<div class="doc doc-children">
+<div class="doc doc-object doc-function">
+<h2 class="doc doc-heading" id="pyodi.apps.paint_annotations.paint_annotations">
+
+<code class="highlight language-python"><span class="n">paint_annotations</span><span class="p">(</span><span class="n">ground_truth_file</span><span class="p">,</span> <span class="n">image_folder</span><span class="p">,</span> <span class="n">output_folder</span><span class="p">,</span> <span class="n">predictions_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">score_thr</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">color_key</span><span class="o">=</span><span class="s1">'category_id'</span><span class="p">,</span> <span class="n">show_label</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filter_crowd</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">first_n</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+      </h2>
+<div class="doc doc-contents ">
+<p>Paint <code>ground_truth_file</code> or <code>predictions_file</code> annotations on <code>image_folder</code> images.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ground_truth_file</code></td>
+<td><code>str</code></td>
+<td>
+<p>Path to COCO ground truth file.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>image_folder</code></td>
+<td><code>str</code></td>
+<td>
+<p>Path to root folder where the images of <code>ground_truth_file</code> are.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>output_folder</code></td>
+<td><code>str</code></td>
+<td>
+<p>Path to the folder where painted images will be saved.
+It will be created if it does not exist.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>predictions_file</code></td>
+<td><code>Optional[str]</code></td>
+<td>
+<p>Path to COCO predictions file.
+If not None, the annotations of predictions_file will be painted instead of ground_truth_file's.</p>
+</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>score_thr</code></td>
+<td><code>float</code></td>
+<td>
+<p>Detections bellow this threshold will not be painted.
+Default 0.0.</p>
+</td>
+<td><code>0.0</code></td>
+</tr>
+<tr>
+<td><code>color_key</code></td>
+<td><code>str</code></td>
+<td>
+<p>Choose the key in annotations on which the color will depend. Defaults to 'category_id'.</p>
+</td>
+<td><code>'category_id'</code></td>
+</tr>
+<tr>
+<td><code>show_label</code></td>
+<td><code>bool</code></td>
+<td>
+<p>Choose whether to show label and score threshold on image. Default True.</p>
+</td>
+<td><code>True</code></td>
+</tr>
+<tr>
+<td><code>filter_crowd</code></td>
+<td><code>bool</code></td>
+<td>
+<p>Filter out crowd annotations or not. Default True.</p>
+</td>
+<td><code>True</code></td>
+</tr>
+<tr>
+<td><code>first_n</code></td>
+<td><code>Optional[int]</code></td>
+<td>
+<p>Paint only first n annotations and stop after that.
+If None, all images will be painted.</p>
+</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>pyodi/apps/paint_annotations.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="nd">@logger</span><span class="o">.</span><span class="n">catch</span>
+<span class="k">def</span> <span class="nf">paint_annotations</span><span class="p">(</span>
+    <span class="n">ground_truth_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">image_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">output_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">predictions_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">score_thr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">color_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"category_id"</span><span class="p">,</span>
+    <span class="n">show_label</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">filter_crowd</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">first_n</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">"""Paint `ground_truth_file` or `predictions_file` annotations on `image_folder` images.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ground_truth_file: Path to COCO ground truth file.</span>
+<span class="sd">        image_folder: Path to root folder where the images of `ground_truth_file` are.</span>
+<span class="sd">        output_folder: Path to the folder where painted images will be saved.</span>
+<span class="sd">            It will be created if it does not exist.</span>
+<span class="sd">        predictions_file: Path to COCO predictions file.</span>
+<span class="sd">            If not None, the annotations of predictions_file will be painted instead of ground_truth_file's.</span>
+<span class="sd">        score_thr: Detections bellow this threshold will not be painted.</span>
+<span class="sd">            Default 0.0.</span>
+<span class="sd">        color_key: Choose the key in annotations on which the color will depend. Defaults to 'category_id'.</span>
+<span class="sd">        show_label: Choose whether to show label and score threshold on image. Default True.</span>
+<span class="sd">        filter_crowd: Filter out crowd annotations or not. Default True.</span>
+<span class="sd">        first_n: Paint only first n annotations and stop after that.</span>
+<span class="sd">            If None, all images will be painted.</span>
+<span class="sd">    """</span>
+    <span class="n">Path</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">ground_truth</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">ground_truth_file</span><span class="p">))</span>
+    <span class="n">image_name_to_id</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">"file_name"</span><span class="p">])</span><span class="o">.</span><span class="n">stem</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ground_truth</span><span class="p">[</span><span class="s2">"images"</span><span class="p">]</span>
+    <span class="p">}</span>
+
+    <span class="n">category_id_to_label</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">cat</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span> <span class="k">for</span> <span class="n">cat</span> <span class="ow">in</span> <span class="n">ground_truth</span><span class="p">[</span><span class="s2">"categories"</span><span class="p">]</span>
+    <span class="p">}</span>
+    <span class="n">image_id_to_annotations</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">predictions_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">predictions_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">pred</span><span class="p">:</span>
+            <span class="n">annotations</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">annotations</span> <span class="o">=</span> <span class="n">ground_truth</span><span class="p">[</span><span class="s2">"annotations"</span><span class="p">]</span>
+
+    <span class="n">n_colors</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ann</span><span class="p">[</span><span class="n">color_key</span><span class="p">]</span> <span class="k">for</span> <span class="n">ann</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">))</span>
+    <span class="n">colormap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">rainbow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_colors</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">annotation</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">filter_crowd</span> <span class="ow">and</span> <span class="n">annotation</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"iscrowd"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)):</span>
+            <span class="n">image_id_to_annotations</span><span class="p">[</span><span class="n">annotation</span><span class="p">[</span><span class="s2">"image_id"</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
+
+    <span class="n">image_data</span> <span class="o">=</span> <span class="n">ground_truth</span><span class="p">[</span><span class="s2">"images"</span><span class="p">]</span>
+    <span class="n">first_n</span> <span class="o">=</span> <span class="n">first_n</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">image_data</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">image_data</span><span class="p">[:</span><span class="n">first_n</span><span class="p">]:</span>
+
+        <span class="n">image_filename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s2">"file_name"</span><span class="p">]</span>
+        <span class="n">image_id</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span>
+        <span class="n">image_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">image_folder</span><span class="p">)</span> <span class="o">/</span> <span class="n">image_filename</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loading </span><span class="si">{</span><span class="n">image_filename</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">image_filename</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">image_name_to_id</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">image_filename</span><span class="si">}</span><span class="s2"> not in ground_truth_file"</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">image_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="n">image_pil</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+
+            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">image_pil</span><span class="o">.</span><span class="n">size</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">width</span> <span class="o">/</span> <span class="mi">96</span><span class="p">,</span> <span class="n">height</span> <span class="o">/</span> <span class="mi">96</span><span class="p">))</span>
+
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image_pil</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">)</span>
+
+            <span class="n">polygons</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">colors</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">annotation</span> <span class="ow">in</span> <span class="n">image_id_to_annotations</span><span class="p">[</span><span class="n">image_id</span><span class="p">]:</span>
+
+                <span class="n">score</span> <span class="o">=</span> <span class="n">annotation</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"score"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">score</span> <span class="o">&lt;</span> <span class="n">score_thr</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">bbox_left</span><span class="p">,</span> <span class="n">bbox_top</span><span class="p">,</span> <span class="n">bbox_width</span><span class="p">,</span> <span class="n">bbox_height</span> <span class="o">=</span> <span class="n">annotation</span><span class="p">[</span><span class="s2">"bbox"</span><span class="p">]</span>
+
+                <span class="n">cat_id</span> <span class="o">=</span> <span class="n">annotation</span><span class="p">[</span><span class="s2">"category_id"</span><span class="p">]</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="n">category_id_to_label</span><span class="p">[</span><span class="n">cat_id</span><span class="p">]</span>
+                <span class="n">color_id</span> <span class="o">=</span> <span class="n">annotation</span><span class="p">[</span><span class="n">color_key</span><span class="p">]</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">colormap</span><span class="p">[</span><span class="n">color_id</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colormap</span><span class="p">)]</span>
+
+                <span class="n">poly</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="p">[</span><span class="n">bbox_left</span><span class="p">,</span> <span class="n">bbox_top</span><span class="p">],</span>
+                    <span class="p">[</span><span class="n">bbox_left</span><span class="p">,</span> <span class="n">bbox_top</span> <span class="o">+</span> <span class="n">bbox_height</span><span class="p">],</span>
+                    <span class="p">[</span><span class="n">bbox_left</span> <span class="o">+</span> <span class="n">bbox_width</span><span class="p">,</span> <span class="n">bbox_top</span> <span class="o">+</span> <span class="n">bbox_height</span><span class="p">],</span>
+                    <span class="p">[</span><span class="n">bbox_left</span> <span class="o">+</span> <span class="n">bbox_width</span><span class="p">,</span> <span class="n">bbox_top</span><span class="p">],</span>
+                <span class="p">]</span>
+                <span class="n">polygons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Polygon</span><span class="p">(</span><span class="n">poly</span><span class="p">))</span>
+                <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">show_label</span><span class="p">:</span>
+                    <span class="n">label_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">"</span>
+                    <span class="k">if</span> <span class="n">predictions_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">label_text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">": </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span>
+
+                    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                        <span class="n">bbox_left</span><span class="p">,</span>
+                        <span class="n">bbox_top</span><span class="p">,</span>
+                        <span class="n">label_text</span><span class="p">,</span>
+                        <span class="n">va</span><span class="o">=</span><span class="s2">"top"</span><span class="p">,</span>
+                        <span class="n">ha</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span>
+                        <span class="n">bbox</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                    <span class="p">)</span>
+
+            <span class="n">p</span> <span class="o">=</span> <span class="n">PatchCollection</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+            <span class="n">p</span> <span class="o">=</span> <span class="n">PatchCollection</span><span class="p">(</span>
+                <span class="n">polygons</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s2">"none"</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mi">1</span>
+            <span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">image_filename</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span>
+            <span class="n">file_extension</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">image_filename</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span>
+            <span class="n">output_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">_result</span><span class="si">{</span><span class="n">file_extension</span><span class="si">}</span><span class="s2">"</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Saving </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+</div>
+</div>
+</div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../ground-truth/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                ground-truth
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../train-config-evaluation/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                evaluation
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../../assets/javascripts/worker/search.9c0e82ba.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

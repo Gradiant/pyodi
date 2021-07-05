@@ -1,0 +1,1256 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="https://github.com/Gradiant/pyodi/reference/apps/train-config-evaluation/">
+      
+      <link rel="shortcut icon" href="../../../images/logo.svg">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
+    
+    
+      
+        <title>evaluation - Python Object Detection Insights</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.cb6bc1d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.39b8e14a.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../../css/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#pyodi.apps.train_config.train_config_evaluation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://github.com/Gradiant/pyodi" title="Python Object Detection Insights" class="md-header-nav__button md-logo" aria-label="Python Object Detection Insights">
+      
+  <img src="../../../images/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            Python Object Detection Insights
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              evaluation
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://github.com/Gradiant/pyodi" title="Python Object Detection Insights" class="md-nav__button md-logo" aria-label="Python Object Detection Insights">
+      
+  <img src="../../../images/logo.svg" alt="logo">
+
+    </a>
+    Python Object Detection Insights
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+      
+      <label class="md-nav__link" for="nav-3">
+        Reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="nav-3">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1" type="checkbox" id="nav-3-1" checked>
+      
+      <label class="md-nav__link" for="nav-3-1">
+        apps
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="apps" data-md-level="2">
+        <label class="md-nav__title" for="nav-3-1">
+          <span class="md-nav__icon md-icon"></span>
+          apps
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1-1" type="checkbox" id="nav-3-1-1" >
+      
+      <label class="md-nav__link" for="nav-3-1-1">
+        coco
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="coco" data-md-level="3">
+        <label class="md-nav__title" for="nav-3-1-1">
+          <span class="md-nav__icon md-icon"></span>
+          coco
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../coco-merge/" class="md-nav__link">
+        merge
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../coco-split/" class="md-nav__link">
+        split
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1-2" type="checkbox" id="nav-3-1-2" >
+      
+      <label class="md-nav__link" for="nav-3-1-2">
+        crops
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="crops" data-md-level="3">
+        <label class="md-nav__title" for="nav-3-1-2">
+          <span class="md-nav__icon md-icon"></span>
+          crops
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crops-merge/" class="md-nav__link">
+        merge
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crops-split/" class="md-nav__link">
+        split
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../evaluation/" class="md-nav__link">
+        evaluation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ground-truth/" class="md-nav__link">
+        ground-truth
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../paint-annotations/" class="md-nav__link">
+        paint-annotations
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1-6" type="checkbox" id="nav-3-1-6" checked>
+      
+      <label class="md-nav__link" for="nav-3-1-6">
+        train-config
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="train-config" data-md-level="3">
+        <label class="md-nav__title" for="nav-3-1-6">
+          <span class="md-nav__icon md-icon"></span>
+          train-config
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          evaluation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        evaluation
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation" class="md-nav__link">
+    pyodi.apps.train_config.train_config_evaluation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation--train-config-evaluation-app" class="md-nav__link">
+    Train Config Evaluation App.
+  </a>
+  
+    <nav class="md-nav" aria-label="Train Config Evaluation App.">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation--procedure" class="md-nav__link">
+    Procedure
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation--cumulative-overlap" class="md-nav__link">
+    Cumulative Overlap
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation--bounding-box-distribution" class="md-nav__link">
+    Bounding Box Distribution
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation--scale-and-mean-overlap" class="md-nav__link">
+    Scale and Mean Overlap
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation--log-ratio-and-mean-overlap" class="md-nav__link">
+    Log Ratio and Mean Overlap
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation--api-reference" class="md-nav__link">
+    API REFERENCE
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation.load_anchor_config_file" class="md-nav__link">
+    load_anchor_config_file()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation.train_config_evaluation" class="md-nav__link">
+    train_config_evaluation()
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../train-config-generation/" class="md-nav__link">
+        generation
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-2" type="checkbox" id="nav-3-2" >
+      
+      <label class="md-nav__link" for="nav-3-2">
+        core
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="core" data-md-level="2">
+        <label class="md-nav__title" for="nav-3-2">
+          <span class="md-nav__icon md-icon"></span>
+          core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/anchor_generator/" class="md-nav__link">
+        anchor_generator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/boxes/" class="md-nav__link">
+        boxes
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/clustering/" class="md-nav__link">
+        clustering
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/crops/" class="md-nav__link">
+        crops
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/nms/" class="md-nav__link">
+        nms
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/utils/" class="md-nav__link">
+        utils
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-3" type="checkbox" id="nav-3-3" >
+      
+      <label class="md-nav__link" for="nav-3-3">
+        plots
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="plots" data-md-level="2">
+        <label class="md-nav__title" for="nav-3-3">
+          <span class="md-nav__icon md-icon"></span>
+          plots
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plots/boxes/" class="md-nav__link">
+        boxes
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plots/clustering/" class="md-nav__link">
+        clustering
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plots/common/" class="md-nav__link">
+        common
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plots/evaluation/" class="md-nav__link">
+        evaluation
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation" class="md-nav__link">
+    pyodi.apps.train_config.train_config_evaluation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation--train-config-evaluation-app" class="md-nav__link">
+    Train Config Evaluation App.
+  </a>
+  
+    <nav class="md-nav" aria-label="Train Config Evaluation App.">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation--procedure" class="md-nav__link">
+    Procedure
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation--cumulative-overlap" class="md-nav__link">
+    Cumulative Overlap
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation--bounding-box-distribution" class="md-nav__link">
+    Bounding Box Distribution
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation--scale-and-mean-overlap" class="md-nav__link">
+    Scale and Mean Overlap
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation--log-ratio-and-mean-overlap" class="md-nav__link">
+    Log Ratio and Mean Overlap
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation--api-reference" class="md-nav__link">
+    API REFERENCE
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation.load_anchor_config_file" class="md-nav__link">
+    load_anchor_config_file()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.apps.train_config.train_config_evaluation.train_config_evaluation" class="md-nav__link">
+    train_config_evaluation()
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>evaluation</h1>
+                
+                <div class="doc doc-object doc-module">
+<h2 class="hidden-toc" id="pyodi.apps.train_config.train_config_evaluation" style="visibility: hidden; position: absolute;">
+        </h2>
+<div class="doc doc-contents first">
+<h2 id="pyodi.apps.train_config.train_config_evaluation--train-config-evaluation-app">Train Config Evaluation App.</h2>
+<p>The <a href="#pyodi.apps.train_config.train_config_evaluation.train_config_evaluation"><code>pyodi train-config evaluation</code></a>
+app can be used to evaluate a given <a href="https://github.com/open-mmlab/mmdetection">mmdetection</a>
+Anchor Generator Configuration to train your model using a specific training pipeline.</p>
+<h3 id="pyodi.apps.train_config.train_config_evaluation--procedure">Procedure</h3>
+<p>Training performance of object detection model depends on how well generated anchors
+match with ground truth bounding boxes. This simple application provides intuitions
+about this, by recreating train preprocessing conditions such as image resizing or
+padding, and computing different metrics based on the largest Intersection over Union
+(IoU) between ground truth boxes and the provided anchors.</p>
+<p>Each bounding box is assigned with the anchor that shares a largest IoU with it. We call
+overlap, to the maximum IoU each ground truth box has with the generated anchor set.</p>
+<p>Example usage:</p>
+<div class="codehilite">
+<pre><span></span><code>pyodi train-config evaluation <span class="se">\\</span>
+<span class="nv">$TINY_COCO_ANIMAL</span>/annotations/train.json <span class="se">\\</span>
+<span class="nv">$TINY_COCO_ANIMAL</span>/resources/anchor_config.py <span class="se">\\</span>
+--input-size <span class="o">[</span><span class="m">1280</span>,720<span class="o">]</span>
+</code></pre>
+</div>
+<p>The app provides four different plots:</p>
+<p><img alt="COCO scale_ratio" src="../../../images/train-config-evaluation/overlap.png#center" /></p>
+<h3 id="pyodi.apps.train_config.train_config_evaluation--cumulative-overlap">Cumulative Overlap</h3>
+<p>It shows a cumulative distribution function for the overlap distribution. This view
+helps to distinguish which percentage of bounding boxes have a very low overlap with
+generated anchors and viceversa.</p>
+<p>It can be very useful to determine positive and negative thresholds for your training,
+these are the values that determine is a ground truth bounding box will is going to be
+taken into account in the loss function or discarded and considered as background.</p>
+<h3 id="pyodi.apps.train_config.train_config_evaluation--bounding-box-distribution">Bounding Box Distribution</h3>
+<p>It shows a scatter plot of bounding box width vs height. The color of each point
+represent the overlap value assigned to that bounding box. Thanks to this plot we
+can easily observe pattern such low overlap values for large bounding boxes.
+We could have this into account and generate larger anchors to improve this matching.</p>
+<h3 id="pyodi.apps.train_config.train_config_evaluation--scale-and-mean-overlap">Scale and Mean Overlap</h3>
+<p>This plot contains a simple histogram with bins of similar scales and its mean overlap
+value. It help us to visualize how overlap decays when scale increases, as we said
+before.</p>
+<h3 id="pyodi.apps.train_config.train_config_evaluation--log-ratio-and-mean-overlap">Log Ratio and Mean Overlap</h3>
+<p>Similarly to previous plot, it shows an histogram of bounding box log ratios and its
+mean overlap values. It is useful to visualize this relation and see how certain box
+ratios might be having problems to match with generated anchors. In this example, boxes
+with negative log ratios, where width is much larger than height, overlaps are very
+small. See how this matches with patterns observed in bounding box distribution plot,
+where all boxes placed near to x axis, have low overlaps.</p>
+<hr />
+<h2 id="pyodi.apps.train_config.train_config_evaluation--api-reference">API REFERENCE</h2>
+<div class="doc doc-children">
+<div class="doc doc-object doc-function">
+<h2 class="doc doc-heading" id="pyodi.apps.train_config.train_config_evaluation.load_anchor_config_file">
+
+<code class="highlight language-python"><span class="n">load_anchor_config_file</span><span class="p">(</span><span class="n">anchor_config_file</span><span class="p">)</span></code>
+
+
+      </h2>
+<div class="doc doc-contents ">
+<p>Loads the <code>anchor_config_file</code>.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>anchor_config_file</code></td>
+<td><code>str</code></td>
+<td>
+<p>File with the anchor configuration.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Dict[str, Any]</code></td>
+<td>
+<p>Dictionary with the training configuration.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>pyodi/apps/train_config/train_config_evaluation.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">load_anchor_config_file</span><span class="p">(</span><span class="n">anchor_config_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">"""Loads the `anchor_config_file`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        anchor_config_file: File with the anchor configuration.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary with the training configuration.</span>
+
+<span class="sd">    """</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Loading Train Config File"</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">temp_config_dir</span><span class="p">:</span>
+        <span class="n">copyfile</span><span class="p">(</span><span class="n">anchor_config_file</span><span class="p">,</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_config_dir</span><span class="p">,</span> <span class="s2">"_tempconfig.py"</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">temp_config_dir</span><span class="p">)</span>
+        <span class="n">mod</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="s2">"_tempconfig"</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">train_config</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="n">value</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">mod</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"__"</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="c1"># delete imported module</span>
+        <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="s2">"_tempconfig"</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">train_config</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-function">
+<h2 class="doc doc-heading" id="pyodi.apps.train_config.train_config_evaluation.train_config_evaluation">
+
+<code class="highlight language-python"><span class="n">train_config_evaluation</span><span class="p">(</span><span class="n">ground_truth_file</span><span class="p">,</span> <span class="n">anchor_config</span><span class="p">,</span> <span class="n">input_size</span><span class="o">=</span><span class="p">(</span><span class="mi">1280</span><span class="p">,</span> <span class="mi">720</span><span class="p">),</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_size</span><span class="o">=</span><span class="p">(</span><span class="mi">1600</span><span class="p">,</span> <span class="mi">900</span><span class="p">),</span> <span class="n">keep_ratio</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+      </h2>
+<div class="doc doc-contents ">
+<p>Evaluates the fitness between <code>ground_truth_file</code> and <code>anchor_config_file</code>.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ground_truth_file</code></td>
+<td><code>Union[str, pandas.core.frame.DataFrame]</code></td>
+<td>
+<p>Path to COCO ground truth file or coco df_annotations DataFrame
+to be used from
+<a href="../train-config-generation/#pyodi.apps.train_config.train_config_generation.train_config_generation"><code>pyodi train-config generation</code></a></p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>anchor_config</code></td>
+<td><code>str</code></td>
+<td>
+<p>Path to MMDetection-like <code>anchor_generator</code> section. It can also be a
+dictionary with the required data.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>input_size</code></td>
+<td><code>Tuple[int, int]</code></td>
+<td>
+<p>Model image input size. Defaults to (1333, 800).</p>
+</td>
+<td><code>(1280, 720)</code></td>
+</tr>
+<tr>
+<td><code>show</code></td>
+<td><code>bool</code></td>
+<td>
+<p>Show results or not. Defaults to True.</p>
+</td>
+<td><code>True</code></td>
+</tr>
+<tr>
+<td><code>output</code></td>
+<td><code>Optional[str]</code></td>
+<td>
+<p>Output directory where results going to be saved. Defaults to None.</p>
+</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>output_size</code></td>
+<td><code>Tuple[int, int]</code></td>
+<td>
+<p>Size of saved images. Defaults to (1600, 900).</p>
+</td>
+<td><code>(1600, 900)</code></td>
+</tr>
+<tr>
+<td><code>keep_ratio</code></td>
+<td><code>bool</code></td>
+<td>
+<p>Whether to keep the aspect ratio or not. Defaults to False.</p>
+</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<div class="codehilite">
+<pre><span></span><code><span class="c1"># faster_rcnn_r50_fpn.py:</span>
+<span class="n">anchor_generator</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+    <span class="nb">type</span><span class="o">=</span><span class="s1">'AnchorGenerator'</span><span class="p">,</span>
+    <span class="n">scales</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span>
+    <span class="n">ratios</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>
+    <span class="n">strides</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">]</span>
+<span class="p">)</span>
+</code></pre>
+</div>
+<details class="quote">
+          <summary>Source code in <code>pyodi/apps/train_config/train_config_evaluation.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="nd">@logger</span><span class="o">.</span><span class="n">catch</span>
+<span class="k">def</span> <span class="nf">train_config_evaluation</span><span class="p">(</span>
+    <span class="n">ground_truth_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+    <span class="n">anchor_config</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">input_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1280</span><span class="p">,</span> <span class="mi">720</span><span class="p">),</span>
+    <span class="n">show</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">output</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">output_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1600</span><span class="p">,</span> <span class="mi">900</span><span class="p">),</span>
+    <span class="n">keep_ratio</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">"""Evaluates the fitness between `ground_truth_file` and `anchor_config_file`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ground_truth_file: Path to COCO ground truth file or coco df_annotations DataFrame</span>
+<span class="sd">            to be used from</span>
+<span class="sd">            [`pyodi train-config generation`][pyodi.apps.train_config.train_config_generation.train_config_generation]</span>
+<span class="sd">        anchor_config: Path to MMDetection-like `anchor_generator` section. It can also be a</span>
+<span class="sd">            dictionary with the required data.</span>
+<span class="sd">        input_size: Model image input size. Defaults to (1333, 800).</span>
+<span class="sd">        show: Show results or not. Defaults to True.</span>
+<span class="sd">        output: Output directory where results going to be saved. Defaults to None.</span>
+<span class="sd">        output_size: Size of saved images. Defaults to (1600, 900).</span>
+<span class="sd">        keep_ratio: Whether to keep the aspect ratio or not. Defaults to False.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        ```python</span>
+<span class="sd">        # faster_rcnn_r50_fpn.py:</span>
+<span class="sd">        anchor_generator=dict(</span>
+<span class="sd">            type='AnchorGenerator',</span>
+<span class="sd">            scales=[8],</span>
+<span class="sd">            ratios=[0.5, 1.0, 2.0],</span>
+<span class="sd">            strides=[4, 8, 16, 32, 64]</span>
+<span class="sd">        )</span>
+<span class="sd">        ```</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">output</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">output</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ground_truth_file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">df_annotations</span> <span class="o">=</span> <span class="n">coco_ground_truth_to_df</span><span class="p">(</span><span class="n">ground_truth_file</span><span class="p">)</span>
+
+        <span class="n">df_annotations</span> <span class="o">=</span> <span class="n">filter_zero_area_bboxes</span><span class="p">(</span><span class="n">df_annotations</span><span class="p">)</span>
+
+        <span class="n">df_annotations</span> <span class="o">=</span> <span class="n">scale_bbox_dimensions</span><span class="p">(</span>
+            <span class="n">df_annotations</span><span class="p">,</span> <span class="n">input_size</span><span class="o">=</span><span class="n">input_size</span><span class="p">,</span> <span class="n">keep_ratio</span><span class="o">=</span><span class="n">keep_ratio</span>
+        <span class="p">)</span>
+
+        <span class="n">df_annotations</span> <span class="o">=</span> <span class="n">get_scale_and_ratio</span><span class="p">(</span><span class="n">df_annotations</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">"scaled"</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">df_annotations</span> <span class="o">=</span> <span class="n">ground_truth_file</span>
+
+    <span class="n">df_annotations</span><span class="p">[</span><span class="s2">"log_scaled_ratio"</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">df_annotations</span><span class="p">[</span><span class="s2">"scaled_ratio"</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">anchor_config</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">anchor_config_data</span> <span class="o">=</span> <span class="n">load_anchor_config_file</span><span class="p">(</span><span class="n">anchor_config</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">anchor_config</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">anchor_config_data</span> <span class="o">=</span> <span class="n">anchor_config</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"anchor_config must be string or dictionary."</span><span class="p">)</span>
+
+    <span class="n">anchor_config_data</span><span class="p">[</span><span class="s2">"anchor_generator"</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"type"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">anchor_generator</span> <span class="o">=</span> <span class="n">AnchorGenerator</span><span class="p">(</span><span class="o">**</span><span class="n">anchor_config_data</span><span class="p">[</span><span class="s2">"anchor_generator"</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">anchor_config</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">anchor_generator</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span>
+
+    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">input_size</span>
+    <span class="n">featmap_sizes</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">width</span> <span class="o">//</span> <span class="n">stride</span><span class="p">,</span> <span class="n">height</span> <span class="o">//</span> <span class="n">stride</span><span class="p">)</span> <span class="k">for</span> <span class="n">stride</span> <span class="ow">in</span> <span class="n">anchor_generator</span><span class="o">.</span><span class="n">strides</span>
+    <span class="p">]</span>
+    <span class="n">anchors_per_level</span> <span class="o">=</span> <span class="n">anchor_generator</span><span class="o">.</span><span class="n">grid_anchors</span><span class="p">(</span><span class="n">featmap_sizes</span><span class="o">=</span><span class="n">featmap_sizes</span><span class="p">)</span>
+
+    <span class="n">bboxes</span> <span class="o">=</span> <span class="n">get_bbox_array</span><span class="p">(</span>
+        <span class="n">df_annotations</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">"scaled"</span><span class="p">,</span> <span class="n">output_bbox_format</span><span class="o">=</span><span class="s2">"corners"</span>
+    <span class="p">)</span>
+
+    <span class="n">overlaps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">bboxes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">max_overlap_level</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">bboxes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Computing overlaps between anchors and ground truth ..."</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">anchor_level</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">anchors_per_level</span><span class="p">):</span>
+        <span class="n">level_overlaps</span> <span class="o">=</span> <span class="n">get_max_overlap</span><span class="p">(</span>
+            <span class="n">bboxes</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">anchor_level</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">max_overlap_level</span><span class="p">[</span><span class="n">level_overlaps</span> <span class="o">&gt;</span> <span class="n">overlaps</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="n">overlaps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">overlaps</span><span class="p">,</span> <span class="n">level_overlaps</span><span class="p">)</span>
+
+    <span class="n">df_annotations</span><span class="p">[</span><span class="s2">"overlaps"</span><span class="p">]</span> <span class="o">=</span> <span class="n">overlaps</span>
+    <span class="n">df_annotations</span><span class="p">[</span><span class="s2">"max_overlap_level"</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_overlap_level</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Plotting results ..."</span><span class="p">)</span>
+    <span class="n">plot_overlap_result</span><span class="p">(</span>
+        <span class="n">df_annotations</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">show</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">,</span> <span class="n">output_size</span><span class="o">=</span><span class="n">output_size</span>
+    <span class="p">)</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+</div>
+</div>
+</div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../paint-annotations/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                paint-annotations
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../train-config-generation/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                generation
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../../assets/javascripts/worker/search.9c0e82ba.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

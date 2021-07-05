@@ -1,0 +1,1536 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="https://github.com/Gradiant/pyodi/reference/core/anchor_generator/">
+      
+      <link rel="shortcut icon" href="../../../images/logo.svg">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
+    
+    
+      
+        <title>anchor_generator - Python Object Detection Insights</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.cb6bc1d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.39b8e14a.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../../css/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#pyodi.core.anchor_generator" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://github.com/Gradiant/pyodi" title="Python Object Detection Insights" class="md-header-nav__button md-logo" aria-label="Python Object Detection Insights">
+      
+  <img src="../../../images/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            Python Object Detection Insights
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              anchor_generator
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://github.com/Gradiant/pyodi" title="Python Object Detection Insights" class="md-nav__button md-logo" aria-label="Python Object Detection Insights">
+      
+  <img src="../../../images/logo.svg" alt="logo">
+
+    </a>
+    Python Object Detection Insights
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+      
+      <label class="md-nav__link" for="nav-3">
+        Reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="nav-3">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1" type="checkbox" id="nav-3-1" >
+      
+      <label class="md-nav__link" for="nav-3-1">
+        apps
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="apps" data-md-level="2">
+        <label class="md-nav__title" for="nav-3-1">
+          <span class="md-nav__icon md-icon"></span>
+          apps
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1-1" type="checkbox" id="nav-3-1-1" >
+      
+      <label class="md-nav__link" for="nav-3-1-1">
+        coco
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="coco" data-md-level="3">
+        <label class="md-nav__title" for="nav-3-1-1">
+          <span class="md-nav__icon md-icon"></span>
+          coco
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/coco-merge/" class="md-nav__link">
+        merge
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/coco-split/" class="md-nav__link">
+        split
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1-2" type="checkbox" id="nav-3-1-2" >
+      
+      <label class="md-nav__link" for="nav-3-1-2">
+        crops
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="crops" data-md-level="3">
+        <label class="md-nav__title" for="nav-3-1-2">
+          <span class="md-nav__icon md-icon"></span>
+          crops
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/crops-merge/" class="md-nav__link">
+        merge
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/crops-split/" class="md-nav__link">
+        split
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/evaluation/" class="md-nav__link">
+        evaluation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/ground-truth/" class="md-nav__link">
+        ground-truth
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/paint-annotations/" class="md-nav__link">
+        paint-annotations
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1-6" type="checkbox" id="nav-3-1-6" >
+      
+      <label class="md-nav__link" for="nav-3-1-6">
+        train-config
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="train-config" data-md-level="3">
+        <label class="md-nav__title" for="nav-3-1-6">
+          <span class="md-nav__icon md-icon"></span>
+          train-config
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/train-config-evaluation/" class="md-nav__link">
+        evaluation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/train-config-generation/" class="md-nav__link">
+        generation
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-2" type="checkbox" id="nav-3-2" checked>
+      
+      <label class="md-nav__link" for="nav-3-2">
+        core
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="core" data-md-level="2">
+        <label class="md-nav__title" for="nav-3-2">
+          <span class="md-nav__icon md-icon"></span>
+          core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          anchor_generator
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        anchor_generator
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.core.anchor_generator" class="md-nav__link">
+    pyodi.core.anchor_generator
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.core.anchor_generator.AnchorGenerator" class="md-nav__link">
+    AnchorGenerator
+  </a>
+  
+    <nav class="md-nav" aria-label="AnchorGenerator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.core.anchor_generator.AnchorGenerator.num_levels" class="md-nav__link">
+    num_levels
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.core.anchor_generator.AnchorGenerator.gen_base_anchors" class="md-nav__link">
+    gen_base_anchors()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.core.anchor_generator.AnchorGenerator.gen_single_level_base_anchors" class="md-nav__link">
+    gen_single_level_base_anchors()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.core.anchor_generator.AnchorGenerator.grid_anchors" class="md-nav__link">
+    grid_anchors()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.core.anchor_generator.AnchorGenerator.single_level_grid_anchors" class="md-nav__link">
+    single_level_grid_anchors()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.core.anchor_generator.AnchorGenerator.to_dict" class="md-nav__link">
+    to_dict()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.core.anchor_generator.AnchorGenerator.to_string" class="md-nav__link">
+    to_string()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../boxes/" class="md-nav__link">
+        boxes
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clustering/" class="md-nav__link">
+        clustering
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crops/" class="md-nav__link">
+        crops
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nms/" class="md-nav__link">
+        nms
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        utils
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-3" type="checkbox" id="nav-3-3" >
+      
+      <label class="md-nav__link" for="nav-3-3">
+        plots
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="plots" data-md-level="2">
+        <label class="md-nav__title" for="nav-3-3">
+          <span class="md-nav__icon md-icon"></span>
+          plots
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plots/boxes/" class="md-nav__link">
+        boxes
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plots/clustering/" class="md-nav__link">
+        clustering
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plots/common/" class="md-nav__link">
+        common
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plots/evaluation/" class="md-nav__link">
+        evaluation
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.core.anchor_generator" class="md-nav__link">
+    pyodi.core.anchor_generator
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyodi.core.anchor_generator.AnchorGenerator" class="md-nav__link">
+    AnchorGenerator
+  </a>
+  
+    <nav class="md-nav" aria-label="AnchorGenerator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.core.anchor_generator.AnchorGenerator.num_levels" class="md-nav__link">
+    num_levels
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.core.anchor_generator.AnchorGenerator.gen_base_anchors" class="md-nav__link">
+    gen_base_anchors()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.core.anchor_generator.AnchorGenerator.gen_single_level_base_anchors" class="md-nav__link">
+    gen_single_level_base_anchors()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.core.anchor_generator.AnchorGenerator.grid_anchors" class="md-nav__link">
+    grid_anchors()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.core.anchor_generator.AnchorGenerator.single_level_grid_anchors" class="md-nav__link">
+    single_level_grid_anchors()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.core.anchor_generator.AnchorGenerator.to_dict" class="md-nav__link">
+    to_dict()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodi.core.anchor_generator.AnchorGenerator.to_string" class="md-nav__link">
+    to_string()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>anchor_generator</h1>
+                
+                <div class="doc doc-object doc-module">
+<h2 class="hidden-toc" id="pyodi.core.anchor_generator" style="visibility: hidden; position: absolute;">
+        </h2>
+<div class="doc doc-contents first">
+<div class="doc doc-children">
+<div class="doc doc-object doc-class">
+<h2 class="doc doc-heading" id="pyodi.core.anchor_generator.AnchorGenerator">
+
+        <code>AnchorGenerator</code>
+
+
+
+      </h2>
+<div class="doc doc-contents ">
+<p>Standard anchor generator for 2D anchor-based detectors.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>strides</code></td>
+<td><code>list[int]</code></td>
+<td>
+<p>Strides of anchors in multiple feture levels.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>ratios</code></td>
+<td><code>list[float]</code></td>
+<td>
+<p>The list of ratios between the height and width
+of anchors in a single level.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>scales</code></td>
+<td><code>list[int] | None</code></td>
+<td>
+<p>Anchor scales for anchors in a single level.
+It cannot be set at the same time if <code>octave_base_scale</code> and
+<code>scales_per_octave</code> are set.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>base_sizes</code></td>
+<td><code>list[int] | None</code></td>
+<td>
+<p>The basic sizes of anchors in multiple
+levels. If None is given, strides will be used as base_sizes.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>scale_major</code></td>
+<td><code>bool</code></td>
+<td>
+<p>Whether to multiply scales first when generating
+base anchors. If true, the anchors in the same row will have the
+same scales. By default it is True in V2.0</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>octave_base_scale</code></td>
+<td><code>int</code></td>
+<td>
+<p>The base scale of octave.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>scales_per_octave</code></td>
+<td><code>int</code></td>
+<td>
+<p>Number of scales for each octave.
+<code>octave_base_scale</code> and <code>scales_per_octave</code> are usually used in
+retinanet and the <code>scales</code> should be None when they are set.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>centers</code></td>
+<td><code>list[tuple[float, float]] | None</code></td>
+<td>
+<p>The centers of the anchor
+relative to the feature grid center in multiple feature levels.
+By default it is set to be None and not used. If a list of tuple of
+float is given, they will be used to shift the centers of anchors.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>center_offset</code></td>
+<td><code>float</code></td>
+<td>
+<p>The offset of center in propotion to anchors'
+width and height. By default it is 0 in V2.0.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<div class="highlight">
+<pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">mmdet.core</span> <span class="kn">import</span> <span class="n">AnchorGenerator</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="bp">self</span> <span class="o">=</span> <span class="n">AnchorGenerator</span><span class="p">([</span><span class="mi">16</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">],</span> <span class="p">[</span><span class="mi">9</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">all_anchors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_anchors</span><span class="p">([(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)],</span> <span class="n">device</span><span class="o">=</span><span class="s1">'cpu'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">all_anchors</span><span class="p">)</span>
+<span class="p">[</span><span class="n">tensor</span><span class="p">([[</span><span class="o">-</span><span class="mf">4.5000</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.5000</span><span class="p">,</span>  <span class="mf">4.5000</span><span class="p">,</span>  <span class="mf">4.5000</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">11.5000</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.5000</span><span class="p">,</span> <span class="mf">20.5000</span><span class="p">,</span>  <span class="mf">4.5000</span><span class="p">],</span>
+        <span class="p">[</span><span class="o">-</span><span class="mf">4.5000</span><span class="p">,</span> <span class="mf">11.5000</span><span class="p">,</span>  <span class="mf">4.5000</span><span class="p">,</span> <span class="mf">20.5000</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">11.5000</span><span class="p">,</span> <span class="mf">11.5000</span><span class="p">,</span> <span class="mf">20.5000</span><span class="p">,</span> <span class="mf">20.5000</span><span class="p">]])]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="bp">self</span> <span class="o">=</span> <span class="n">AnchorGenerator</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">],</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">18</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">all_anchors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_anchors</span><span class="p">([(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span> <span class="n">device</span><span class="o">=</span><span class="s1">'cpu'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">all_anchors</span><span class="p">)</span>
+<span class="p">[</span><span class="n">tensor</span><span class="p">([[</span><span class="o">-</span><span class="mf">4.5000</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.5000</span><span class="p">,</span>  <span class="mf">4.5000</span><span class="p">,</span>  <span class="mf">4.5000</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">11.5000</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.5000</span><span class="p">,</span> <span class="mf">20.5000</span><span class="p">,</span>  <span class="mf">4.5000</span><span class="p">],</span>
+        <span class="p">[</span><span class="o">-</span><span class="mf">4.5000</span><span class="p">,</span> <span class="mf">11.5000</span><span class="p">,</span>  <span class="mf">4.5000</span><span class="p">,</span> <span class="mf">20.5000</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">11.5000</span><span class="p">,</span> <span class="mf">11.5000</span><span class="p">,</span> <span class="mf">20.5000</span><span class="p">,</span> <span class="mf">20.5000</span><span class="p">]]),</span>         <span class="n">tensor</span><span class="p">([[</span><span class="o">-</span><span class="mf">9.</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.</span><span class="p">,</span> <span class="mf">9.</span><span class="p">,</span> <span class="mf">9.</span><span class="p">]])]</span>
+</code></pre>
+</div>
+<div class="doc doc-children">
+<div class="doc doc-object doc-attribute">
+<h3 class="doc doc-heading" id="pyodi.core.anchor_generator.AnchorGenerator.num_levels">
+
+<code class="highlight language-python"><span class="n">num_levels</span><span class="p">:</span> <span class="nb">int</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+      </h3>
+<div class="doc doc-contents ">
+<p>Returns the number of levels.</p>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int</code></td>
+<td>
+<p>Number of levels.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h3 class="doc doc-heading" id="pyodi.core.anchor_generator.AnchorGenerator.gen_base_anchors">
+
+<code class="highlight language-python"><span class="n">gen_base_anchors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+      </h3>
+<div class="doc doc-contents ">
+<p>Computes the anchors.</p>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>List[numpy.ndarray]</code></td>
+<td>
+<p>List of arrays with the anchors.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>pyodi/core/anchor_generator.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">gen_base_anchors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sd">"""Computes the anchors.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of arrays with the anchors.</span>
+<span class="sd">    """</span>
+    <span class="n">multi_level_base_anchors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">base_size</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_sizes</span><span class="p">):</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">centers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">centers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">multi_level_base_anchors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gen_single_level_base_anchors</span><span class="p">(</span>
+                <span class="n">base_size</span><span class="p">,</span> <span class="n">scales</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scales</span><span class="p">,</span> <span class="n">ratios</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ratios</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">center</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">multi_level_base_anchors</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h3 class="doc doc-heading" id="pyodi.core.anchor_generator.AnchorGenerator.gen_single_level_base_anchors">
+
+<code class="highlight language-python"><span class="n">gen_single_level_base_anchors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_size</span><span class="p">,</span> <span class="n">scales</span><span class="p">,</span> <span class="n">ratios</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+      </h3>
+<div class="doc doc-contents ">
+<p>Computes the anchors of a single level.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>base_size</code></td>
+<td><code>int</code></td>
+<td>
+<p>Basic size of the anchors in a single level.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>scales</code></td>
+<td><code>ndarray</code></td>
+<td>
+<p>Anchor scales for anchors in a single level</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>ratios</code></td>
+<td><code>ndarray</code></td>
+<td>
+<p>Ratios between height and width of anchors in a single level.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>center</code></td>
+<td><code>Optional[Tuple[float, float]]</code></td>
+<td>
+<p>Center of the anchor relative to the feature grid center in single
+level.</p>
+</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ndarray</code></td>
+<td>
+<p>Array with the anchors.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>pyodi/core/anchor_generator.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">gen_single_level_base_anchors</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">base_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">scales</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">ratios</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">center</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">"""Computes the anchors of a single level.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        base_size: Basic size of the anchors in a single level.</span>
+<span class="sd">        scales: Anchor scales for anchors in a single level</span>
+<span class="sd">        ratios: Ratios between height and width of anchors in a single level.</span>
+<span class="sd">        center: Center of the anchor relative to the feature grid center in single</span>
+<span class="sd">            level.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Array with the anchors.</span>
+
+<span class="sd">    """</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">base_size</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">base_size</span>
+    <span class="k">if</span> <span class="n">center</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">x_center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_offset</span> <span class="o">*</span> <span class="n">w</span>
+        <span class="n">y_center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_offset</span> <span class="o">*</span> <span class="n">h</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x_center</span><span class="p">,</span> <span class="n">y_center</span> <span class="o">=</span> <span class="n">center</span>
+
+    <span class="n">h_ratios</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ratios</span><span class="p">)</span>
+    <span class="n">w_ratios</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">h_ratios</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_major</span><span class="p">:</span>
+        <span class="n">ws</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">w_ratios</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">scales</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">hs</span> <span class="o">=</span> <span class="p">(</span><span class="n">h</span> <span class="o">*</span> <span class="n">h_ratios</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">scales</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ws</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">scales</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">w_ratios</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">hs</span> <span class="o">=</span> <span class="p">(</span><span class="n">h</span> <span class="o">*</span> <span class="n">scales</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">h_ratios</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+    <span class="c1"># use float anchor and the anchor's center is aligned with the</span>
+    <span class="c1"># pixel center</span>
+    <span class="n">base_anchors</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">x_center</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">ws</span><span class="p">,</span>
+        <span class="n">y_center</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">hs</span><span class="p">,</span>
+        <span class="n">x_center</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">ws</span><span class="p">,</span>
+        <span class="n">y_center</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">hs</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">base_anchors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">base_anchors</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">base_anchors</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h3 class="doc doc-heading" id="pyodi.core.anchor_generator.AnchorGenerator.grid_anchors">
+
+<code class="highlight language-python"><span class="n">grid_anchors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">featmap_sizes</span><span class="p">)</span></code>
+
+
+      </h3>
+<div class="doc doc-contents ">
+<p>Generate grid anchors in multiple feature levels.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>featmap_sizes</code></td>
+<td><code>List[Tuple[int, int]]</code></td>
+<td>
+<p>List of feature map sizes in multiple feature levels.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>List[numpy.ndarray]</code></td>
+<td>
+<p>Anchors in multiple feature levels. The sizes of each tensor should be
+[N, 4], where N = width * height * num_base_anchors, width and height are
+the sizes of the corresponding feature level, num_base_anchors is the
+number of anchors for that level.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>pyodi/core/anchor_generator.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">grid_anchors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">featmap_sizes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sd">"""Generate grid anchors in multiple feature levels.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        featmap_sizes: List of feature map sizes in multiple feature levels.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Anchors in multiple feature levels. The sizes of each tensor should be</span>
+<span class="sd">        [N, 4], where N = width * height * num_base_anchors, width and height are</span>
+<span class="sd">        the sizes of the corresponding feature level, num_base_anchors is the</span>
+<span class="sd">        number of anchors for that level.</span>
+<span class="sd">    """</span>
+    <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_levels</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">featmap_sizes</span><span class="p">)</span>
+    <span class="n">multi_level_anchors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_levels</span><span class="p">):</span>
+        <span class="n">anchors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">single_level_grid_anchors</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">base_anchors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">featmap_sizes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">strides</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">multi_level_anchors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">anchors</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">multi_level_anchors</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h3 class="doc doc-heading" id="pyodi.core.anchor_generator.AnchorGenerator.single_level_grid_anchors">
+
+<code class="highlight language-python"><span class="n">single_level_grid_anchors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_anchors</span><span class="p">,</span> <span class="n">featmap_size</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span></code>
+
+
+      </h3>
+<div class="doc doc-contents ">
+<p>Generate grid anchors in a single feature level.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>base_anchors</code></td>
+<td><code>ndarray</code></td>
+<td>
+<p>Anchors in a single level.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>featmap_size</code></td>
+<td><code>Tuple[int, int]</code></td>
+<td>
+<p>Feature map size in a single level.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>stride</code></td>
+<td><code>int</code></td>
+<td>
+<p>Number of stride. Defaults to 16.</p>
+</td>
+<td><code>16</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ndarray</code></td>
+<td>
+<p>Grid of anchors in a single feature level.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>pyodi/core/anchor_generator.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">single_level_grid_anchors</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">base_anchors</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">featmap_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">stride</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">"""Generate grid anchors in a single feature level.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        base_anchors: Anchors in a single level.</span>
+<span class="sd">        featmap_size: Feature map size in a single level.</span>
+<span class="sd">        stride: Number of stride. Defaults to 16.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">          Grid of anchors in a single feature level.</span>
+
+<span class="sd">    """</span>
+    <span class="n">feat_h</span><span class="p">,</span> <span class="n">feat_w</span> <span class="o">=</span> <span class="n">featmap_size</span>
+    <span class="n">shift_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">feat_w</span><span class="p">)</span> <span class="o">*</span> <span class="n">stride</span>
+    <span class="n">shift_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">feat_h</span><span class="p">)</span> <span class="o">*</span> <span class="n">stride</span>
+    <span class="n">shift_xx</span><span class="p">,</span> <span class="n">shift_yy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_meshgrid</span><span class="p">(</span><span class="n">shift_x</span><span class="p">,</span> <span class="n">shift_y</span><span class="p">)</span>
+    <span class="n">shifts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">shift_xx</span><span class="p">,</span> <span class="n">shift_yy</span><span class="p">,</span> <span class="n">shift_xx</span><span class="p">,</span> <span class="n">shift_yy</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">shifts</span> <span class="o">=</span> <span class="n">shifts</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">base_anchors</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="c1"># first feat_w elements correspond to the first row of shifts</span>
+    <span class="c1"># add A anchors (1, A, 4) to K shifts (K, 1, 4) to get</span>
+    <span class="c1"># shifted anchors (K, A, 4), reshape to (K*A, 4)</span>
+
+    <span class="n">all_anchors</span> <span class="o">=</span> <span class="n">base_anchors</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">+</span> <span class="n">shifts</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">all_anchors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">all_anchors</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+    <span class="c1"># first A rows correspond to A anchors of (0, 0) in feature map,</span>
+    <span class="c1"># then (0, 1), (0, 2), ...</span>
+    <span class="k">return</span> <span class="n">all_anchors</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h3 class="doc doc-heading" id="pyodi.core.anchor_generator.AnchorGenerator.to_dict">
+
+<code class="highlight language-python"><span class="n">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+      </h3>
+<div class="doc doc-contents ">
+<p>Transforms configuration into dictionary.</p>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Dict[str, Any]</code></td>
+<td>
+<p>Dictionary with config.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>pyodi/core/anchor_generator.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">"""Transforms configuration into dictionary.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary with config.</span>
+<span class="sd">    """</span>
+    <span class="n">anchor_config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">"'AnchorGenerator'"</span><span class="p">,</span>
+        <span class="n">scales</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scales</span><span class="o">.</span><span class="n">ravel</span><span class="p">())),</span>
+        <span class="n">ratios</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ratios</span><span class="o">.</span><span class="n">ravel</span><span class="p">())),</span>
+        <span class="n">strides</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">strides</span><span class="p">),</span>
+        <span class="n">base_sizes</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_sizes</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">anchor_config</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h3 class="doc doc-heading" id="pyodi.core.anchor_generator.AnchorGenerator.to_string">
+
+<code class="highlight language-python"><span class="n">to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+      </h3>
+<div class="doc doc-contents ">
+<p>Transforms configuration into string.</p>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>str</code></td>
+<td>
+<p>String with config.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>pyodi/core/anchor_generator.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">"""Transforms configuration into string.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        String with config.</span>
+
+<span class="sd">    """</span>
+    <span class="n">anchor_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+    <span class="n">string</span> <span class="o">=</span> <span class="s2">"anchor_generator=dict(</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">anchor_config</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">string</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">' '</span><span class="o">*</span> <span class="mi">4</span><span class="si">}{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="n">string</span> <span class="o">+=</span> <span class="s2">")"</span>
+
+    <span class="k">return</span> <span class="n">string</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../../apps/train-config-generation/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                generation
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../boxes/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                boxes
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../../assets/javascripts/worker/search.9c0e82ba.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>
