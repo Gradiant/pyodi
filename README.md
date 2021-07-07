@@ -12,6 +12,9 @@
 </h3>
 
 <p align="center">
+    <a href="https://pypi.org/project/pyodi/">
+        <img src="https://img.shields.io/pypi/v/pyodi" />
+    </a>
     <a href="https://www.python.org/">
         <img src="https://img.shields.io/badge/Python-3.7-ff69b4.svg" />
     </a>
