@@ -140,6 +140,6 @@ def get_annotation_in_crop(annotation: Dict, crop_corners: List[int]) -> Dict:
         "area": new_area,
         "segmentation": new_segmentation,
         "iscrowd": annotation["iscrowd"],
-        "score": annotation["score"],
+        "score": annotation.get("score", 1),
         "category_id": annotation["category_id"],
     }

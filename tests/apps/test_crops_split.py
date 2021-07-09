@@ -118,30 +118,19 @@ def test_crops_split(tmpdir):
 
 
 def test_crops_split_path(tmpdir):
-    gt_path = Path(tmpdir) / "gt.json"  # Path to a COCO ground truth file
-    img_folder_path = (
-        Path(tmpdir) / "img_folder/"
-    )  # Path where the images of the ground_truth_file are stored
-    output_path = (
-        Path(tmpdir) / "output.json"
-    )  # Path where the `new_ground_truth_file` will be saved
-    output_folder_path = (
-        Path(tmpdir) / "output_folder/"
-    )  # Path where the crops will be saved
+    gt_path = Path(tmpdir) / "gt.json"
+    img_folder_path = Path(tmpdir) / "img_folder/"
+    output_path = Path(tmpdir) / "output.json"
+    output_folder_path = Path(tmpdir) / "output_folder/"
     crop_height = 720
     crop_width = 720
 
-    tmpdir.mkdir("img_folder")  # Create temporary folder to store ground truth images
+    tmpdir.mkdir("img_folder")
 
     gt = {
         "categories": [{"id": 1, "name": "drone", "supercategory": "object"}],
         "images": [
-            {
-                "id": 1,
-                "width": 1920,
-                "height": 1080,
-                "file_name": "images/img1.png",  # Different from 'img_folder_path'
-            },
+            {"id": 1, "width": 1920, "height": 1080, "file_name": "images/img1.png"},
         ],
         "annotations": [
             {
@@ -190,3 +179,37 @@ def test_crops_split_path(tmpdir):
         len(result["images"]) == 6
     ), "Error in number of crops in crops annotations file"
     assert len(result["old_images"]) == 1, "Error in number of old images"
+
+
+def test_annotation_output_folder_created(tmpdir):
+    gt = {
+        "categories": [{"id": 1, "name": "drone"}],
+        "images": [{"id": 1, "width": 1920, "height": 1080, "file_name": "img1.png"}],
+        "annotations": [
+            {
+                "id": 1,
+                "image_id": 1,
+                "area": 1,
+                "category_id": 1,
+                "bbox": [0, 0, 1, 1],
+                "iscrowd": 0,
+            },
+        ],
+    }
+
+    with open(Path(tmpdir) / "gt.json", "w") as f:
+        json.dump(gt, f)
+
+    img = np.zeros((10, 10, 3), dtype=np.uint8)
+    Image.fromarray(img).save(Path(tmpdir) / "img1.png")
+
+    crops_split(
+        ground_truth_file=Path(tmpdir) / "gt.json",
+        image_folder=tmpdir,
+        output_file=Path(tmpdir) / "new_folder/gt.json",
+        output_image_folder=Path(tmpdir) / "crops_folder",
+        crop_height=5,
+        crop_width=5,
+    )
+
+    assert (Path(tmpdir) / "new_folder/gt.json").exists()

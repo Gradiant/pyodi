@@ -55,7 +55,6 @@ def crops_split(
 
     output_image_folder_path = Path(output_image_folder)
     output_image_folder_path.mkdir(exist_ok=True, parents=True)
-
     new_images: List = []
     new_annotations: List = []
 
@@ -107,6 +106,8 @@ def crops_split(
         "licenses": ground_truth.get("licenses", []),
         "info": ground_truth.get("info"),
     }
+
+    Path(output_file).parent.mkdir(exist_ok=True, parents=True)
 
     with open(output_file, "w") as f:
         json.dump(new_ground_truth, f, indent=2)
