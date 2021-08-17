@@ -31,11 +31,8 @@ jobs:
         with:
           python-version: 3.7
       - name: Install pyodi
-        shell: bash -l {0}
         run: rm -rf .eggs && pip install .[dev]
       - name: Test with pytest
-        shell: bash -l {0}
         run: pytest
       - name: Generate docs
-        shell: bash -l {0}
         run: mkdocs build
