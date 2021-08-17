@@ -23,7 +23,11 @@ jobs:
         run: pre-commit run --all-files
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.7
