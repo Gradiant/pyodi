@@ -35,7 +35,7 @@ jobs:
         with:
           python-version: 3.7
       - name: Install pyodi
-        run: rm -rf .eggs && pip install .[dev]
+        run: pip install .[dev]
       - name: Test with pytest
         run: pytest
       - name: Generate docs
