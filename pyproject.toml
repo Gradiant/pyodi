@@ -22,4 +22,4 @@ exclude = '''
 
 [tool.isort]
 profile = "black"
-known_third_party = ["PIL", "ensemble_boxes", "loguru", "matplotlib", "numba", "numpy", "pandas", "plotly", "pycocotools", "pytest", "setuptools", "sklearn", "typer"]
+known_third_party = ["PIL", "loguru", "matplotlib", "numba", "numpy", "pandas", "plotly", "pycocotools", "pytest", "setuptools", "sklearn", "typer"]
