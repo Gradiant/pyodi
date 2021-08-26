@@ -19,7 +19,6 @@ def crops_merge(
     output_file: str,
     predictions_file: Optional[str] = None,
     apply_nms: bool = True,
-    nms_mode: str = "nms",
     score_thr: float = 0.0,
     iou_thr: float = 0.5,
 ) -> str:
@@ -33,7 +32,6 @@ def crops_merge(
             If not None, the annotations of predictions_file will be merged instead of ground_truth_file's.
         apply_nms: Whether to apply Non Maximum Supression to the merged predictions of
             each image. Defaults to True.
-        nms_mode: Non Maximum Supression mode. Defaults to "nms".
         score_thr: Predictions bellow `score_thr` will be filtered. Only used if
             `apply_nms`. Defaults to 0.0.
         iou_thr: None of the filtered predictions will have an iou above `iou_thr` to
@@ -76,12 +74,10 @@ def crops_merge(
         crop["original_image_shape"] = stem_to_original_shape[stem]
 
     if apply_nms:
-        annotations = nms_predictions(
-            annotations, score_thr=score_thr, nms_mode=nms_mode, iou_thr=iou_thr
-        )
+        annotations = nms_predictions(annotations, score_thr=score_thr, iou_thr=iou_thr)
         output_file = str(
             Path(output_file).parent
-            / f"{Path(output_file).stem}_{nms_mode}_{score_thr}_{iou_thr}.json"
+            / f"{Path(output_file).stem}_{score_thr}_{iou_thr}.json"
         )
 
     if predictions_file is not None:
