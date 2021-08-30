@@ -48,15 +48,12 @@ In this case we observe that the objects usually appear in the center of the ima
 from pathlib import Path
 from typing import Optional, Tuple
 
-from loguru import logger
-
 from pyodi.core.boxes import add_centroids
 from pyodi.core.utils import coco_ground_truth_to_df
 from pyodi.plots.boxes import get_centroids_heatmap, plot_heatmap
 from pyodi.plots.common import plot_scatter_with_histograms
 
 
-@logger.catch
 def ground_truth(
     ground_truth_file: str,
     show: bool = True,
@@ -87,7 +84,7 @@ def ground_truth(
         df_images,
         x="img_width",
         y="img_height",
-        title=f"{Path(ground_truth_file).stem}: Image Shapes",
+        title="Image_Shapes",
         show=show,
         output=output,
         output_size=output_size,
@@ -108,7 +105,7 @@ def ground_truth(
         df_annotations,
         x="absolute_width",
         y="absolute_height",
-        title=f"{Path(ground_truth_file).stem}: Bounding Box Shapes",
+        title="Bounding_Box_Shapes",
         show=show,
         output=output,
         output_size=output_size,
@@ -120,7 +117,7 @@ def ground_truth(
 
     plot_heatmap(
         get_centroids_heatmap(df_annotations),
-        title=f"{Path(ground_truth_file).stem}: Bounding Box Centers",
+        title="Bounding_Box_Centers",
         show=show,
         output=output,
         output_size=output_size,
