@@ -51,7 +51,6 @@ import numpy as np
 from loguru import logger
 
 
-@logger.catch  # noqa: C901
 def property_split(
     annotations_file: str, output_filename: str, split_config_file: str,
 ) -> List[str]:
@@ -155,7 +154,6 @@ def property_split(
     return output_files
 
 
-@logger.catch
 def random_split(
     annotations_file: str,
     output_filename: str,

@@ -41,7 +41,6 @@ from pycocotools.cocoeval import COCOeval
 from pyodi.core.utils import load_coco_ground_truth_from_StringIO
 
 
-@logger.catch
 def evaluation(
     ground_truth_file: str, predictions_file: str, string_to_match: Optional[str] = None
 ) -> None:

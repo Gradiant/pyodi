@@ -20,7 +20,6 @@ from pyodi.core.crops import (
 )
 
 
-@logger.catch
 def crops_split(
     ground_truth_file: str,
     image_folder: str,
