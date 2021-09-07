@@ -54,7 +54,7 @@ pip install pyodi
 
 ## Usage
 
-Pyodi includes different applications that can help you to extract the most from your dataset. You can download our `TINY_COCO_ANIMAL` dataset from the [releases page](https://github.com/Gradiant/pyodi/releases/tag/v0.1.0) in order to test the example commands. A classic flow could follow the following steps:
+Pyodi includes different applications that can help you to extract the most from your dataset. You can download our `TINY_COCO_ANIMAL` dataset from the [releases page](https://github.com/Gradiant/pyodi/releases/tag/v0.0.1) in order to test the example commands. A classic flow could follow the following steps:
 
 ### 1. Annotation visualization
 
