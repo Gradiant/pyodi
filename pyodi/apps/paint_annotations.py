@@ -34,7 +34,7 @@ from matplotlib.patches import Polygon
 from PIL import Image
 
 
-@logger.catch
+@logger.catch(reraise=True)
 def paint_annotations(
     ground_truth_file: str,
     image_folder: str,
