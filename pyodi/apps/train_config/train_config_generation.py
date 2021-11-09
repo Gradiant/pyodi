@@ -116,6 +116,7 @@ from pyodi.core.utils import coco_ground_truth_to_df
 from pyodi.plots.clustering import plot_clustering_results
 
 
+@logger.catch
 def train_config_generation(
     ground_truth_file: str,
     input_size: Tuple[int, int] = (1280, 720),

@@ -13,6 +13,7 @@ from loguru import logger
 from pyodi.core.nms import nms_predictions
 
 
+@logger.catch
 def crops_merge(
     ground_truth_file: str,
     output_file: str,

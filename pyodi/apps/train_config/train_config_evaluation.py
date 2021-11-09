@@ -115,6 +115,7 @@ def load_anchor_config_file(anchor_config_file: str) -> Dict[str, Any]:
     return train_config
 
 
+@logger.catch
 def train_config_evaluation(
     ground_truth_file: Union[str, pd.DataFrame],
     anchor_config: str,

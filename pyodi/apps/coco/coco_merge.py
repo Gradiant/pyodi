@@ -21,6 +21,7 @@ from typing import Any, Dict
 from loguru import logger
 
 
+@logger.catch
 def coco_merge(input_extend: str, input_add: str, output_file: str,) -> str:
     """Merge COCO annotation files.
 
