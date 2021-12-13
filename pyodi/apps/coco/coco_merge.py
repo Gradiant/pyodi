@@ -16,7 +16,7 @@ and adding all existent categories.
 # API REFERENCE
 """  # noqa: E501
 import json
-from typing import Any, Dict, Union
+from typing import Any, Dict, Optional
 
 from loguru import logger
 
@@ -94,6 +94,6 @@ def coco_merge(
     )
 
     with open(output_file, "w") as f:
-        json.dump(output, f, indent=json_indentation)
+        json.dump(output, f, indent=indent)
 
     return output_file
