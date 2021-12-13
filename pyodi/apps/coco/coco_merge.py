@@ -26,7 +26,7 @@ def coco_merge(
     input_extend: str,
     input_add: str,
     output_file: str,
-    json_indentation: Union[int, None] = 2,
+    indent: Optional[int] = None,
 ) -> str:
     """Merge COCO annotation files.
 
@@ -34,7 +34,7 @@ def coco_merge(
         input_extend: Path to input file to be extended.
         input_add: Path to input file to be added.
         output_file : Path to output file with merged annotations.
-        json_indentation: If set to a non-negative integer, then JSON array elements and object members will be pretty-printed with that indent level. An indent level of `0` will only insert newlines. `None` is the most compact representation (no indentation).
+        indent: Argument passed to `json.dump`. See https://docs.python.org/3/library/json.html#json.dump.
     """
     with open(input_extend, "r") as f:
         data_extend = json.load(f)
