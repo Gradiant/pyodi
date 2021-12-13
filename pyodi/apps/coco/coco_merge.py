@@ -16,19 +16,25 @@ and adding all existent categories.
 # API REFERENCE
 """  # noqa: E501
 import json
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 from loguru import logger
 
 
 @logger.catch(reraise=True)
-def coco_merge(input_extend: str, input_add: str, output_file: str,) -> str:
+def coco_merge(
+    input_extend: str,
+    input_add: str,
+    output_file: str,
+    json_indentation: Union[int, None] = 2,
+) -> str:
     """Merge COCO annotation files.
 
     Args:
         input_extend: Path to input file to be extended.
         input_add: Path to input file to be added.
         output_file : Path to output file with merged annotations.
+        json_indentation: If set to a non-negative integer, then JSON array elements and object members will be pretty-printed with that indent level. An indent level of `0` will only insert newlines. `None` is the most compact representation (no indentation).
     """
     with open(input_extend, "r") as f:
         data_extend = json.load(f)
@@ -88,6 +94,6 @@ def coco_merge(input_extend: str, input_add: str, output_file: str,) -> str:
     )
 
     with open(output_file, "w") as f:
-        json.dump(output, f, indent=2)
+        json.dump(output, f, indent=json_indentation)
 
     return output_file
