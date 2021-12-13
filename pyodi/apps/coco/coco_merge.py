@@ -23,10 +23,7 @@ from loguru import logger
 
 @logger.catch(reraise=True)
 def coco_merge(
-    input_extend: str,
-    input_add: str,
-    output_file: str,
-    indent: Optional[int] = None,
+    input_extend: str, input_add: str, output_file: str, indent: Optional[int] = None,
 ) -> str:
     """Merge COCO annotation files.
 
