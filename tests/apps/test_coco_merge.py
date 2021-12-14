@@ -1,5 +1,8 @@
 import json
 
+import pytest
+from mock import ANY, patch
+
 from pyodi.apps.coco.coco_merge import coco_merge
 
 
@@ -56,3 +59,29 @@ def test_coco_merge(tmp_path):
         range(len(data["annotations"]))
     )
     assert [i["category_id"] for i in data["annotations"]] == [1, 2, 1, 3, 3, 1]
+
+
+@pytest.mark.parametrize("indent", [None, 2])
+def test_coco_merge_with_json_indent(tmp_path, indent):
+    images = [{"id": 0, "file_name": "0.jpg"}]
+    anns1 = [{"image_id": 0, "category_id": 0, "id": 0}]
+    anns2 = [{"image_id": 0, "category_id": 1, "id": 0}]
+    categories = [{"id": 0, "name": "excavator"}, {"id": 1, "name": "bus"}]
+
+    coco1 = dict(images=images, annotations=anns1, categories=categories)
+    coco2 = dict(images=images, annotations=anns2, categories=categories)
+
+    tmp_files = []
+    for i, coco_data in enumerate([coco1, coco2]):
+        tmp_files.append(tmp_path / f"{i}.json")
+        with open(tmp_files[-1], "w") as f:
+            json.dump(coco_data, f)
+
+    with patch("json.dump") as mock:
+        coco_merge(
+            input_extend=tmp_path / "0.json",
+            input_add=tmp_path / "1.json",
+            output_file=tmp_path / "result.json",
+            indent=indent,
+        )
+        mock.assert_called_once_with(ANY, ANY, indent=indent)

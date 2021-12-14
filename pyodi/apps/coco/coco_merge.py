@@ -16,19 +16,22 @@ and adding all existent categories.
 # API REFERENCE
 """  # noqa: E501
 import json
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from loguru import logger
 
 
 @logger.catch(reraise=True)
-def coco_merge(input_extend: str, input_add: str, output_file: str,) -> str:
+def coco_merge(
+    input_extend: str, input_add: str, output_file: str, indent: Optional[int] = None,
+) -> str:
     """Merge COCO annotation files.
 
     Args:
         input_extend: Path to input file to be extended.
         input_add: Path to input file to be added.
         output_file : Path to output file with merged annotations.
+        indent: Argument passed to `json.dump`. See https://docs.python.org/3/library/json.html#json.dump.
     """
     with open(input_extend, "r") as f:
         data_extend = json.load(f)
@@ -88,6 +91,6 @@ def coco_merge(input_extend: str, input_add: str, output_file: str,) -> str:
     )
 
     with open(output_file, "w") as f:
-        json.dump(output, f, indent=2)
+        json.dump(output, f, indent=indent)
 
     return output_file
