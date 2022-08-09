@@ -49,7 +49,7 @@ def test_get_area_and_ratio(get_simple_annotations_with_img_sizes):
     df_annotations = get_simple_annotations_with_img_sizes()
     df_annotations = get_scale_and_ratio(df_annotations)
     expected_scales = np.sqrt([100, 2000])
-    expected_ratios = np.array([1, 0.8], dtype=np.float)
+    expected_ratios = np.array([1, 0.8], dtype=float)
     np.testing.assert_equal(df_annotations["scale"].to_numpy(), expected_scales)
     np.testing.assert_equal(df_annotations["ratio"].to_numpy(), expected_ratios)
 
