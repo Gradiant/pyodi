@@ -16,7 +16,7 @@
         <img src="https://img.shields.io/pypi/v/pyodi" />
     </a>
     <a href="https://www.python.org/">
-        <img src="https://img.shields.io/badge/Python-3.7-ff69b4.svg" />
+        <img src="https://img.shields.io/badge/Python-3.8-ff69b4.svg" />
     </a>
     <a href="https://github.com/Gradiant/pyodi/actions?query=workflow%3A%22Continuous+Integration%22">
         <img src="https://github.com/pyodi/pyodi/workflows/Continuous%20Integration/badge.svg?branch=master" />
