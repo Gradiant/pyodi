@@ -45,7 +45,7 @@ def paint_annotations(
     show_label: bool = True,
     filter_crowd: bool = True,
     first_n: Optional[int] = None,
-    use_exif_orientation: bool = False
+    use_exif_orientation: bool = False,
 ) -> None:
     """Paint `ground_truth_file` or `predictions_file` annotations on `image_folder` images.
 
@@ -64,7 +64,7 @@ def paint_annotations(
         first_n: Paint only first n annotations and stop after that.
             If None, all images will be painted.
         use_exif_orientation: If an image has an EXIF Orientation tag, other than 1, return a new image that
-            is transposed accordingly. The new image will have the orientation data removed
+           is transposed accordingly. The new image will have the orientation data removed.
     """
     Path(output_folder).mkdir(exist_ok=True, parents=True)
 
