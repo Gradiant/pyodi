@@ -31,7 +31,7 @@ from matplotlib import cm as cm
 from matplotlib import pyplot as plt
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Polygon
-from PIL import Image
+from PIL import Image, ImageOps
 
 
 @logger.catch(reraise=True)
@@ -45,6 +45,7 @@ def paint_annotations(
     show_label: bool = True,
     filter_crowd: bool = True,
     first_n: Optional[int] = None,
+    use_exif_orientation: bool = False,
 ) -> None:
     """Paint `ground_truth_file` or `predictions_file` annotations on `image_folder` images.
 
@@ -62,6 +63,8 @@ def paint_annotations(
         filter_crowd: Filter out crowd annotations or not. Default True.
         first_n: Paint only first n annotations and stop after that.
             If None, all images will be painted.
+        use_exif_orientation: If an image has an EXIF Orientation tag, other than 1, return a new image that
+           is transposed accordingly. The new image will have the orientation data removed.
     """
     Path(output_folder).mkdir(exist_ok=True, parents=True)
 
@@ -103,6 +106,8 @@ def paint_annotations(
 
         if image_path.is_file():
             image_pil = Image.open(image_path)
+            if use_exif_orientation:
+                image_pil = ImageOps.exif_transpose(image_pil)
 
             width, height = image_pil.size
             fig = plt.figure(frameon=False, figsize=(width / 96, height / 96))
