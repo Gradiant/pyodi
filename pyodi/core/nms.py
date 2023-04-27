@@ -50,7 +50,9 @@ def nms(dets: np.ndarray, scores: np.ndarray, iou_thr: float) -> np.ndarray:
 
 
 def nms_predictions(
-    predictions: List[Dict[Any, Any]], score_thr: float = 0.0, iou_thr: float = 0.5,
+    predictions: List[Dict[Any, Any]],
+    score_thr: float = 0.0,
+    iou_thr: float = 0.5,
 ) -> List[Dict[Any, Any]]:
     """Apply Non Maximum supression to all the images in a COCO `predictions` list.
 

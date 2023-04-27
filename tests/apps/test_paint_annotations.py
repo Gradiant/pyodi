@@ -10,7 +10,6 @@ from pyodi.apps.paint_annotations import paint_annotations
 
 
 def test_image_annotations(tmp_path):
-
     images_folder = tmp_path / "images"
     Path(images_folder).mkdir(exist_ok=True, parents=True)
 
@@ -43,7 +42,6 @@ def test_image_annotations(tmp_path):
     color_2 = np.round(colormap[1] * 255)
 
     for i, image_data in enumerate(images):
-
         image = np.zeros((image_data["height"], image_data["width"], 3), dtype=np.uint8)
         Image.fromarray(image).save(images_folder / f"test_{i}.png")
 
@@ -71,7 +69,6 @@ def test_image_annotations(tmp_path):
 
 
 def test_crowd_annotations_skipped_when_filter_crowd(tmp_path):
-
     images_folder = tmp_path / "images"
     Path(images_folder).mkdir(exist_ok=True, parents=True)
 
@@ -117,7 +114,6 @@ def test_crowd_annotations_skipped_when_filter_crowd(tmp_path):
     color_2 = np.round(colormap[1] * 255)
 
     for i, image_data in enumerate(images):
-
         image = np.zeros((image_data["height"], image_data["width"], 3), dtype=np.uint8)
         Image.fromarray(image).save(images_folder / f"test_{i}.png")
 
@@ -146,7 +142,6 @@ def test_crowd_annotations_skipped_when_filter_crowd(tmp_path):
 
 @pytest.mark.parametrize("first_n", [1, 3, None])
 def test_first_n(tmp_path, first_n):
-
     images_folder = tmp_path / "images"
     Path(images_folder).mkdir(exist_ok=True, parents=True)
 
