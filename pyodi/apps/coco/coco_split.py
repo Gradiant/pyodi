@@ -149,8 +149,8 @@ def property_split(
     output_files = []
     for split_type, split in zip(["train", "val"], [train_split, val_split]):
         output_files.append(output_filename + f"_{split_type}.json")
-        with open(output_files[-1], "w") as f:
-            json.dump(split, f, indent=2)
+        with open(output_files[-1], "w", encoding="utf-8") as f:
+            json.dump(split, f, indent=2, ensure_ascii=False)
 
     return output_files
 
@@ -219,7 +219,7 @@ def random_split(
     output_files = []
     for split_type, split in zip(["train", "val"], [train_split, val_split]):
         output_files.append(output_filename + f"_{split_type}.json")
-        with open(output_files[-1], "w") as f:
-            json.dump(split, f, indent=2)
+        with open(output_files[-1], "w", encoding="utf-8") as f:
+            json.dump(split, f, indent=2, ensure_ascii=False)
 
     return output_files

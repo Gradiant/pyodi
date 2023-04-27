@@ -90,7 +90,7 @@ def coco_merge(
         )
     )
 
-    with open(output_file, "w") as f:
-        json.dump(output, f, indent=indent)
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(output, f, indent=indent, ensure_ascii=False)
 
     return output_file

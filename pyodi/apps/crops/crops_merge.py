@@ -91,7 +91,7 @@ def crops_merge(
             "annotations": annotations,
         }
 
-    with open(output_file, "w") as f:
-        json.dump(new_ground_truth, f, indent=2)
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(new_ground_truth, f, indent=2, ensure_ascii=False)
 
     return output_file
