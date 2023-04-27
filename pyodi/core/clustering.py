@@ -54,7 +54,6 @@ def get_max_overlap(boxes: ndarray, anchors: ndarray) -> ndarray:
     anchors_areas = (anchors[:, 2] - anchors[:, 0]) * (anchors[:, 3] - anchors[:, 1])
 
     for row in prange(rows):
-
         for col in range(cols):
             ymin = max(boxes[row, 0], anchors[col, 0])
             xmin = max(boxes[row, 1], anchors[col, 1])
@@ -70,7 +69,9 @@ def get_max_overlap(boxes: ndarray, anchors: ndarray) -> ndarray:
 
 
 def kmeans_euclidean(
-    values: ndarray, n_clusters: int = 3, silhouette_metric: bool = False,
+    values: ndarray,
+    n_clusters: int = 3,
+    silhouette_metric: bool = False,
 ) -> Dict[str, Union[ndarray, float64]]:
     """Computes k-means clustering with euclidean distance.
 

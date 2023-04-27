@@ -117,7 +117,6 @@ def test_get_annotation_in_crop():
 
 
 def test_annotation_larger_than_threshold():
-
     annotation = {
         "bbox": [2, 2, 4, 5],
         "area": 20,

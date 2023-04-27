@@ -199,7 +199,10 @@ def train_config_generation(
     ratios = np.e ** clustering_results[1]["centroids"]
 
     anchor_generator = AnchorGenerator(
-        strides=strides, ratios=ratios, scales=scales, base_sizes=base_sizes,
+        strides=strides,
+        ratios=ratios,
+        scales=scales,
+        base_sizes=base_sizes,
     )
     logger.info(f"Anchor configuration: \n{anchor_generator.to_string()}")
 

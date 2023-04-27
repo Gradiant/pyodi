@@ -63,9 +63,10 @@ class AnchorGenerator(object):
     ) -> None:
         # check center and center_offset
         if center_offset != 0:
-            assert centers is None, (
-                "center cannot be set when center_offset"
-                "!=0, {} is given.".format(centers)
+            assert (
+                centers is None
+            ), "center cannot be set when center_offset" "!=0, {} is given.".format(
+                centers
             )
         if not (0 <= center_offset <= 1):
             raise ValueError(
@@ -219,7 +220,9 @@ class AnchorGenerator(object):
         multi_level_anchors = []
         for i in range(self.num_levels):
             anchors = self.single_level_grid_anchors(
-                self.base_anchors[i], featmap_sizes[i], self.strides[i],
+                self.base_anchors[i],
+                featmap_sizes[i],
+                self.strides[i],
             )
             multi_level_anchors.append(anchors)
         return multi_level_anchors

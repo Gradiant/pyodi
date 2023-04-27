@@ -23,7 +23,10 @@ from loguru import logger
 
 @logger.catch(reraise=True)
 def coco_merge(
-    input_extend: str, input_add: str, output_file: str, indent: Optional[int] = None,
+    input_extend: str,
+    input_add: str,
+    output_file: str,
+    indent: Optional[int] = None,
 ) -> str:
     """Merge COCO annotation files.
 
@@ -45,7 +48,6 @@ def coco_merge(
     output["images"], output["annotations"] = [], []
 
     for i, data in enumerate([data_extend, data_add]):
-
         logger.info(
             "Input {}: {} images, {} annotations".format(
                 i + 1, len(data["images"]), len(data["annotations"])
