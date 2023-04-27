@@ -7,7 +7,6 @@ from pyodi.apps.coco.coco_split import property_split, random_split
 
 
 def get_coco_data():
-
     categories = [{"id": 1, "name": "drone"}, {"id": 2, "name": "bird"}]
 
     images = [

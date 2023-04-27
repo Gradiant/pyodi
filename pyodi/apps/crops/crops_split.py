@@ -59,7 +59,6 @@ def crops_split(
     new_annotations: List = []
 
     for image in ground_truth["images"]:
-
         file_name = Path(image["file_name"])
         logger.info(file_name)
         image_pil = Image.open(Path(image_folder) / file_name.name)

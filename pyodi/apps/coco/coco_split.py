@@ -53,7 +53,9 @@ from loguru import logger
 
 @logger.catch(reraise=True)  # noqa: C901
 def property_split(
-    annotations_file: str, output_filename: str, split_config_file: str,
+    annotations_file: str,
+    output_filename: str,
+    split_config_file: str,
 ) -> List[str]:
     """Split the annotations file in training and validation subsets by properties.
 
@@ -96,7 +98,6 @@ def property_split(
 
     logger.info("Gathering images...")
     for img in data["images"]:
-
         i = 0
         while i < len(split_list) and not re.match(
             split_list[i]["property_regex"], img[split_list[i]["property_name"]]
@@ -117,7 +118,6 @@ def property_split(
 
     logger.info("Gathering annotations...")
     for ann in data["annotations"]:
-
         if ann["image_id"] in old_to_new_val_ids:
             ann["image_id"] = old_to_new_val_ids[ann["image_id"]]
             ann["id"] = n_val_anns
@@ -182,7 +182,6 @@ def random_split(
 
     logger.info("Gathering images...")
     for i, image in enumerate(data["images"]):
-
         if rand_values[i] < val_percentage:
             val_images.append(copy(image))
             val_ids.append(image["id"])
@@ -193,7 +192,6 @@ def random_split(
 
     logger.info("Gathering annotations...")
     for annotation in data["annotations"]:
-
         if annotation["image_id"] in val_ids:
             val_annotations.append(copy(annotation))
         else:
