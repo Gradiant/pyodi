@@ -84,4 +84,4 @@ def test_coco_merge_with_json_indent(tmp_path, indent):
             output_file=tmp_path / "result.json",
             indent=indent,
         )
-        mock.assert_called_once_with(ANY, ANY, indent=indent)
+        mock.assert_called_once_with(ANY, ANY, indent=indent, ensure_ascii=False)
