@@ -18,7 +18,7 @@ repos:
         additional_dependencies:
         - 'flake8-docstrings'
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.2.0
+    rev: v0.782
     hooks:
       - id: mypy
         additional_dependencies:
