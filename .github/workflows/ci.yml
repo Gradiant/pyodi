@@ -39,4 +39,4 @@ jobs:
       - name: Test with pytest
         run: pytest
       - name: Generate docs
-        run: mkdocs build
+        run: mkdocs build --config-file mkdocs.yml
